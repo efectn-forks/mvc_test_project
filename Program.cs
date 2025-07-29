@@ -1,7 +1,16 @@
+using mvc_proje.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Create db context
+var dbCtx = new AppDbCtx();
+dbCtx.Database.EnsureCreated();
+
+// Register the db context with dependency injection
+builder.Services.AddSingleton(dbCtx);
 
 var app = builder.Build();
 

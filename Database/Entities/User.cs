@@ -18,8 +18,6 @@ public class User
     public string Username { get; set; } = string.Empty;
     
     [Required]
-    [StringLength(15, ErrorMessage = "Password cannot exceed 15 characters.")]
-    [MinLength(8, ErrorMessage = "Password cannot be less than 8 characters.")]
     public string Password { get; set; } = string.Empty;
     
     [Required]
