@@ -1,0 +1,94 @@
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <div class="card card-primary card-outline mb-4">
+            <!--begin::Form-->
+            <form method="post" asp-action="Create" asp-controller="User" asp-antiforgery="true">
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    id="email"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="username" class="form-label">Kullanıcı Adı</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    name="username"/>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="fullname" class="form-label">Ad Soyad</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullname"
+                    name="fullname"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="phonenumber" class="form-label">Telefon No.</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="phonenumber"
+                    name="phonenumber"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="address" class="form-label">Adres</label>
+                  <textarea class="form-control" name="address" id="address" aria-label="With textarea"></textarea>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <label for="password" class="form-label">Şifre</label>
+                    <input type="password" class="form-control" name="password" id="password"/>
+                  </div>
+                  <div class="col-6">
+                    <label for="passwordConfirm" class="form-label">Şifre (tekrar)</label>
+                    <input type="password" class="form-control" name="passwordConfirm" id="passwordConfirm"/>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="role" class="form-label">Rol</label>
+                  <select class="form-select" name="role" id="role" aria-label="Default select example">
+                    <option value="0">Kullanıcı</option>
+                    <option value="1">Yönetici</option>
+                  </select>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+            <!--end::Form-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>

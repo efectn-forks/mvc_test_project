@@ -1,24 +1,20 @@
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using mvc_proje.Database.Entities;
 
-namespace mvc_proje.Database.Entities;
+namespace mvc_proje.Models;
 
-public enum Role
+public class UserEditViewModel
 {
-    User,
-    Admin,
-}
-
-public class User
-{
-    [Key]
+    [Required]
     public int Id { get; set; }
     
     [Required]
     [StringLength(20, ErrorMessage = "Username cannot exceed 20 characters.")]
     public string Username { get; set; } = string.Empty;
     
-    [Required]
-    public string Password { get; set; } = string.Empty;
+    public string? Password { get; set; } = string.Empty;
+    public string? PasswordConfirm { get; set; } = string.Empty;
     
     [Required]
     [EmailAddress(ErrorMessage = "Invalid email address.")]
@@ -37,11 +33,5 @@ public class User
     public string Address { get; set; } = string.Empty;
     
     [Required]
-    [StringLength(20, ErrorMessage = "Role cannot exceed 20 characters.")]
     public Role Role { get; set; } = Role.User;
-    
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<Review> Reviews { get; set; } = new List<Review>();
-    public ICollection<Post> Posts { get; set; } = new List<Post>();
-    public ICollection<Order> Orders { get; set; } = new List<Order>();
 }

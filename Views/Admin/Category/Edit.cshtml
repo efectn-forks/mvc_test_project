@@ -1,0 +1,58 @@
+@using mvc_proje.Database.Entities
+@model mvc_proje.Models.CategoryEditViewModel
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row--> 
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <form method="post" asp-action="Update" asp-controller="Category" asp-antiforgery="true">
+              <input type="hidden" name="id" value="@Model.Id" />
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="name" class="form-label">İsim</label>
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    value="@Model.Name"
+                    id="name"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label">Açıklama</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="description"
+                    value="@Model.Description"
+                    name="description"/>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>

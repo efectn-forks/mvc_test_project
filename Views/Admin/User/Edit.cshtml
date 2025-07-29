@@ -1,0 +1,102 @@
+@using mvc_proje.Database.Entities
+@model UserEditViewModel
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <div class="card card-primary card-outline mb-4">
+            <!--begin::Form-->
+            <form method="post" asp-action="Update" asp-controller="User" asp-antiforgery="true">
+              <input type="hidden" asp-for="Id" value="@Model.Id" />
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    asp-for="Email"
+                    class="form-control"
+                    value="@Model.Email"
+                    id="email"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="username" class="form-label">Kullanıcı Adı</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    value="@Model.Username"
+                    asp-for="Username"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="fullname" class="form-label">Ad Soyad</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullname"
+                    value="@Model.FullName"
+                    asp-for="FullName"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="phonenumber" class="form-label">Telefon No.</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="phonenumber"
+                    value="@Model.PhoneNumber"
+                    asp-for="PhoneNumber"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="address" class="form-label">Adres</label>
+                  <textarea class="form-control" asp-for="Address" id="address" aria-label="With textarea">@Model.Address</textarea>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <label for="password" class="form-label">Şifre</label>
+                    <input type="password" class="form-control" asp-for="Password" id="password"/>
+                  </div>
+                  <div class="col-6">
+                    <label for="passwordConfirm" class="form-label">Şifre (tekrar)</label>
+                    <input type="password" class="form-control" asp-for="PasswordConfirm" id="passwordConfirm"/>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="role" class="form-label">Rol</label>
+                  <select class="form-select" asp-for="Role" id="role" aria-label="Default select example">
+                    <option value="0" selected="@(Model.Role == Role.User ? "selected" : null)">Kullanıcı</option>
+                    <option value="1" selected="@(Model.Role == Role.Admin ? "selected" : null)">Yönetici</option>
+                  </select>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+            <!--end::Form-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>

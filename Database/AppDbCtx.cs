@@ -52,6 +52,4 @@ public class AppDbCtx : DbContext
     public DbSet<Feature> Features { get; set; } = null!;
     public DbSet<ContactMessage> ContactMessages { get; set; } = null!;
     public DbSet<Post> Posts { get; set; } = null!;
-    
-    
 }

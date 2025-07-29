@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\Repositories\" />
+    <AdditionalFiles Include="Views\Admin\Product\Create.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Product\Edit.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Product\Index.cshtml" />
   </ItemGroup>
 
 </Project>

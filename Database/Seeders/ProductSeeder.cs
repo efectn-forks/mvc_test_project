@@ -17,7 +17,7 @@ public class ProductSeeder : ISeeder
                 Description = "Description for Product 1",
                 Price = 19.99m,
                 Stock = 100,
-                CategoryId = category_ids[new Random().Next(category_ids.Length+1)],
+                CategoryId = category_ids[new Random().Next(category_ids.Length)],
             },
             new Product
             {
@@ -26,7 +26,7 @@ public class ProductSeeder : ISeeder
                 Description = "Description for Product 2",
                 Price = 29.99m,
                 Stock = 50,
-                CategoryId = category_ids[new Random().Next(category_ids.Length+1)],
+                CategoryId = category_ids[new Random().Next(category_ids.Length)],
             },
             new Product
             {
@@ -35,7 +35,7 @@ public class ProductSeeder : ISeeder
                 Description = "Description for Product 3",
                 Price = 39.99m,
                 Stock = 75,
-                CategoryId = category_ids[new Random().Next(category_ids.Length+1)],
+                CategoryId = category_ids[new Random().Next(category_ids.Length)],
             },
             new Product
             {
@@ -44,7 +44,7 @@ public class ProductSeeder : ISeeder
                 Description = "Description for Product 4",
                 Price = 49.99m,
                 Stock = 20,
-                CategoryId = category_ids[new Random().Next(category_ids.Length+1)],
+                CategoryId = category_ids[new Random().Next(category_ids.Length)],
             },
             new Product
             {
@@ -53,7 +53,7 @@ public class ProductSeeder : ISeeder
                 Description = "Description for Product 5",
                 Price = 59.99m,
                 Stock = 10,
-                CategoryId = category_ids[new Random().Next(category_ids.Length+1)],
+                CategoryId = category_ids[new Random().Next(category_ids.Length)],
             },
         };
 

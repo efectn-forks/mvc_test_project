@@ -1,4 +1,6 @@
 using mvc_proje.Database;
+using mvc_proje.Database.Repositories;
+using mvc_proje.Misc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,32 @@ dbCtx.Database.EnsureCreated();
 
 // Register the db context with dependency injection
 builder.Services.AddSingleton(dbCtx);
+
+// Register repositories
+builder.Services.AddSingleton<UserRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new UserRepository(context);
+});
+
+builder.Services.AddSingleton<CategoryRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new CategoryRepository(context);
+});
+
+builder.Services.AddSingleton<ProductRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new ProductRepository(context);
+});
+
+// Add support for Views/Admin views discovery
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationExpanders.Add(new CustomViewLocationExpander());
+    });
 
 var app = builder.Build();
 
@@ -31,7 +59,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Home2}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 
