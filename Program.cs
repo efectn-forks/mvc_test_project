@@ -1,6 +1,7 @@
 using mvc_proje.Database;
 using mvc_proje.Database.Repositories;
 using mvc_proje.Misc;
+using mvc_proje.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,15 @@ builder.Services.AddSingleton<SliderRepository>(provider =>
     var context = provider.GetRequiredService<AppDbCtx>();
     return new SliderRepository(context);
 });
+
+builder.Services.AddSingleton<ReviewRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new ReviewRepository(context);
+});
+
+// Register custom services
+builder.Services.AddSingleton<IAboutUsService>(new AboutUsService());
 
 // Add support for Views/Admin views discovery
 builder.Services.AddControllersWithViews()

@@ -1,0 +1,69 @@
+@using mvc_proje.Database.Entities
+@model mvc_proje.Models.ReviewEditViewModel
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row--> 
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <form method="post" asp-action="Update" asp-controller="Review" asp-antiforgery="true">
+              <input type="hidden" asp-for="Id" />
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="UserId" class="form-label">Kullanıcı</label>
+                  <select class="form-select" asp-for="UserId" id="UserId" aria-label="Default select example">
+                    @foreach (var user in ViewData["Users"] as List<User>)
+                    {
+                      if (user.Id == Model.UserId)
+                      {
+                        <option value="@user.Id" selected>@user.FullName</option>
+                      }
+                      else
+                      {
+                        <option value="@user.Id">@user.FullName</option>
+                      }
+                    }
+                  </select>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="UserTitle" class="form-label">Kullanıcı Unvanı</label>
+                  <input
+                    type="text"
+                    asp-for="UserTitle"
+                    class="form-control"
+                    id="UserTitle"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="Text" class="form-label">İnceleme Yazısı</label>
+                  <textarea class="form-control" asp-for="Text" id="Text"></textarea>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>
