@@ -82,6 +82,8 @@ builder.Services.AddControllersWithViews()
 
 var app = builder.Build();
 
+app.UseStatusCodePagesWithReExecute("/404");
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -99,7 +101,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home2}/{action=Index}/{id?}")
+    pattern: "{controller=Homepage}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 

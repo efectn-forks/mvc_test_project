@@ -35,4 +35,8 @@
     <Folder Include="wwwroot\images\sliders\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
+  </ItemGroup>
+
 </Project>
