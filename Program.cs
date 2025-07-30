@@ -33,6 +33,36 @@ builder.Services.AddSingleton<ProductRepository>(provider =>
     return new ProductRepository(context);
 });
 
+builder.Services.AddSingleton<PostRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new PostRepository(context);
+});
+
+builder.Services.AddSingleton<CommentRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new CommentRepository(context);
+});
+
+builder.Services.AddSingleton<ContactMessageRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new ContactMessageRepository(context);
+});
+
+builder.Services.AddSingleton<FeatureRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new FeatureRepository(context);
+});
+
+builder.Services.AddSingleton<SliderRepository>(provider =>
+{
+    var context = provider.GetRequiredService<AppDbCtx>();
+    return new SliderRepository(context);
+});
+
 // Add support for Views/Admin views discovery
 builder.Services.AddControllersWithViews()
     .AddRazorOptions(options =>

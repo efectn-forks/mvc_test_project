@@ -1,12 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using mvc_proje.Database.Entities;
 
-namespace mvc_proje.Database.Entities;
+namespace mvc_proje.Models;
 
-public class Feature
+public class FeatureCreateViewModel
 {
-    [Key]
-    public int Id { get; set; }
-    
     [Required]
     [StringLength(50, ErrorMessage = "Feature title cannot exceed 50 characters.")]
     public string Title { get; set; } = string.Empty;
@@ -18,4 +16,10 @@ public class Feature
     public string? Icon { get; set; } = string.Empty;
     
     public string? Link { get; set; } = string.Empty;
+}
+
+public class FeatureEditViewModel : FeatureCreateViewModel
+{
+    [Required]
+    public int Id { get; set; }
 }

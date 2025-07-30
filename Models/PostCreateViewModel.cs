@@ -1,12 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using mvc_proje.Database.Entities;
 
-namespace mvc_proje.Database.Entities;
+namespace mvc_proje.Models;
 
-public class Post
+public class PostCreateViewModel
 {
-    [Key]
-    public int Id { get; set; }
-    
     [Required]
     [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters.")]
     public string Title { get; set; } = string.Empty;
@@ -20,10 +18,10 @@ public class Post
     
     [Required]
     public int UserId { get; set; }
-    public User User { get; set; } = null!;
-    
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+}
+
+public class PostEditViewModel : PostCreateViewModel
+{
+    [Required]
+    public int Id { get; set; }
 }

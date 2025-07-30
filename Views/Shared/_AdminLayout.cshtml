@@ -239,13 +239,19 @@
               </li>
               <li class="nav-header">Site Yönetimi</li>
               <li class="nav-item">
-                <a href="./docs/browser-support.html" class="nav-link">
+                <a asp-controller="Slider" asp-action="Index" class="nav-link">
                   <i class="nav-icon bi bi-browser-edge"></i>
                   <p>Slider</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./docs/browser-support.html" class="nav-link">
+                <a asp-controller="Feature" asp-action="Index" class="nav-link">
+                  <i class="nav-icon bi bi-browser-edge"></i>
+                  <p>Özellikler</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a asp-controller="Feature" asp-action="Index" class="nav-link">
                   <i class="nav-icon bi bi-browser-edge"></i>
                   <p>Hakkımızda</p>
                 </a>
@@ -261,13 +267,13 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="./examples/lockscreen.html" class="nav-link">
+                    <a asp-controller="Post" asp-action="Index" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Yazılar</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./examples/lockscreen.html" class="nav-link">
+                    <a asp-controller="Post" asp-action="Create" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Yazı Ekle</p>
                     </a>
@@ -275,14 +281,14 @@
                 </ul>
               </li>
               <li class="nav-item">
-                <a href="./docs/browser-support.html" class="nav-link">
+                <a asp-controller="Comment" asp-action="Index" class="nav-link">
                   <i class="nav-icon bi bi-browser-edge"></i>
                   <p>Yorumlar</p>
                 </a>
               </li>
               <li class="nav-header">Diğer</li>
               <li class="nav-item">
-                <a href="./docs/browser-support.html" class="nav-link">
+                <a asp-controller="ContactMessage" asp-action="Index" class="nav-link">
                   <i class="nav-icon bi bi-browser-edge"></i>
                   <p>İletişim Mesajları</p>
                 </a>

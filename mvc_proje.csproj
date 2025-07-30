@@ -20,9 +20,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Views\Admin\Feature\Edit.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Feature\Index.cshtml" />
     <AdditionalFiles Include="Views\Admin\Product\Create.cshtml" />
     <AdditionalFiles Include="Views\Admin\Product\Edit.cshtml" />
     <AdditionalFiles Include="Views\Admin\Product\Index.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Slider\Edit.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Slider\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\sliders\" />
   </ItemGroup>
 
 </Project>

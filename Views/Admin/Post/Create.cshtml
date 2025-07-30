@@ -1,0 +1,71 @@
+@using mvc_proje.Database.Entities
+@{
+  Layout = "_AdminLayout";
+}
+
+<script src="
+https://cdn.jsdelivr.net/npm/hugerte@1.0.9/hugerte.min.js"></script>
+<link href="
+https://cdn.jsdelivr.net/npm/hugerte@1.0.9/skins/ui/oxide/content.min.css" rel="stylesheet">
+
+<script>
+  hugerte.init({
+    selector: '#editor',
+    // Adjust this as needed
+    plugins: 'accordion advlist anchor autolink autoresize autosave charmap code codesample directionality fullscreen image insertdatetime link lists media nonbreaking pagebreak preview quickbars save searchreplace table template visualblocks visualchars wordcount emoticons help',
+    skin_url: 'default',
+    content_css: 'default',
+  });
+</script>
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <div class="card card-primary card-outline mb-4">
+            <!--begin::Form-->
+            <form method="post" asp-action="Create" asp-controller="Post" asp-antiforgery="true">
+              <input type="hidden" name="UserId" value="1">
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="title" class="form-label">Başlık</label>
+                  <input
+                    type="text"
+                    name="title"
+                    class="form-control"
+                    id="title"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label">Açıklama</label>
+                  <textarea class="form-control" name="description" id="description"></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label for="content" class="form-label">İçerik</label>
+                  <div id="editor-container" style="height: 200px;"></div>
+                  <textarea class="form-control" name="tiny" id="editor"></textarea>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+            <!--end::Form-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>

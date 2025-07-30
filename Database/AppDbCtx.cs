@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using mvc_proje.Database.Entities;
 using mvc_proje.Database.Seeders;
 
@@ -19,6 +20,7 @@ public class AppDbCtx : DbContext
         if (!optionsBuilder.IsConfigured)
         {
             optionsBuilder.UseSqlite("Data Source=app.db");
+            optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
         }
     }
     
@@ -52,4 +54,5 @@ public class AppDbCtx : DbContext
     public DbSet<Feature> Features { get; set; } = null!;
     public DbSet<ContactMessage> ContactMessages { get; set; } = null!;
     public DbSet<Post> Posts { get; set; } = null!;
+    public DbSet<Slider> Sliders { get; set; } = null!;
 }
