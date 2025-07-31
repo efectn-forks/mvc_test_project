@@ -3,17 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Database.Entities;
 using mvc_proje.Database.Repositories;
 using mvc_proje.Models;
+using mvc_proje.Services;
 
 namespace mvc_proje.Controllers;
 
 public class HomepageController : Controller
 {
     private readonly ContactMessageRepository _contactMessageRepository;
-    
+    private readonly ISettingsService _settingsService;
 
-    public HomepageController(ContactMessageRepository contactMessageRepository)
+    public HomepageController(ContactMessageRepository contactMessageRepository, ISettingsService settingsService)
     {
         _contactMessageRepository = contactMessageRepository;
+        _settingsService = settingsService;
     }
 
     public IActionResult Index()
@@ -67,6 +69,7 @@ public class HomepageController : Controller
     public IActionResult Contact()
     {
         ViewData["Title"] = "İletişim";
+        ViewData["Settings"] = _settingsService.Settings;
         return View();
     }
 

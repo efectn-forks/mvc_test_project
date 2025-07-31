@@ -73,6 +73,8 @@ builder.Services.AddSingleton<ReviewRepository>(provider =>
 // Register custom services
 builder.Services.AddSingleton<IAboutUsService>(new AboutUsService());
 
+builder.Services.AddSingleton<ISettingsService>(new SettingsService());
+
 // Add support for Views/Admin views discovery
 builder.Services.AddControllersWithViews()
     .AddRazorOptions(options =>
