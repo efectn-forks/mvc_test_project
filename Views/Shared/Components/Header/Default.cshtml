@@ -1,5 +1,9 @@
 @model mvc_proje.Services.Settings
 
+@{
+    var isLoggedIn = User.Identity?.IsAuthenticated ?? false;
+}
+
 <!-- Navbar Start -->
 <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
     <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
@@ -40,11 +44,20 @@
             </div>
             <div class="d-none d-lg-flex ms-2">
                 <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
-                    <small class="fa fa-search text-body"></small>
-                </a>
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
                     <small class="fa fa-user text-body"></small>
                 </a>
+                @if (isLoggedIn)
+                {
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" asp-controller="Auth" asp-action="Logout">
+                        <small class="fa fa-arrow-right-from-bracket text-body"></small>
+                    </a>
+                }
+                else
+                {
+                    <a class="btn-sm-square bg-white rounded-circle ms-3" asp-controller="Auth" asp-action="Login">
+                        <small class="fa fa-right-to-bracket text-body"></small>
+                    </a>
+                }
                 <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
                     <small class="fa fa-shopping-bag text-body"></small>
                 </a>

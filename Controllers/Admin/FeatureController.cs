@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Database.Repositories;
 using mvc_proje.Models;
 
 namespace mvc_proje.Controllers.Admin;
 
+[Authorize(Policy = "AdminPolicy")]
 public class FeatureController : Controller
 {
     private readonly FeatureRepository _featureRepository;

@@ -34,6 +34,12 @@ public class UserRepository
             .FirstOrDefaultAsync(u => u.Username == username || u.Email == email);
     }
     
+    public async Task<User?> GetUserByUsername(string username)
+    {
+        return await _dbCtx.Users
+            .FirstOrDefaultAsync(u => u.Username == username);
+    }
+    
     public async Task<bool> CreateUserAsync(User user)
     {
         if (user == null) return false;

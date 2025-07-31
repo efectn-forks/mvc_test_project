@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Database.Entities;
 using mvc_proje.Database.Repositories;
@@ -5,6 +6,7 @@ using mvc_proje.Models;
 
 namespace mvc_proje.Controllers.Admin;
 
+[Authorize(Policy = "AdminPolicy")]
 public class UserController : Controller
 {
     private readonly UserRepository _userRepository;

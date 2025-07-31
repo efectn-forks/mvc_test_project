@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Models;
 using mvc_proje.Services;
 
 namespace mvc_proje.Controllers.Admin;
 
+[Authorize(Policy = "AdminPolicy")]
 public class AboutUsController : Controller
 {
     private readonly IAboutUsService _aboutUsService;

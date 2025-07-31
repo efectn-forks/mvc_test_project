@@ -1,4 +1,5 @@
 using mvc_proje.Database;
+using mvc_proje.Database.Entities;
 using mvc_proje.Database.Repositories;
 using mvc_proje.Misc;
 using mvc_proje.Services;
@@ -77,10 +78,19 @@ builder.Services.AddSingleton<ISettingsService>(new SettingsService());
 
 // Add support for Views/Admin views discovery
 builder.Services.AddControllersWithViews()
-    .AddRazorOptions(options =>
-    {
-        options.ViewLocationExpanders.Add(new CustomViewLocationExpander());
-    });
+    .AddRazorOptions(options => { options.ViewLocationExpanders.Add(new CustomViewLocationExpander()); });
+
+builder.Services.AddAuthentication()
+    .AddCookie(options => { options.LoginPath = "/auth/login/"; });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole(nameof(Role.Admin)));
+
+    options.AddPolicy("UserPolicy", policy =>
+        policy.RequireRole(nameof(Role.User)));
+});
 
 var app = builder.Build();
 
@@ -97,13 +107,14 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Homepage}/{action=Index}/{id?}")
+        name: "default",
+        pattern: "{controller=Homepage}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 

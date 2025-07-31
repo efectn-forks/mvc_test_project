@@ -1,7 +1,10 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace mvc_proje.Controllers.Admin;
 
+[Authorize(Policy = "AdminPolicy")]
 public class HomeController : Controller
 {
     [HttpGet]

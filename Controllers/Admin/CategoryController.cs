@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Database.Entities;
 using mvc_proje.Database.Repositories;
@@ -5,6 +6,7 @@ using mvc_proje.Models;
 
 namespace mvc_proje.Controllers.Admin;
 
+[Authorize(Policy = "AdminPolicy")]
 public class CategoryController : Controller
 {
     private readonly CategoryRepository _categoryRepository;
@@ -16,8 +18,14 @@ public class CategoryController : Controller
 
     [HttpGet]
     [Route("admin/categories")]
+    [Authorize]
     public async Task<IActionResult> Index()
     {
+        foreach (var claim in User.Claims)
+        {
+            Console.WriteLine($"{claim.Type} = {claim.Value}");
+        }
+        Console.WriteLine(User.IsInRole("Admin"));
         ViewData["Title"] = "Kategoriler";
         var categories = await _categoryRepository.GetAllCategoriesAsync();
         
