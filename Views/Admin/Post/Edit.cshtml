@@ -33,20 +33,28 @@
                                     <label for="title" class="form-label">Başlık</label>
                                     <input
                                         type="text"
-                                        name="title"
+                                        asp-for="Title"
                                         class="form-control"
-                                        value="@Model.Title"
                                         id="title"/>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Açıklama</label>
-                                    <textarea class="form-control" name="description" id="description">@Model.Description</textarea>
+                                    <textarea class="form-control" asp-for="Description" id="description"></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="tags" class="form-label">Etiketler</label>
+                                    <input
+                                        type="text"
+                                        asp-for="Tags"
+                                        class="form-control"
+                                        id="tags">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="content" class="form-label">İçerik</label>
-                                    <textarea class="form-control" name="content" id="content">@Model.Content</textarea>
+                                    <textarea class="form-control" asp-for="Content" id="content"></textarea>
                                 </div>
                             </div>
                             <!--end::Body-->

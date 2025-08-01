@@ -19,6 +19,7 @@ public class PostRepository
     public async Task<Post?> GetPostByIdAsync(int id)
     {
         return await _dbContext.Posts.Include(p => p.User)
+            .Include(p => p.Tags)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
     
@@ -33,6 +34,7 @@ public class PostRepository
     {
         post.UpdatedAt = DateTime.Now;
         _dbContext.Posts.Update(post);
+        
         var result = await _dbContext.SaveChangesAsync();
         
         return result > 0;

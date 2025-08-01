@@ -42,6 +42,10 @@ public class AppDbCtx : DbContext
             seeder.Seed(modelBuilder);
         }
         
+        modelBuilder.Entity<Tag>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
+        
         base.OnModelCreating(modelBuilder);
     }
     
@@ -55,4 +59,5 @@ public class AppDbCtx : DbContext
     public DbSet<ContactMessage> ContactMessages { get; set; } = null!;
     public DbSet<Post> Posts { get; set; } = null!;
     public DbSet<Slider> Sliders { get; set; } = null!;
+    public DbSet<Tag> Tags { get; set; } = null!;
 }

@@ -17,59 +17,29 @@ dbCtx.Database.EnsureCreated();
 builder.Services.AddSingleton(dbCtx);
 
 // Register repositories
-builder.Services.AddSingleton<UserRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new UserRepository(context);
-});
 
-builder.Services.AddSingleton<CategoryRepository>(provider =>
+var repositories = new[]
 {
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new CategoryRepository(context);
-});
+    typeof(UserRepository),
+    typeof(CategoryRepository),
+    typeof(ProductRepository),
+    typeof(PostRepository),
+    typeof(CommentRepository),
+    typeof(ContactMessageRepository),
+    typeof(FeatureRepository),
+    typeof(SliderRepository),
+    typeof(ReviewRepository),
+    typeof(TagRepository)
+};
 
-builder.Services.AddSingleton<ProductRepository>(provider =>
+foreach (var repository in repositories)
 {
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new ProductRepository(context);
-});
-
-builder.Services.AddSingleton<PostRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new PostRepository(context);
-});
-
-builder.Services.AddSingleton<CommentRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new CommentRepository(context);
-});
-
-builder.Services.AddSingleton<ContactMessageRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new ContactMessageRepository(context);
-});
-
-builder.Services.AddSingleton<FeatureRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new FeatureRepository(context);
-});
-
-builder.Services.AddSingleton<SliderRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new SliderRepository(context);
-});
-
-builder.Services.AddSingleton<ReviewRepository>(provider =>
-{
-    var context = provider.GetRequiredService<AppDbCtx>();
-    return new ReviewRepository(context);
-});
+    builder.Services.AddSingleton(repository, provider =>
+    {
+        var context = provider.GetRequiredService<AppDbCtx>();
+        return Activator.CreateInstance(repository, context);
+    });
+}
 
 // Register custom services
 builder.Services.AddSingleton<IAboutUsService>(new AboutUsService());

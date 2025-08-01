@@ -29,6 +29,8 @@
     <AdditionalFiles Include="Views\Admin\Review\Index.cshtml" />
     <AdditionalFiles Include="Views\Admin\Slider\Edit.cshtml" />
     <AdditionalFiles Include="Views\Admin\Slider\Index.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Tag\Edit.cshtml" />
+    <AdditionalFiles Include="Views\Admin\Tag\Index.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

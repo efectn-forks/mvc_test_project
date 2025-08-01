@@ -22,7 +22,11 @@ public class Post
     public int UserId { get; set; }
     public User User { get; set; } = null!;
     
+    public string? ImageUrl { get; set; } = string.Empty;
+    
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    
+    public ICollection<Tag> Tags { get; set; } = new List<Tag>();
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

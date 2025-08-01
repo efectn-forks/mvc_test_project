@@ -7,25 +7,27 @@ using mvc_proje.Models;
 namespace mvc_proje.Controllers.Admin;
 
 [Authorize(Policy = "AdminPolicy")]
-public class PostController : Controller 
+public class PostController : Controller
 {
     private readonly PostRepository _postRepository;
-    
-    public PostController(PostRepository postRepository)
+    private readonly TagRepository _tagRepository;
+
+    public PostController(PostRepository postRepository, TagRepository tagRepository)
     {
         _postRepository = postRepository;
+        _tagRepository = tagRepository;
     }
-    
+
     [HttpGet]
     [Route("admin/posts")]
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Yazılar";
         var posts = await _postRepository.GetAllPostsAsync();
-        
+
         return View("Admin/Post/Index", new PostIndexViewModel { Posts = posts });
     }
-    
+
     [HttpGet]
     [Route("admin/posts/create")]
     public IActionResult Create()
@@ -33,7 +35,7 @@ public class PostController : Controller
         ViewData["Title"] = "Create Post";
         return View("Admin/Post/Create");
     }
-    
+
     [HttpPost]
     [Route("admin/posts/create")]
     public async Task<IActionResult> Create(PostCreateViewModel model)
@@ -49,15 +51,16 @@ public class PostController : Controller
             Title = model.Title,
             Description = model.Description,
             Content = model.Content,
-            UserId = model.UserId 
+            UserId = model.UserId
         };
+        await _updateTags(post, model.Tags);
 
         await _postRepository.CreatePostAsync(post);
-        
+
         TempData["SuccessMessage"] = "Post created successfully.";
         return RedirectToAction("Index");
     }
-    
+
     [HttpGet]
     [Route("admin/posts/edit/{id}")]
     public async Task<IActionResult> Edit(int id)
@@ -68,6 +71,8 @@ public class PostController : Controller
         {
             return NotFound();
         }
+        
+        var tags = post.Tags.Select(t => t.Name).ToList();
 
         var model = new PostEditViewModel
         {
@@ -75,12 +80,13 @@ public class PostController : Controller
             Title = post.Title,
             Description = post.Description,
             Content = post.Content,
-            UserId = post.UserId
+            UserId = post.UserId,
+            Tags = string.Join(", ", tags),
         };
 
         return View("Admin/Post/Edit", model);
     }
-    
+
     [HttpPost]
     [Route("admin/posts/update")]
     public async Task<IActionResult> Update(PostEditViewModel model)
@@ -97,31 +103,32 @@ public class PostController : Controller
             TempData["ErrorMessage"] = "Yazı bulunamadı.";
             return RedirectToAction("Index");
         }
-        
+
         post.Title = model.Title;
         post.Description = model.Description;
         post.Content = model.Content;
         post.UserId = model.UserId;
         post.UpdatedAt = DateTime.UtcNow;
+        await _updateTags(post, model.Tags);
 
         var result = await _postRepository.UpdatePostAsync(post);
-        
+
         if (result)
         {
             TempData["SuccessMessage"] = "Yazı başarıyla güncellendi.";
             return RedirectToAction("Index");
         }
-        
+
         TempData["ErrorMessage"] = "Yazı güncellenirken bir hata oluştu.";
         return View("Admin/Post/Edit", model);
     }
-    
+
     [HttpGet]
     [Route("admin/posts/delete/{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _postRepository.DeletePostAsync(id);
-        
+
         if (result)
         {
             TempData["SuccessMessage"] = "Yazı başarıyla silindi.";
@@ -130,7 +137,31 @@ public class PostController : Controller
         {
             TempData["ErrorMessage"] = "Yazı silinirken bir hata oluştu.";
         }
-        
+
         return RedirectToAction("Index");
+    }
+    
+    private async Task _updateTags(Post post, string tags)
+    {
+        post.Tags.Clear();
+        if (string.IsNullOrWhiteSpace(tags)) return;
+
+        var tagsSplitted = tags.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var tag in tagsSplitted)
+        {
+            var existingTag = await _tagRepository.GetAllTagsAsync()
+                .ContinueWith(t => t.Result.FirstOrDefault(t => t.Name.Equals(tag.Trim(), StringComparison.OrdinalIgnoreCase)));
+
+            if (existingTag != null)
+            {
+                 post.Tags.Add(existingTag);
+            }
+            else
+            {
+                var newTag = new Tag { Name = tag.Trim() };
+                await _tagRepository.AddTagAsync(newTag);
+                post.Tags.Add(newTag);
+            }
+        }
     }
 }
