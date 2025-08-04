@@ -10,14 +10,15 @@
 <div class="app-content">
   <!--begin::Container-->
   <div class="container-fluid">
-    <!--begin::Row--> 
+    <!--begin::Row-->
     <div class="row">
       <div class="col-md-12">
         <div class="card mb-8">
           <!-- /.card-header -->
           <div class="card-body">
-            <form method="post" asp-action="Update" asp-controller="Slider" asp-antiforgery="true" enctype="multipart/form-data">
-              <input type="hidden" name="id" value="@Model.Id" />
+            <form method="post" asp-action="Update" asp-controller="Slider" asp-antiforgery="true"
+                  enctype="multipart/form-data">
+              <input type="hidden" name="id" value="@Model.Id"/>
               <!--begin::Body-->
               <div class="card-body">
                 <div class="mb-3">
@@ -39,7 +40,7 @@
                     value="@Model.Image"
                     id="Image"/>
                 </div>
-                
+
                 <div class="col md-4 mb-3">
                   <div class="col md-2">
                     <div class="mb-3">
@@ -64,7 +65,7 @@
                     </div>
                   </div>
                 </div>
-                
+
                 <div class="col md-4 mb-3">
                   <div class="col md-2">
                     <div class="mb-3">

@@ -53,8 +53,20 @@ public class ProductController : Controller
             Name = model.Name,
             Description = model.Description,
             Price = model.Price,
-            CategoryId = model.CategoryId
+            CategoryId = model.CategoryId,
+            SkuNumber = model.SkuNumber
         };
+        
+        if (model.Image != null)
+        {
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.Image.FileName)}";
+            var filePath = Path.Combine("wwwroot", "images", "products", fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.Image.CopyToAsync(stream);
+            }
+            product.ImageUrl = $"/images/products/{fileName}";
+        }
 
         await _productRepository.CreateProductAsync(product);
 
@@ -82,8 +94,14 @@ public class ProductController : Controller
             Description = product.Description,
             Price = product.Price,
             CategoryId = product.CategoryId,
-            Stock = product.Stock
+            Stock = product.Stock,
+            SkuNumber = product.SkuNumber
         };
+        
+        if (!string.IsNullOrEmpty(product.ImageUrl))
+        {
+            model.ImageUrl = product.ImageUrl;
+        }
 
         return View("Admin/Product/Edit", model);
     }
@@ -111,6 +129,26 @@ public class ProductController : Controller
         product.Price = model.Price;
         product.CategoryId = model.CategoryId;
         product.Stock = model.Stock;
+        product.SkuNumber = model.SkuNumber;
+        
+        if (model.Image != null && model.Image.Length > 0)
+        {
+            // remove old image if exists
+            var oldImagePath = Path.Combine("wwwroot", product.ImageUrl.TrimStart('/'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+            
+            // save new image
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.Image.FileName)}";
+            var filePath = Path.Combine("wwwroot", "images", "products", fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.Image.CopyToAsync(stream);
+            }
+            product.ImageUrl = $"/images/products/{fileName}";
+        }
 
         await _productRepository.UpdateProductAsync(product);
 
@@ -128,6 +166,13 @@ public class ProductController : Controller
         {
             TempData["ErrorMessage"] = "Ürün bulunamadı.";
             return RedirectToAction("Index");
+        }
+        
+       // delete image if exists
+        var imagePath = Path.Combine("wwwroot", product.ImageUrl.TrimStart('/'));
+        if (System.IO.File.Exists(imagePath))
+        {
+            System.IO.File.Delete(imagePath);
         }
 
         var result = await _productRepository.DeleteProductAsync(id);

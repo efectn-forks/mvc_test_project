@@ -9,19 +9,19 @@ namespace mvc_proje.Controllers.Admin;
 public class AboutUsController : Controller
 {
     private readonly IAboutUsService _aboutUsService;
-    
+
     public AboutUsController(IAboutUsService aboutUsService)
     {
         _aboutUsService = aboutUsService;
     }
-    
+
     [HttpGet]
     [Route("admin/about-us")]
     public IActionResult Index()
     {
         ViewData["Title"] = "Hakkımızda";
         var aboutUs = _aboutUsService.AboutUs;
-        
+
         var aboutUsViewModel = new AboutUsViewModel
         {
             MainTitle = aboutUs.MainTitle,
@@ -37,7 +37,7 @@ public class AboutUsController : Controller
 
         return View("Admin/AboutUs/Index", aboutUsViewModel);
     }
-    
+
     [HttpPost]
     [Route("admin/about-us/update")]
     public async Task<IActionResult> Update(AboutUsViewModel aboutUs)
@@ -45,17 +45,14 @@ public class AboutUsController : Controller
         if (!ModelState.IsValid)
         {
             // print error messages
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors)) Console.WriteLine(error.ErrorMessage);
             TempData["ErrorMessage"] = "Lütfen tüm alanları doğru şekilde doldurun.";
             return RedirectToAction("Index");
         }
 
         await _aboutUsService.WriteAboutUsDataAsync(aboutUs);
         TempData["SuccessMessage"] = "Hakkımızda bilgileri başarıyla güncellendi.";
-        
+
         return RedirectToAction("Index");
     }
 }

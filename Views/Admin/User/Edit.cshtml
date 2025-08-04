@@ -17,7 +17,7 @@
           <div class="card card-primary card-outline mb-4">
             <!--begin::Form-->
             <form method="post" asp-action="Update" asp-controller="User" asp-antiforgery="true">
-              <input type="hidden" asp-for="Id" value="@Model.Id" />
+              <input type="hidden" asp-for="Id" value="@Model.Id"/>
               <!--begin::Body-->
               <div class="card-body">
                 <div class="mb-3">
@@ -62,7 +62,8 @@
 
                 <div class="mb-3">
                   <label for="address" class="form-label">Adres</label>
-                  <textarea class="form-control" asp-for="Address" id="address" aria-label="With textarea">@Model.Address</textarea>
+                  <textarea class="form-control" asp-for="Address" id="address"
+                            aria-label="With textarea">@Model.Address</textarea>
                 </div>
 
                 <div class="row mb-3">

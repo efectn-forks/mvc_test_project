@@ -1,5 +1,4 @@
-@using mvc_proje.Database.Entities
-@model mvc_proje.Models.TagIndexViewModel
+@model TagIndexViewModel
 
 @{
   Layout = "_AdminLayout";
@@ -10,7 +9,7 @@
 <div class="app-content">
   <!--begin::Container-->
   <div class="container-fluid">
-    <!--begin::Row--> 
+    <!--begin::Row-->
     <div class="row">
       <div class="col-md-4">
         <div class="card mb-8">
@@ -48,7 +47,7 @@
           <!-- /.card-body -->
         </div>
       </div>
-      
+
       <div class="col-md-8">
         <div class="card mb-8">
           <!-- /.card-header -->
@@ -72,8 +71,10 @@
                   <td>@category.Posts.Count</td>
                   <td>
                     <p class="d-inline-flex gap-1">
-                      <a type="submit" asp-controller="Tag" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-primary">Düzenle</a>
-                      <a type="submit" asp-controller="Tag" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-sm btn-danger">Sil</a>
+                      <a type="submit" asp-controller="Tag" asp-action="Edit" asp-route-id="@category.Id"
+                         class="btn btn-sm btn-primary">Düzenle</a>
+                      <a type="submit" asp-controller="Tag" asp-action="Delete" asp-route-id="@category.Id"
+                         class="btn btn-sm btn-danger">Sil</a>
                     </p>
                   </td>
                 </tr>

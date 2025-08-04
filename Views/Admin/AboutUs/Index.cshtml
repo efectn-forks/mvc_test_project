@@ -1,5 +1,4 @@
-@using mvc_proje.Database.Entities
-@model mvc_proje.Models.AboutUsViewModel
+@model AboutUsViewModel
 
 @{
   Layout = "_AdminLayout";
@@ -10,7 +9,7 @@
 <div class="app-content">
   <!--begin::Container-->
   <div class="container-fluid">
-    <!--begin::Row--> 
+    <!--begin::Row-->
     <div class="row">
       <div class="col-md-12">
         <div class="card mb-8">
@@ -36,7 +35,7 @@
                     id="MainDescription"
                     asp-for="MainDescription"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="Elements1" class="form-label">Madde 1</label>
                   <input
@@ -45,7 +44,7 @@
                     class="form-control"
                     id="Elements1"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="Elements2" class="form-label">Madde 2</label>
                   <input
@@ -54,7 +53,7 @@
                     class="form-control"
                     id="Elements2"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="Elements3" class="form-label">Madde 3</label>
                   <input
@@ -63,7 +62,7 @@
                     class="form-control"
                     id="Elements3"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="ReadMoreLink" class="form-label">Daha Fazla Oku URL'si</label>
                   <input
@@ -72,7 +71,7 @@
                     class="form-control"
                     id="ReadMoreLink"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="Subtitle" class="form-label">Alt Başlık</label>
                   <input
@@ -81,7 +80,7 @@
                     class="form-control"
                     id="Subtitle"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="SubtitleDescription" class="form-label">Alt Başlık Açıklaması</label>
                   <input
@@ -90,7 +89,7 @@
                     id="SubtitleDescription"
                     asp-for="SubtitleDescription"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="SubtitleLink" class="form-label">Alt Başlık URL'si</label>
                   <input

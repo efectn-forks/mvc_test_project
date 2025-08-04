@@ -1,5 +1,4 @@
-@using mvc_proje.Database.Entities
-@model mvc_proje.Models.PostIndexViewModel
+@model PostIndexViewModel
 
 @{
   Layout = "_AdminLayout";
@@ -39,8 +38,10 @@
                   <td>@post.CreatedAt</td>
                   <td>
                     <p class="d-inline-flex gap-1">
-                      <a type="submit" asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id" class="btn btn-sm btn-primary">Düzenle</a>
-                      <a type="submit" asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" class="btn btn-sm btn-danger">Sil</a>
+                      <a type="submit" asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id"
+                         class="btn btn-sm btn-primary">Düzenle</a>
+                      <a type="submit" asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id"
+                         class="btn btn-sm btn-danger">Sil</a>
                     </p>
                   </td>
                 </tr>

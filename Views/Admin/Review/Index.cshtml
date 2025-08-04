@@ -3,6 +3,7 @@
 
 @{
   Layout = "_AdminLayout";
+
   string Truncate(string value, int maxLength)
   {
     if (!string.IsNullOrEmpty(value) && value.Length > maxLength)
@@ -19,7 +20,7 @@
 <div class="app-content">
   <!--begin::Container-->
   <div class="container-fluid">
-    <!--begin::Row--> 
+    <!--begin::Row-->
     <div class="row">
       <div class="col-md-4">
         <div class="card mb-8">
@@ -37,7 +38,7 @@
                     }
                   </select>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="UserTitle" class="form-label">Kullanıcı Unvanı</label>
                   <input
@@ -63,7 +64,7 @@
           <!-- /.card-body -->
         </div>
       </div>
-      
+
       <div class="col-md-8">
         <div class="card mb-8">
           <!-- /.card-header -->
@@ -87,8 +88,10 @@
                   <td>@Truncate(review.Text, 50)...</td>
                   <td>
                     <p class="d-inline-flex gap-1">
-                      <a type="submit" asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-sm btn-primary">Düzenle</a>
-                      <a type="submit" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id" class="btn btn-sm btn-danger">Sil</a>
+                      <a type="submit" asp-controller="Review" asp-action="Edit" asp-route-id="@review.Id"
+                         class="btn btn-sm btn-primary">Düzenle</a>
+                      <a type="submit" asp-controller="Review" asp-action="Delete" asp-route-id="@review.Id"
+                         class="btn btn-sm btn-danger">Sil</a>
                     </p>
                   </td>
                 </tr>

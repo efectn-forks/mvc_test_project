@@ -1,0 +1,167 @@
+@using mvc_proje.Database.Entities
+@{
+    Layout = "_AdminLayout";
+}
+
+@model OrderShowViewModel
+
+@{
+    var tracks = Model.Order.OrderTracks.GroupBy(t => t.CreatedAt.Date).OrderByDescending(g => g.Key);
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-8">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Sipariş Detayları</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Sipariş No:</strong> @Model.Order.OrderNumber
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Kullanıcı:</strong> @Model.Order.User.FullName
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Kullanıcı Tel No:</strong> @Model.Order.User.PhoneNumber
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <strong>Email:</strong> @Model.Order.User.Email
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <strong>Adres:</strong><br/>
+                                    @Model.Order.User.Address
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <strong>Ürünler:</strong><br/>
+                                    @foreach (var item in Model.Order.OrderItems)
+                                    {
+                                        <div>
+                                            <strong>@item.Product.Name</strong> - @item.UnitPrice TL
+                                            <span class="badge bg-secondary">Adet: @item.Quantity</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <strong>Oluşturulma Tarihi</strong><br/>
+                                    @Model.Order.CreatedAt
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Sipariş Takibi</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="timeline">
+                                @foreach (var track in tracks)
+                                {
+                                    <!-- timeline time label -->
+                                    <div class="time-label"><span
+                                            class="text-bg-danger">@track.Key.ToString("dd MMM yyyy")</span></div>
+                                    <!-- /.timeline-label -->
+
+                                    @foreach (var item in track.OrderByDescending(t => t.CreatedAt))
+                                    {
+                                        <!-- timeline item -->
+                                        <div>
+                                            @{
+                                                var iconClass = item.Status switch
+                                                {
+                                                    TrackStatus.Pending => "bi bi-cart-check-fill",
+                                                    TrackStatus.Shipped => "bi bi-truck",
+                                                    TrackStatus.Delivered => "bi bi-check-circle-fill",
+                                                    TrackStatus.Cancelled => "bi bi-x-octagon"
+                                                };
+                                            }
+                                            <i class="timeline-icon @iconClass text-bg-primary"></i>
+                                            <div class="timeline-item">
+                                                <span class="time"> <i
+                                                        class="bi bi-clock-fill"></i> @item.CreatedAt.TimeOfDay.ToString("")</span>
+                                                <h3 class="timeline-header">
+                                                    <a href="#">@item.Status</a>
+                                                </h3>
+                                                <div class="timeline-body">
+                                                    @item.TrackingInfo
+                                                </div>
+                                                <div class="timeline-footer">
+                                                    <a class="btn btn-danger btn-sm">Sil</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END timeline item -->
+                                    }
+                                }
+                                <div><i class="timeline-icon bi bi-clock-fill text-bg-secondary"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-8">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Takip Bilgisi Ekle</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <form method="post" asp-action="AddTrack" asp-controller="Order" asp-antiforgery="true">
+                                <input type="hidden" name="orderId" value="@Model.Order.Id"/>
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Durum</label>
+                                    <select class="form-select" name="status" id="status">
+                                        <option value="@TrackStatus.Pending">Beklemede</option>
+                                        <option value="@TrackStatus.Shipped">Gönderildi</option>
+                                        <option value="@TrackStatus.Delivered">Teslim Edildi</option>
+                                        <option value="@TrackStatus.Cancelled">İptal Edildi</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="createdAt" class="form-label">Tarih - Saat</label>
+                                    <input type="datetime-local" class="form-control" name="createdAt" id="createdAt"
+                                           value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="trackingInfo" class="form-label">Takip Bilgisi</label>
+                                    <textarea class="form-control" name="trackingInfo" id="trackingInfo"
+                                              rows="3"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Ekle</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+</div>
+

@@ -16,8 +16,8 @@
         <div class="card mb-8">
           <div class="card card-primary card-outline mb-4">
             <!--begin::Form-->
-            <form method="post" asp-action="Update" asp-controller="Product" asp-antiforgery="true">
-              <input type="hidden" asp-for="Id" value="@Model.Id" />
+            <form method="post" asp-action="Update" asp-controller="Product" asp-antiforgery="true" enctype="multipart/form-data">
+              <input type="hidden" asp-for="Id" value="@Model.Id"/>
               <!--begin::Body-->
               <div class="card-body">
                 <div class="mb-3">
@@ -28,6 +28,16 @@
                     class="form-control"
                     value="@Model.Name"
                     id="name"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="SkuNumber" class="form-label">SKU Numarası</label>
+                  <input
+                    type="text"
+                    name="SkuNumber"
+                    class="form-control"
+                    value="@Model.SkuNumber"
+                    id="SkuNumber"/>
                 </div>
 
                 <div class="mb-3">
@@ -47,7 +57,7 @@
                 </div>
 
                 <div class="mb-3">
-                  <label for="CategoryId" class="form-label">Kategory</label>
+                  <label for="CategoryId" class="form-label">Kategori</label>
                   <select class="form-select" name="CategoryId" id="CategoryId" aria-label="Default select example">
                     @foreach (var category in ViewData["categories"] as List<Category>)
                     {
@@ -58,6 +68,22 @@
                     }
                   </select>
                 </div>
+                
+                <div class="mb-3">
+                  <label for="Image" class="form-label">Resim</label>
+                  <input
+                    type="file"
+                    name="Image"
+                    class="form-control"
+                    id="Image"/>
+                </div>
+                
+                @if (Model.ImageUrl != null)
+                {
+                  <div class="mb-3">
+                    <img src="@Url.Content(Model.ImageUrl)" width="500" height="500" alt="Post Image" class="img-fluid"/>
+                  </div>
+                }
               </div>
               <!--end::Body-->
               <!--begin::Footer-->

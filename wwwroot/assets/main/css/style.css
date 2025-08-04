@@ -179,7 +179,7 @@
         position: relative;
         min-height: 450px;
     }
-    
+
     #header-carousel .carousel-item img {
         position: absolute;
         width: 100%;
@@ -195,7 +195,7 @@
     background-size: cover;
 }
 
-.breadcrumb-item+.breadcrumb-item::before {
+.breadcrumb-item + .breadcrumb-item::before {
     color: #999999;
 }
 
@@ -233,7 +233,6 @@
     left: 0;
     transform: translateX(0);
 }
-
 
 
 /*** About ***/

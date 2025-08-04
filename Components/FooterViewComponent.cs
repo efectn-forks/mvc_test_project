@@ -6,7 +6,7 @@ namespace mvc_proje.Components;
 public class FooterViewComponent : ViewComponent
 {
     private readonly ISettingsService _settingsService;
-    
+
     public FooterViewComponent(ISettingsService settingsService)
     {
         _settingsService = settingsService;

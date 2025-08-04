@@ -8,19 +8,21 @@ public class Order
     public int Id { get; set; }
     
     [Required]
+    public string OrderNumber { get; set; } = string.Empty;
+    
+    [Required]
     public int UserId { get; set; }
     public User User { get; set; } = null!;
     
-    [Required]
-    public int ProductId { get; set; }
-    public Product Product { get; set; } = null!;
+    public IEnumerable<OrderItem> OrderItems { get; set; } = null!;
     
-    [Required]
-    public int Quantity { get; set; }
-    
-    [Required]
-    public int Price { get; set; }
+    public IEnumerable<OrderTrack> OrderTracks { get; set; } = new List<OrderTrack>();
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    
+    public OrderTrack GetLatestTrack()
+    {
+        return OrderTracks.OrderByDescending(track => track.CreatedAt).FirstOrDefault() ?? new OrderTrack();
+    }
 }

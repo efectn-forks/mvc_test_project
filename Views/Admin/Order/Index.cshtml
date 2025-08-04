@@ -1,18 +1,8 @@
 @using mvc_proje.Database.Entities
-@model mvc_proje.Models.CommentIndexViewModel
+@model mvc_proje.Models.OrderIndexViewModel
 
 @{
   Layout = "_AdminLayout";
-
-  string Truncate(string value, int maxLength)
-  {
-    if (!string.IsNullOrEmpty(value) && value.Length > maxLength)
-    {
-      return value.Substring(0, maxLength);
-    }
-
-    return value;
-  }
 }
 
 <!--end::App Content Header-->
@@ -30,26 +20,32 @@
               <thead>
               <tr>
                 <th style="width: 10px">#</th>
+                <th>Sipariş ID</th>
+                <th>Ürün ID'leri</th>
                 <th>Kullanıcı</th>
-                <th>Yazı</th>
-                <th>Ana Yorum ID</th>
-                <th>Yorum</th>
+                <th>Toplam Fiyat</th>
+                <th>Adet</th>
+                <th>Son Durum</th>
+                <th>Sipariş Tarihi</th>
                 <th style="width: 80px">İşlemler</th>
               </tr>
               </thead>
               <tbody>
 
-              @foreach (var comment in Model.Comments)
+              @foreach (var order in Model.Orders)
               {
                 <tr class="align-middle">
-                  <td>@comment.Id</td>
-                  <td>@comment.User.Username</td>
-                  <td>@comment.Post.Title</td>
-                  <td>@comment.ParentCommentId</td>
-                  <td>@Truncate(comment.Text, 100)...</td>
+                  <td>@order.Id</td>
+                  <td>@order.OrderNumber</td>
+                  <td>@string.Join(", ", order.OrderItems.Select(p => p.ProductId))</td>
+                  <td>@order.User.FullName</td>
+                  <td>@order.GetLatestTrack().Status</td>
+                  <td>@order.CreatedAt</td>
                   <td>
                     <p class="d-inline-flex gap-1">
-                      <a type="submit" asp-controller="Comment" asp-action="Delete" asp-route-id="@comment.Id"
+                      <a type="submit" asp-controller="Order" asp-action="Show" asp-route-id="@order.Id"
+                         class="btn btn-sm btn-success">Detaylar</a>
+                      <a type="submit" asp-controller="Order" asp-action="Delete" asp-route-id="@order.Id"
                          class="btn btn-sm btn-danger">Sil</a>
                     </p>
                   </td>

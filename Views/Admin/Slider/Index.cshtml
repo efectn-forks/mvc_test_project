@@ -16,7 +16,8 @@
         <div class="card mb-8">
           <!-- /.card-header -->
           <div class="card-body">
-            <form method="post" asp-action="Create" asp-controller="Slider" asp-antiforgery="true" enctype="multipart/form-data">
+            <form method="post" asp-action="Create" asp-controller="Slider" asp-antiforgery="true"
+                  enctype="multipart/form-data">
               <!--begin::Body-->
               <div class="card-body">
                 <div class="mb-3">
@@ -36,7 +37,7 @@
                     class="form-control"
                     id="Image"/>
                 </div>
-                
+
                 <div class="col md-4 mb-3">
                   <div class="col md-2">
                     <div class="mb-3">
@@ -59,7 +60,7 @@
                     </div>
                   </div>
                 </div>
-                
+
                 <div class="col md-4 mb-3">
                   <div class="col md-2">
                     <div class="mb-3">
@@ -119,7 +120,8 @@
                   <td>@slider.Title</td>
                   <td><a href="@slider.Button1Url">@slider.Button1Text</a></td>
                   <td><a href="@slider.Button2Url">@slider.Button2Text</a></td>
-                  <td>@slider.ImageUrl<td>
+                  <td>@slider.ImageUrl
+                  <td>
                     <p class="d-inline-flex gap-1">
                       <a type="submit" asp-controller="Slider" asp-action="Edit" asp-route-id="@slider.Id"
                          class="btn btn-sm btn-primary">Düzenle</a>

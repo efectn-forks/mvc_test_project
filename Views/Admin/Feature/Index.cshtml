@@ -10,7 +10,7 @@
 <div class="app-content">
   <!--begin::Container-->
   <div class="container-fluid">
-    <!--begin::Row--> 
+    <!--begin::Row-->
     <div class="row">
       <div class="col-md-4">
         <div class="card mb-8">
@@ -36,7 +36,7 @@
                     id="description"
                     name="description"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="icon" class="form-label">Icon Class'ı</label>
                   <input
@@ -45,7 +45,7 @@
                     class="form-control"
                     id="icon"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="link" class="form-label">Buton Linki</label>
                   <input
@@ -66,7 +66,7 @@
           <!-- /.card-body -->
         </div>
       </div>
-      
+
       <div class="col-md-8">
         <div class="card mb-8">
           <!-- /.card-header -->
@@ -88,8 +88,10 @@
                   <td>@feature.Title</td>
                   <td>
                     <p class="d-inline-flex gap-1">
-                      <a type="submit" asp-controller="Feature" asp-action="Edit" asp-route-id="@feature.Id" class="btn btn-sm btn-primary">Düzenle</a>
-                      <a type="submit" asp-controller="Feature" asp-action="Delete" asp-route-id="@feature.Id" class="btn btn-sm btn-danger">Sil</a>
+                      <a type="submit" asp-controller="Feature" asp-action="Edit" asp-route-id="@feature.Id"
+                         class="btn btn-sm btn-primary">Düzenle</a>
+                      <a type="submit" asp-controller="Feature" asp-action="Delete" asp-route-id="@feature.Id"
+                         class="btn btn-sm btn-danger">Sil</a>
                     </p>
                   </td>
                 </tr>

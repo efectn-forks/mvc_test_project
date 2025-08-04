@@ -46,6 +46,19 @@ public class AppDbCtx : DbContext
             .HasIndex(t => t.Name)
             .IsUnique();
         
+        modelBuilder.Entity<OrderItem>()
+            .HasKey(oi => new { oi.OrderId, oi.ProductId });
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.OrderItems)
+            .HasForeignKey(oi => oi.OrderId);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Product)
+            .WithMany(p => p.OrderItems)
+            .HasForeignKey(oi => oi.ProductId);
+        
         base.OnModelCreating(modelBuilder);
     }
     
@@ -60,4 +73,6 @@ public class AppDbCtx : DbContext
     public DbSet<Post> Posts { get; set; } = null!;
     public DbSet<Slider> Sliders { get; set; } = null!;
     public DbSet<Tag> Tags { get; set; } = null!;
+    public DbSet<OrderTrack> OrderTrack { get; set; } = null!;
+
 }

@@ -17,7 +17,8 @@
                     @foreach (var category in Model)
                     {
                         <li class="nav-item @((category == Model.First() ? "me-0" : "me-2"))">
-                            <a class="btn btn-outline-primary border-2 @((category == Model.First() ? "active" : ""))" data-bs-toggle="pill"
+                            <a class="btn btn-outline-primary border-2 @((category == Model.First() ? "active" : ""))"
+                               data-bs-toggle="pill"
                                href="#tab-@category.Id">@category.Name </a>
                         </li>
                     }

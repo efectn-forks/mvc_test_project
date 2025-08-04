@@ -20,6 +20,7 @@
               <thead>
               <tr>
                 <th style="width: 10px">#</th>
+                <th>SKU</th>
                 <th>İsim</th>
                 <th>Fiyat</th>
                 <th>Stok</th>
@@ -33,14 +34,17 @@
               {
                 <tr class="align-middle">
                   <td>@product.Id</td>
+                  <td>@product.SkuNumber</td>
                   <td>@product.Name</td>
                   <td>@product.Price</td>
                   <td>@product.Stock</td>
                   <td>@product.Category.Name</td>
                   <td>
                     <p class="d-inline-flex gap-1">
-                      <a type="submit" asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-primary">Düzenle</a>
-                      <a type="submit" asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-danger">Sil</a>
+                      <a type="submit" asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id"
+                         class="btn btn-sm btn-primary">Düzenle</a>
+                      <a type="submit" asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id"
+                         class="btn btn-sm btn-danger">Sil</a>
                     </p>
                   </td>
                 </tr>

@@ -11,6 +11,10 @@ public class Product
     [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
     public string Name { get; set; }
     
+    [Required]
+    [StringLength(30, ErrorMessage = "Sku number cannot exceed 30 characters.")]
+    public string SkuNumber { get; set; } = string.Empty;
+    
     [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
     public string Description { get; set; } = string.Empty;
     
@@ -26,4 +30,16 @@ public class Product
     public int CategoryId { get; set; }
     
     public Category Category { get; set; } = null!;
+
+    public string? ImageUrl { get; set; } = string.Empty;
+    
+    public IEnumerable<ProductImage> Images { get; set; } = new List<ProductImage>();
+  
+    public IEnumerable<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+    [Required]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    [Required]
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

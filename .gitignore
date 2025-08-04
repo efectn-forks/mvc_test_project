@@ -57,3 +57,6 @@ nunit-*.xml
 .vs/*
 
 app.db
+wwwroot/images/products/*
+wwwroot/images/posts/*
+wwwroot/images/sliders/*

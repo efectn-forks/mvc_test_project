@@ -8,6 +8,10 @@ public class ProductCreateViewModel
     [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
     public string Name { get; set; }
     
+    [Required]
+    [StringLength(30, ErrorMessage = "Sku number cannot exceed 30 characters.")]
+    public string SkuNumber { get; set; } = string.Empty;
+    
     [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
     public string Description { get; set; } = string.Empty;
     
@@ -21,4 +25,6 @@ public class ProductCreateViewModel
     
     [Required]
     public int CategoryId { get; set; }
+    
+    public IFormFile? Image { get; set; }
 }

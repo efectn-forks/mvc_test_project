@@ -23,9 +23,13 @@ public class PostCreateViewModel
     [NotMapped]
     public List<string> TagsSplitted =>
         string.IsNullOrEmpty(Tags) ? new List<string>() : Tags.Split(',').Select(t => t.Trim()).ToList();
+    
+    public IFormFile? Image { get; set; }
 }
 
 public class PostEditViewModel : PostCreateViewModel
 {
     [Required] public int Id { get; set; }
+    
+    public string? ImageUrl { get; set; } = string.Empty;
 }

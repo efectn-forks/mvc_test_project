@@ -5,9 +5,10 @@
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-    typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.adminlte = {}));
-})(this, (function (exports) { 'use strict';
+        typeof define === 'function' && define.amd ? define(['exports'], factory) :
+            (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.adminlte = {}));
+})(this, (function (exports) {
+    'use strict';
 
     const domContentLoadedCallbacks = [];
     const onDOMContentLoaded = (callback) => {
@@ -21,8 +22,7 @@
                 });
             }
             domContentLoadedCallbacks.push(callback);
-        }
-        else {
+        } else {
             callback();
         }
     };
@@ -55,7 +55,7 @@
     /* SLIDE DOWN */
     const slideDown = (target, duration = 500) => {
         target.style.removeProperty('display');
-        let { display } = globalThis.getComputedStyle(target);
+        let {display} = globalThis.getComputedStyle(target);
         if (display === 'none') {
             display = 'block';
         }
@@ -99,15 +99,18 @@
      */
     const CLASS_NAME_HOLD_TRANSITIONS = 'hold-transition';
     const CLASS_NAME_APP_LOADED = 'app-loaded';
+
     /**
      * Class Definition
      * ====================================================
      */
     class Layout {
         _element;
+
         constructor(element) {
             this._element = element;
         }
+
         holdTransition() {
             let resizeTimer;
             window.addEventListener('resize', () => {
@@ -119,6 +122,7 @@
             });
         }
     }
+
     onDOMContentLoaded(() => {
         const data = new Layout(document.body);
         data.holdTransition();
@@ -163,19 +167,22 @@
         removeTrigger: SELECTOR_DATA_REMOVE,
         maximizeTrigger: SELECTOR_DATA_MAXIMIZE
     };
+
     class CardWidget {
         _element;
         _parent;
         _clone;
         _config;
+
         constructor(element, config) {
             this._element = element;
             this._parent = element.closest(SELECTOR_CARD);
             if (element.classList.contains(CLASS_NAME_CARD)) {
                 this._parent = element;
             }
-            this._config = { ...Default$1, ...config };
+            this._config = {...Default$1, ...config};
         }
+
         collapse() {
             const event = new Event(EVENT_COLLAPSED$2);
             if (this._parent) {
@@ -195,6 +202,7 @@
             }
             this._element?.dispatchEvent(event);
         }
+
         expand() {
             const event = new Event(EVENT_EXPANDED$2);
             if (this._parent) {
@@ -213,6 +221,7 @@
             }
             this._element?.dispatchEvent(event);
         }
+
         remove() {
             const event = new Event(EVENT_REMOVE);
             if (this._parent) {
@@ -220,6 +229,7 @@
             }
             this._element?.dispatchEvent(event);
         }
+
         toggle() {
             if (this._parent?.classList.contains(CLASS_NAME_COLLAPSED)) {
                 this.expand();
@@ -227,6 +237,7 @@
             }
             this.collapse();
         }
+
         maximize() {
             const event = new Event(EVENT_MAXIMIZED$1);
             if (this._parent) {
@@ -248,6 +259,7 @@
             }
             this._element?.dispatchEvent(event);
         }
+
         minimize() {
             const event = new Event(EVENT_MINIMIZED$1);
             if (this._parent) {
@@ -269,6 +281,7 @@
             }
             this._element?.dispatchEvent(event);
         }
+
         toggleMaximize() {
             if (this._parent?.classList.contains(CLASS_NAME_MAXIMIZED)) {
                 this.minimize();
@@ -277,6 +290,7 @@
             this.maximize();
         }
     }
+
     /**
      *
      * Data Api implementation
@@ -324,7 +338,7 @@
      * Constants
      * ------------------------------------------------------------------------
      */
-    // const NAME = 'Treeview'
+        // const NAME = 'Treeview'
     const DATA_KEY$3 = 'lte.treeview';
     const EVENT_KEY$3 = `.${DATA_KEY$3}`;
     const EVENT_EXPANDED$1 = `expanded${EVENT_KEY$3}`;
@@ -339,6 +353,7 @@
         animationSpeed: 300,
         accordion: true
     };
+
     /**
      * Class Definition
      * ====================================================
@@ -346,10 +361,12 @@
     class Treeview {
         _element;
         _config;
+
         constructor(element, config) {
             this._element = element;
-            this._config = { ...Default, ...config };
+            this._config = {...Default, ...config};
         }
+
         open() {
             const event = new Event(EVENT_EXPANDED$1);
             if (this._config.accordion) {
@@ -371,6 +388,7 @@
             }
             this._element.dispatchEvent(event);
         }
+
         close() {
             const event = new Event(EVENT_COLLAPSED$1);
             this._element.classList.remove(CLASS_NAME_MENU_OPEN$1);
@@ -380,15 +398,16 @@
             }
             this._element.dispatchEvent(event);
         }
+
         toggle() {
             if (this._element.classList.contains(CLASS_NAME_MENU_OPEN$1)) {
                 this.close();
-            }
-            else {
+            } else {
                 this.open();
             }
         }
     }
+
     /**
      * ------------------------------------------------------------------------
      * Data Api implementation
@@ -439,28 +458,31 @@
     const SELECTOR_DATA_TOGGLE = '[data-lte-toggle="chat-pane"]';
     const SELECTOR_DIRECT_CHAT = '.direct-chat';
     const CLASS_NAME_DIRECT_CHAT_OPEN = 'direct-chat-contacts-open';
+
     /**
      * Class Definition
      * ====================================================
      */
     class DirectChat {
         _element;
+
         constructor(element) {
             this._element = element;
         }
+
         toggle() {
             if (this._element.classList.contains(CLASS_NAME_DIRECT_CHAT_OPEN)) {
                 const event = new Event(EVENT_COLLAPSED);
                 this._element.classList.remove(CLASS_NAME_DIRECT_CHAT_OPEN);
                 this._element.dispatchEvent(event);
-            }
-            else {
+            } else {
                 const event = new Event(EVENT_EXPANDED);
                 this._element.classList.add(CLASS_NAME_DIRECT_CHAT_OPEN);
                 this._element.dispatchEvent(event);
             }
         }
     }
+
     /**
      *
      * Data Api implementation
@@ -499,6 +521,7 @@
     const SELECTOR_FULLSCREEN_TOGGLE = '[data-lte-toggle="fullscreen"]';
     const SELECTOR_MAXIMIZE_ICON = '[data-lte-icon="maximize"]';
     const SELECTOR_MINIMIZE_ICON = '[data-lte-icon="minimize"]';
+
     /**
      * Class Definition.
      * ============================================================================
@@ -506,10 +529,12 @@
     class FullScreen {
         _element;
         _config;
+
         constructor(element, config) {
             this._element = element;
             this._config = config;
         }
+
         inFullScreen() {
             const event = new Event(EVENT_MAXIMIZED);
             const iconMaximize = document.querySelector(SELECTOR_MAXIMIZE_ICON);
@@ -523,6 +548,7 @@
             }
             this._element.dispatchEvent(event);
         }
+
         outFullscreen() {
             const event = new Event(EVENT_MINIMIZED);
             const iconMaximize = document.querySelector(SELECTOR_MAXIMIZE_ICON);
@@ -536,17 +562,18 @@
             }
             this._element.dispatchEvent(event);
         }
+
         toggleFullScreen() {
             if (document.fullscreenEnabled) {
                 if (document.fullscreenElement) {
                     this.outFullscreen();
-                }
-                else {
+                } else {
                     this.inFullScreen();
                 }
             }
         }
     }
+
     /**
      * Data Api implementation
      * ============================================================================
@@ -598,6 +625,7 @@
     const Defaults = {
         sidebarBreakpoint: 992
     };
+
     /**
      * Class Definition
      * ====================================================
@@ -605,10 +633,12 @@
     class PushMenu {
         _element;
         _config;
+
         constructor(element, config) {
             this._element = element;
-            this._config = { ...Defaults, ...config };
+            this._config = {...Defaults, ...config};
         }
+
         menusClose() {
             const navTreeview = document.querySelectorAll(SELECTOR_NAV_TREEVIEW);
             navTreeview.forEach(navTree => {
@@ -623,28 +653,30 @@
                 });
             }
         }
+
         expand() {
             const event = new Event(EVENT_OPEN);
             document.body.classList.remove(CLASS_NAME_SIDEBAR_COLLAPSE);
             document.body.classList.add(CLASS_NAME_SIDEBAR_OPEN);
             this._element.dispatchEvent(event);
         }
+
         collapse() {
             const event = new Event(EVENT_COLLAPSE);
             document.body.classList.remove(CLASS_NAME_SIDEBAR_OPEN);
             document.body.classList.add(CLASS_NAME_SIDEBAR_COLLAPSE);
             this._element.dispatchEvent(event);
         }
+
         addSidebarBreakPoint() {
             const sidebarExpandList = document.querySelector(SELECTOR_SIDEBAR_EXPAND)?.classList ?? [];
             const sidebarExpand = Array.from(sidebarExpandList).find(className => className.startsWith(CLASS_NAME_SIDEBAR_EXPAND)) ?? '';
             const sidebar = document.getElementsByClassName(sidebarExpand)[0];
             const sidebarContent = globalThis.getComputedStyle(sidebar, '::before').getPropertyValue('content');
-            this._config = { ...this._config, sidebarBreakpoint: Number(sidebarContent.replace(/[^\d.-]/g, '')) };
+            this._config = {...this._config, sidebarBreakpoint: Number(sidebarContent.replace(/[^\d.-]/g, ''))};
             if (window.innerWidth <= this._config.sidebarBreakpoint) {
                 this.collapse();
-            }
-            else {
+            } else {
                 if (!document.body.classList.contains(CLASS_NAME_SIDEBAR_MINI)) {
                     this.expand();
                 }
@@ -653,18 +685,20 @@
                 }
             }
         }
+
         toggle() {
             if (document.body.classList.contains(CLASS_NAME_SIDEBAR_COLLAPSE)) {
                 this.expand();
-            }
-            else {
+            } else {
                 this.collapse();
             }
         }
+
         init() {
             this.addSidebarBreakPoint();
         }
     }
+
     /**
      * ------------------------------------------------------------------------
      * Data Api implementation
@@ -685,10 +719,10 @@
         let isTouchMoved = false;
         sidebarOverlay.addEventListener('touchstart', () => {
             isTouchMoved = false;
-        }, { passive: true });
+        }, {passive: true});
         sidebarOverlay.addEventListener('touchmove', () => {
             isTouchMoved = true;
-        }, { passive: true });
+        }, {passive: true});
         sidebarOverlay.addEventListener('touchend', event => {
             if (!isTouchMoved) {
                 event.preventDefault();
@@ -696,7 +730,7 @@
                 const data = new PushMenu(target, Defaults);
                 data.collapse();
             }
-        }, { passive: false });
+        }, {passive: false});
         sidebarOverlay.addEventListener('click', event => {
             event.preventDefault();
             const target = event.currentTarget;
@@ -728,6 +762,7 @@
         config;
         liveRegion = null;
         focusHistory = [];
+
         constructor(config = {}) {
             this.config = {
                 announcements: true,
@@ -739,6 +774,7 @@
             };
             this.init();
         }
+
         init() {
             if (this.config.announcements) {
                 this.createLiveRegion();
@@ -759,6 +795,7 @@
             this.initTableAccessibility();
             this.initFormAccessibility();
         }
+
         // WCAG 4.1.3: Status Messages
         createLiveRegion() {
             if (this.liveRegion)
@@ -771,6 +808,7 @@
             this.liveRegion.setAttribute('role', 'status');
             document.body.append(this.liveRegion);
         }
+
         // WCAG 2.4.1: Bypass Blocks
         addSkipLinks() {
             const skipLinksContainer = document.createElement('div');
@@ -789,6 +827,7 @@
             // Ensure targets exist and are focusable
             this.ensureSkipTargets();
         }
+
         ensureSkipTargets() {
             const main = document.querySelector('#main, main, [role="main"]');
             if (main && !main.id) {
@@ -805,6 +844,7 @@
                 nav.setAttribute('tabindex', '-1');
             }
         }
+
         // WCAG 2.4.3: Focus Order & 2.4.7: Focus Visible
         initFocusManagement() {
             document.addEventListener('keydown', (event) => {
@@ -819,6 +859,7 @@
             this.initModalFocusManagement();
             this.initDropdownFocusManagement();
         }
+
         handleTabNavigation(event) {
             const focusableElements = this.getFocusableElements();
             const currentIndex = focusableElements.indexOf(document.activeElement);
@@ -828,13 +869,13 @@
                     event.preventDefault();
                     focusableElements.at(-1)?.focus();
                 }
-            }
-            else if (currentIndex >= focusableElements.length - 1) {
+            } else if (currentIndex >= focusableElements.length - 1) {
                 // Tab (forward)
                 event.preventDefault();
                 focusableElements[0]?.focus();
             }
         }
+
         getFocusableElements() {
             const selector = [
                 'a[href]',
@@ -847,6 +888,7 @@
             ].join(', ');
             return Array.from(document.querySelectorAll(selector));
         }
+
         handleEscapeKey(event) {
             // Close modals, dropdowns, etc.
             const activeModal = document.querySelector('.modal.show');
@@ -855,13 +897,13 @@
                 const closeButton = activeModal.querySelector('[data-bs-dismiss="modal"]');
                 closeButton?.click();
                 event.preventDefault();
-            }
-            else if (activeDropdown) {
+            } else if (activeDropdown) {
                 const toggleButton = document.querySelector('[data-bs-toggle="dropdown"][aria-expanded="true"]');
                 toggleButton?.click();
                 event.preventDefault();
             }
         }
+
         // WCAG 2.1.1: Keyboard Access
         initKeyboardNavigation() {
             // Add keyboard support for custom components
@@ -878,6 +920,7 @@
                 }
             });
         }
+
         handleMenuNavigation(event) {
             if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
                 return;
@@ -912,6 +955,7 @@
             event.preventDefault();
             menuItems[nextIndex]?.focus();
         }
+
         // WCAG 2.3.3: Animation from Interactions
         respectReducedMotion() {
             const prefersReducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -931,6 +975,7 @@
                 document.head.append(style);
             }
         }
+
         // WCAG 3.3.1: Error Identification
         initErrorAnnouncements() {
             const observer = new MutationObserver((mutations) => {
@@ -955,6 +1000,7 @@
                 subtree: true
             });
         }
+
         // WCAG 1.3.1: Info and Relationships
         initTableAccessibility() {
             document.querySelectorAll('table').forEach((table) => {
@@ -969,8 +1015,7 @@
                         const isFirstColumn = th.cellIndex === 0;
                         if (isInThead) {
                             th.setAttribute('scope', 'col');
-                        }
-                        else if (isFirstColumn) {
+                        } else if (isFirstColumn) {
                             th.setAttribute('scope', 'row');
                         }
                     }
@@ -983,6 +1028,7 @@
                 }
             });
         }
+
         // WCAG 3.3.2: Labels or Instructions
         initFormAccessibility() {
             document.querySelectorAll('input, select, textarea').forEach((input) => {
@@ -1010,6 +1056,7 @@
                 });
             });
         }
+
         handleFormError(input) {
             const errorId = `${input.id || input.name}-error`;
             let errorElement = document.getElementById(errorId);
@@ -1025,6 +1072,7 @@
             input.classList.add('is-invalid');
             this.announce(`Error in ${input.labels?.[0]?.textContent || input.name}: ${input.validationMessage}`, 'assertive');
         }
+
         // Modal focus management
         initModalFocusManagement() {
             document.addEventListener('shown.bs.modal', (event) => {
@@ -1044,6 +1092,7 @@
                 }
             });
         }
+
         // Dropdown focus management
         initDropdownFocusManagement() {
             document.addEventListener('shown.bs.dropdown', (event) => {
@@ -1055,6 +1104,7 @@
                 }
             });
         }
+
         // Public API methods
         announce(message, priority = 'polite') {
             if (!this.liveRegion) {
@@ -1071,14 +1121,16 @@
                 }, 1000);
             }
         }
+
         focusElement(selector) {
             const element = document.querySelector(selector);
             if (element) {
                 element.focus();
                 // Ensure element is visible
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.scrollIntoView({behavior: 'smooth', block: 'center'});
             }
         }
+
         trapFocus(container) {
             const focusableElements = container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
             const focusableArray = Array.from(focusableElements);
@@ -1091,14 +1143,14 @@
                             lastElement?.focus();
                             event.preventDefault();
                         }
-                    }
-                    else if (document.activeElement === lastElement) {
+                    } else if (document.activeElement === lastElement) {
                         firstElement.focus();
                         event.preventDefault();
                     }
                 }
             });
         }
+
         addLandmarks() {
             // Add main landmark if missing
             const main = document.querySelector('main');
@@ -1125,6 +1177,7 @@
             }
         }
     }
+
     // Initialize accessibility when DOM is ready
     const initAccessibility = (config) => {
         return new AccessibilityManager(config);

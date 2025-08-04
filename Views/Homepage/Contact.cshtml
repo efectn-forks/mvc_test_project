@@ -8,20 +8,20 @@
 <!-- Contact Start -->
 <div class="container-xxl py-6">
     <div class="container">
-        @if(TempData["SuccessMessage"] != null)
+        @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success mb-5" role="alert">
                 @TempData["SuccessMessage"]
             </div>
         }
-              
-        @if(TempData["ErrorMessage"] != null)
+
+        @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger mb-5" role="alert">
                 @TempData["ErrorMessage"]
             </div>
         }
-        
+
         <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s"
              style="max-width: 500px;">
             <h1 class="display-5 mb-3">Contact Us</h1>
@@ -44,7 +44,8 @@
                         <a class="btn btn-square btn-outline-light rounded-circle me-1" href="@settings.FacebookUrl">
                             <i
                                 class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-square btn-outline-light rounded-circle me-1" youtubehref="@settings.InstagramUrl">
+                        <a class="btn btn-square btn-outline-light rounded-circle me-1"
+                           youtubehref="@settings.InstagramUrl">
                             <i
                                 class="fab fa-instagram"></i></a>
                         <a class="btn btn-square btn-outline-light rounded-circle me-0" href="@settings.LinkedinUrl">

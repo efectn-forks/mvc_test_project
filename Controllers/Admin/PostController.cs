@@ -54,6 +54,16 @@ public class PostController : Controller
             UserId = model.UserId
         };
         await _updateTags(post, model.Tags);
+        
+        if (model.Image != null && model.Image.Length > 0)
+        {
+            var imagePath = Path.Combine("wwwroot", "images", "posts", model.Image.FileName);
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await model.Image.CopyToAsync(stream);
+            }
+            post.ImageUrl = $"/images/posts/{model.Image.FileName}";
+        }
 
         await _postRepository.CreatePostAsync(post);
 
@@ -83,6 +93,11 @@ public class PostController : Controller
             UserId = post.UserId,
             Tags = string.Join(", ", tags),
         };
+        
+        if (!string.IsNullOrEmpty(post.ImageUrl))
+        {
+            model.ImageUrl = post.ImageUrl;
+        }
 
         return View("Admin/Post/Edit", model);
     }
@@ -110,7 +125,28 @@ public class PostController : Controller
         post.UserId = model.UserId;
         post.UpdatedAt = DateTime.UtcNow;
         await _updateTags(post, model.Tags);
-
+        
+        if (model.Image != null && model.Image.Length > 0)
+        {
+            Console.WriteLine("fffew");
+            // Delete old image if exists
+            if (!string.IsNullOrEmpty(post.ImageUrl))
+            {
+                var oldImagePath = Path.Combine("wwwroot", post.ImageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+            }
+            
+            var imagePath = Path.Combine("wwwroot", "images", "posts", model.Image.FileName);
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await model.Image.CopyToAsync(stream);
+            }
+            post.ImageUrl = $"/images/posts/{model.Image.FileName}";
+        }
+        
         var result = await _postRepository.UpdatePostAsync(post);
 
         if (result)

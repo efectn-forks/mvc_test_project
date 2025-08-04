@@ -17,7 +17,6 @@ dbCtx.Database.EnsureCreated();
 builder.Services.AddSingleton(dbCtx);
 
 // Register repositories
-
 var repositories = new[]
 {
     typeof(UserRepository),
@@ -29,7 +28,9 @@ var repositories = new[]
     typeof(FeatureRepository),
     typeof(SliderRepository),
     typeof(ReviewRepository),
-    typeof(TagRepository)
+    typeof(TagRepository),
+    typeof(OrderRepository),
+    typeof(OrderTrackRepository),
 };
 
 foreach (var repository in repositories)

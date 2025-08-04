@@ -44,6 +44,16 @@ public class PostRepository
     {
         var post = await _dbContext.Posts.FindAsync(id);
         if (post == null) return false;
+        
+        // remove the image
+        if (!string.IsNullOrEmpty(post.ImageUrl))
+        {
+            var imagePath = Path.Combine("wwwroot", post.ImageUrl.TrimStart('/'));
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }
+        }
 
         _dbContext.Posts.Remove(post);
         var result = await _dbContext.SaveChangesAsync();
