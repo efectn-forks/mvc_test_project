@@ -1,0 +1,251 @@
+@model TagShowViewModel
+
+<style>
+        .tag-header {
+            background: linear-gradient(rgba(58, 125, 52, 0.9), rgba(58, 125, 52, 0.7)), url('https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            padding: 60px 40px;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .tag-badge-large {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .post-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        .post-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-card .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .post-card .card-body {
+            padding: 25px;
+        }
+
+        .post-card .card-title {
+            color: #3a7d34;
+            font-weight: 700;
+            margin-bottom: 15px;
+            transition: color 0.3s;
+        }
+
+        .post-card:hover .card-title {
+            color: #2a5d26;
+        }
+
+        .post-card .card-text {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-meta img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .post-meta .meta-text {
+            font-size: 0.9rem;
+        }
+
+        .post-meta .meta-text h6 {
+            margin-bottom: 2px;
+            font-size: 1rem;
+        }
+
+        .tag-cloud {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 25px;
+            border-top: 3px solid #3a7d34;
+        }
+
+        .tag-item {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #3a7d34;
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin: 0 8px 12px 0;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .tag-item:hover {
+            background: #3a7d34;
+            color: white;
+            text-decoration: none;
+        }
+
+        .tag-item.active {
+            background: #3a7d34;
+            color: white;
+            font-weight: 600;
+        }
+
+        .popular-tags h4 {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .popular-tags h4:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: #3a7d34;
+        }
+    </style>
+    
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container text-center py-5">
+            <h1 class="display-3 text-white mb-4 animated slideInDown">@Model.Tag.Name</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb justify-content-center mb-0">
+                    <li class="breadcrumb-item"><a class="text-white" asp-controller="Homepage" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-white" asp-controller="Homepage" asp-action="Blog">Blog</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Tag: @Model.Tag.Name</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Tag Content Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-8">
+                    <!-- Tag Header -->
+                    <div class="tag-header text-center wow fadeIn" data-wow-delay="0.1s">
+                        <span class="tag-badge-large">Tag</span>
+                        <h1 class="text-white mb-3">@Model.Tag.Name</h1>
+                    </div>
+
+                    <!-- Posts Grid -->
+                    <div class="row g-4">
+                        @foreach (var post in Model.Tag.Posts)
+                        {
+                            <!-- Post 1 -->
+                            <div class="col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="post-card h-100">
+                                    <img src="@Url.Content(post.ImageUrl)"
+                                         class="card-img-top" alt="@post.Title">
+                                    <div class="card-body">
+                                        <div class="post-meta">
+                                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80"
+                                                 alt="Author">
+                                            <div class="meta-text">
+                                                <h6 class="mb-0">@post.User.FullName</h6>
+                                                <small>@post.CreatedAt.ToShortDateString()</small>
+                                            </div>
+                                        </div>
+                                        <h3 class="card-title">@post.Title</h3>
+                                        <p class="card-text">@post.Description</p>
+                                        <a asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id" class="btn btn-outline-primary btn-sm">Read More
+                                            <i
+                                                class="bi bi-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav class="mt-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Sidebar Start -->
+                <div class="col-lg-4">
+                    <!-- Search Form Start -->
+                    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="input-group">
+                            <input type="text" class="form-control p-3" placeholder="Search posts...">
+                            <button class="btn btn-primary px-4"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                    <!-- Search Form End -->
+
+                    <!-- Popular Tags Start -->
+                    <div class="tag-cloud mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="popular-tags">
+                            <h4>Tags</h4>
+                            @foreach(var tag in Model.Tags)
+                            {
+                                <a asp-controller="Homepage" asp-action="Tag" asp-route-id="@tag.Id" class="tag-item @(tag.Name == Model.Tag.Name ? "active" : "")">@tag.Name</a>
+                            }
+                        </div>
+                    </div>
+                    <!-- Popular Tags End -->
+
+                    <!-- Recent Post Start -->
+                    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <h3 class="mb-4">Recent Posts</h3>
+                        @foreach (var post in Model.LatestPosts)
+                        {
+                            <div class="d-flex mb-3">
+                                <img class="img-fluid rounded"
+                                     src="@Url.Content(post.ImageUrl)"
+                                     alt="@post.Title" style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="ps-3">
+                                    <h6><a asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id" class="text-truncate">@post.Title</a></h6>
+                                    <small class="text-body"><i class="fa fa-calendar me-1"></i>@post.CreatedAt.ToShortDateString()</small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!-- Recent Post End -->
+                </div>
+                <!-- Sidebar End -->
+            </div>
+        </div>
+    </div>
+    <!-- Tag Content End -->

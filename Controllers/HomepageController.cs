@@ -11,11 +11,17 @@ public class HomepageController : Controller
 {
     private readonly ContactMessageRepository _contactMessageRepository;
     private readonly ISettingsService _settingsService;
-
-    public HomepageController(ContactMessageRepository contactMessageRepository, ISettingsService settingsService)
+    private readonly ProductRepository _productRepository;
+    private readonly PostRepository _postRepository;
+    private readonly TagRepository _tagRepository;
+    
+    public HomepageController(ContactMessageRepository contactMessageRepository, ISettingsService settingsService, ProductRepository productRepository, PostRepository postRepository, TagRepository tagRepository)
     {
         _contactMessageRepository = contactMessageRepository;
         _settingsService = settingsService;
+        _productRepository = productRepository;
+        _postRepository = postRepository;
+        _tagRepository = tagRepository;
     }
 
     public IActionResult Index()
@@ -38,6 +44,63 @@ public class HomepageController : Controller
     {
         ViewData["Title"] = "Ürünlerimiz";
         return View();
+    }
+    
+    [HttpGet]
+    [Route("product/{id}")]
+    public async Task<IActionResult> Product(int id)
+    {
+        var product = await _productRepository.GetProductByIdAsync(id);
+        if (product == null)
+        {
+            return RedirectToAction("PageNotFound");
+        }
+        
+        ViewData["Title"] = "Ürün Detayı - " + product.Name;
+        return View(new ProductShowViewModel
+        {
+            Product = product,
+            RelatedProducts = await _productRepository.GetRelatedProductsAsync(product.CategoryId, product.Id)
+        });
+    }
+    
+    [HttpGet]
+    [Route("post/{id}")]
+    public async Task<IActionResult> Post(int id)
+    {
+        var post = await _postRepository.GetPostByIdAsync(id);
+        if (post == null)
+        {
+            return RedirectToAction("PageNotFound");
+        }
+        
+        ViewData["Title"] = "Blog - " + post.Title;
+        return View(new PostShowViewModel
+        {
+            Post = post,
+            Tags = await _tagRepository.GetAllTagsAsync(),
+            LatestPosts = await _postRepository.GetLatestPostsAsync()
+        });
+    }
+
+    [HttpGet]
+    [Route("tag/{id}")]
+    public async Task<IActionResult> Tag(int id)
+    {
+        Console.WriteLine("fefegre");
+        var tag = await _tagRepository.GetTagByIdAsync(id);
+        if (tag == null)
+        {
+            return RedirectToAction("PageNotFound");
+        }
+        
+        ViewData["Title"] = "Etiket - " + tag.Name;
+        return View(new TagShowViewModel
+        {
+            Tag = tag,
+            LatestPosts = await _postRepository.GetLatestPostsAsync(),
+            Tags = await _tagRepository.GetAllTagsAsync()
+        });
     }
     
     [HttpGet]

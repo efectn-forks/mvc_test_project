@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace mvc_proje.Database.Entities;
 
@@ -29,6 +30,7 @@ public class Product
     [Required]
     public int CategoryId { get; set; }
     
+    [JsonIgnore]
     public Category Category { get; set; } = null!;
 
     public string? ImageUrl { get; set; } = string.Empty;

@@ -21,6 +21,7 @@ public class TagRepository
     {
         return await _context.Tags
             .Include(t => t.Posts)
+            .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 

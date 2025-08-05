@@ -35,7 +35,7 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                     <div class="dropdown-menu m-0">
-                        <a asp-controller="Homepage" asp-action="Blog" class="dropdown-item">Blog Grid</a>
+                        <a asp-controller="Homepage" asp-action="Blog" class="dropdown-item">Blog</a>
                         <a asp-controller="Homepage" asp-action="Features" class="dropdown-item">Our Features</a>
                         <a asp-controller="Homepage" asp-action="Testimonials" class="dropdown-item">Testimonial</a>
                     </div>
@@ -43,7 +43,7 @@
                 <a asp-controller="Homepage" asp-action="Contact" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="d-none d-lg-flex ms-2">
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
+                <a class="btn-sm-square bg-white rounded-circle ms-3" asp-controller="Profile" asp-action="Index">
                     <small class="fa fa-user text-body"></small>
                 </a>
                 @if (isLoggedIn)
@@ -58,7 +58,7 @@
                         <small class="fa fa-right-to-bracket text-body"></small>
                     </a>
                 }
-                <a class="btn-sm-square bg-white rounded-circle ms-3" href="">
+                <a class="btn-sm-square bg-white rounded-circle ms-3" asp-controller="Cart" asp-action="Index">
                     <small class="fa fa-shopping-bag text-body"></small>
                 </a>
             </div>

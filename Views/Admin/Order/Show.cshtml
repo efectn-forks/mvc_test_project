@@ -109,7 +109,7 @@
                                                     @item.TrackingInfo
                                                 </div>
                                                 <div class="timeline-footer">
-                                                    <a class="btn btn-danger btn-sm">Sil</a>
+                                                    <a class="btn btn-danger btn-sm" asp-controller="OrderTrack" asp-action="Delete" asp-route-id="@item.Id">Sil</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -131,7 +131,7 @@
                         </div>
 
                         <div class="card-body">
-                            <form method="post" asp-action="AddTrack" asp-controller="Order" asp-antiforgery="true">
+                            <form method="post" asp-action="Create" asp-controller="OrderTrack" asp-antiforgery="true">
                                 <input type="hidden" name="orderId" value="@Model.Order.Id"/>
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Durum</label>

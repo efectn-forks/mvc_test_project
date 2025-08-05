@@ -42,6 +42,8 @@ foreach (var repository in repositories)
     });
 }
 
+builder.Services.AddSession();
+
 // Register custom services
 builder.Services.AddSingleton<IAboutUsService>(new AboutUsService());
 
@@ -60,7 +62,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole(nameof(Role.Admin)));
 
     options.AddPolicy("UserPolicy", policy =>
-        policy.RequireRole(nameof(Role.User)));
+        policy.RequireRole(nameof(Role.User), nameof(Role.Admin)));
 });
 
 var app = builder.Build();
@@ -74,6 +76,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseRouting();

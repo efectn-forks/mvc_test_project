@@ -12,9 +12,9 @@
             @foreach (var post in Model)
             {
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <img class="img-fluid" src="~/assets/main/img/blog-1.jpg" alt="">
+                    <img class="img-fluid" src="@Url.Content(post.ImageUrl)" alt="">
                     <div class="bg-light p-4">
-                        <a class="d-block h5 lh-base mb-4" href="">@post.Title</a>
+                        <a class="d-block h5 lh-base mb-4" asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id">@post.Title</a>
                         <div class="text-muted border-top pt-4">
                             <small class="me-3"><i class="fa fa-user text-primary me-2"></i>@post.User.FullName</small>
                             <small class="me-3"><i

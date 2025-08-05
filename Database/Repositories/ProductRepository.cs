@@ -50,4 +50,12 @@ public class ProductRepository
 
         return result > 0;
     }
+
+    public async Task<List<Product>> GetRelatedProductsAsync(int categoryId, int excludeProductId)
+    {
+        return await _dbContext.Products
+            .Where(p => p.CategoryId == categoryId && p.Id == excludeProductId)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(4).ToListAsync();
+    }
 }

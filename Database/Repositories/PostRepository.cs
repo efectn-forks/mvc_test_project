@@ -20,6 +20,7 @@ public class PostRepository
     {
         return await _dbContext.Posts.Include(p => p.User)
             .Include(p => p.Tags)
+            .Include(p => p.Comments)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
     
@@ -59,5 +60,13 @@ public class PostRepository
         var result = await _dbContext.SaveChangesAsync();
         
         return result > 0;
+    }
+    
+    public async Task<List<Post>> GetLatestPostsAsync(int count = 5)
+    {
+        return await _dbContext.Posts
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(count)
+            .ToListAsync();
     }
 }
