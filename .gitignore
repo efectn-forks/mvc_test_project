@@ -60,3 +60,4 @@ app.db
 wwwroot/images/products/*
 wwwroot/images/posts/*
 wwwroot/images/sliders/*
+wwwroot/images/avatars/*

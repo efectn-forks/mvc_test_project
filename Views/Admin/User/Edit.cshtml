@@ -16,7 +16,7 @@
         <div class="card mb-8">
           <div class="card card-primary card-outline mb-4">
             <!--begin::Form-->
-            <form method="post" asp-action="Update" asp-controller="User" asp-antiforgery="true">
+            <form method="post" asp-action="Update" asp-controller="User" asp-antiforgery="true" enctype="multipart/form-data">
               <input type="hidden" asp-for="Id" value="@Model.Id"/>
               <!--begin::Body-->
               <div class="card-body">
@@ -84,6 +84,22 @@
                     <option value="1" selected="@(Model.Role == Role.Admin ? "selected" : null)">Yönetici</option>
                   </select>
                 </div>
+                
+                <div class="mb-3">
+                  <label for="Avatar" class="form-label">Profil Fotoğrafı</label>
+                  <input
+                    type="file"
+                    name="Avatar"
+                    class="form-control"
+                    id="Avatar"/>
+                </div>
+                
+                @if(Model.AvatarUrl != null)
+                {
+                  <div class="mb-3">
+                    <img src="@Url.Content(Model.AvatarUrl)" alt="Avatar" class="img-thumbnail" style="max-width: 150px;"/>
+                  </div>
+                }
               </div>
               <!--end::Body-->
               <!--begin::Footer-->

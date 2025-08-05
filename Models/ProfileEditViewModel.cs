@@ -30,4 +30,7 @@ public class ProfileEditViewModel
     [Required]
     [StringLength(100, ErrorMessage = "Address cannot exceed 100 characters.")]
     public string Address { get; set; } = string.Empty;
+    
+    public IFormFile? Avatar { get; set; }
+    public string? AvatarUrl { get; set; } = string.Empty;
 }

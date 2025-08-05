@@ -75,6 +75,16 @@ public class UserController : Controller
             Address = model.Address,
             Role = model.Role,
         };
+        
+        if (model.Avatar != null)
+        {
+            var avatarPath = Path.Combine("wwwroot", "images", "avatars", model.Avatar.FileName);
+            await using (var stream = new FileStream(avatarPath, FileMode.Create))
+            {
+                await model.Avatar.CopyToAsync(stream);
+            }
+            user.AvatarUrl = $"/images/avatars/{model.Avatar.FileName}";
+        }
 
         var ret = await _userRepository.CreateUserAsync(user);
         if (!ret)
@@ -106,7 +116,8 @@ public class UserController : Controller
             FullName = user.FullName,
             PhoneNumber = user.PhoneNumber,
             Address = user.Address,
-            Role = user.Role
+            Role = user.Role,
+            AvatarUrl = user.AvatarUrl
         };
         
         return View("Admin/User/Edit", model);
@@ -159,6 +170,26 @@ public class UserController : Controller
                 return View("Admin/User/Edit", model);
             }
             user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+        }
+        
+        if (model.Avatar != null)
+        {
+            // remove old avatar if exists
+            if (!string.IsNullOrEmpty(user.AvatarUrl))
+            {
+                var oldAvatarPath = Path.Combine("wwwroot", user.AvatarUrl.TrimStart('/'));
+                if (System.IO.File.Exists(oldAvatarPath))
+                {
+                    System.IO.File.Delete(oldAvatarPath);
+                }
+            }
+            
+            var avatarPath = Path.Combine("wwwroot", "images", "avatars", model.Avatar.FileName);
+            await using (var stream = new FileStream(avatarPath, FileMode.Create))
+            {
+                await model.Avatar.CopyToAsync(stream);
+            }
+            user.AvatarUrl = $"/images/avatars/{model.Avatar.FileName}";
         }
 
         var ret = _userRepository.UpdateUser(user);

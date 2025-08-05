@@ -58,6 +58,7 @@ public class ProfileController : Controller
             PhoneNumber = user.PhoneNumber,
             Address = user.Address,
             Username = user.Username,
+            AvatarUrl = user.AvatarUrl
         };
 
         return View(profileEditModel);
@@ -90,6 +91,7 @@ public class ProfileController : Controller
         user.Address = model.Address;
         user.Username = model.Username;
         
+        // update password if provided
         if (!string.IsNullOrEmpty(model.CurrentPassword) && !string.IsNullOrEmpty(model.NewPassword))
         {
             if (!BCrypt.Net.BCrypt.Verify(model.CurrentPassword, user.Password))
@@ -107,6 +109,30 @@ public class ProfileController : Controller
         {
             ModelState.AddModelError("NewPassword", "Passwords do not match.");
             return View("Edit", model);
+        }
+        
+        // handle avatar upload
+        if (model.Avatar != null && model.Avatar.Length > 0)
+        {
+            var fileName = $"{Guid.NewGuid()}_{model.Avatar.FileName}";
+            var filePath = Path.Combine("wwwroot", "images", "avatars", fileName);
+            
+            // delete old avatar if exists
+            if (!string.IsNullOrEmpty(user.AvatarUrl))
+            {
+                var oldAvatarPath = Path.Combine("wwwroot", user.AvatarUrl.TrimStart('/'));
+                if (System.IO.File.Exists(oldAvatarPath))
+                {
+                    System.IO.File.Delete(oldAvatarPath);
+                }
+            }
+            
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.Avatar.CopyToAsync(stream);
+            }
+            
+            user.AvatarUrl = $"/images/avatars/{fileName}";
         }
 
         if (_userRepository.UpdateUser(user))

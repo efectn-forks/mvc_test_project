@@ -31,4 +31,7 @@ public class UserEditViewModel
     public string Address { get; set; } = string.Empty;
 
     [Required] public Role Role { get; set; } = Role.User;
+    
+    public IFormFile? Avatar { get; set; }
+    public string? AvatarUrl { get; set; } = string.Empty;
 }

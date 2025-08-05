@@ -320,18 +320,10 @@
             <div class="profile-header">
                 <div class="d-flex align-items-center profile-info">
                     <div class="profile-avatar" id="avatarContainer">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                        <img src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "https://via.placeholder.com/150" : Url.Content(Model.AvatarUrl))"
                             alt="User Avatar" id="currentAvatar">
                         <div class="change-overlay">
                             <i class="fas fa-camera"></i>
-                        </div>
-                        <div class="avatar-options" id="avatarOptions">
-                            <div class="avatar-option"
-                                data-avatar="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-                                    alt="Option 1">
-                                <span>Profile 1</span>
-                            </div>
                         </div>
                     </div>
                     <div>
@@ -343,7 +335,7 @@
 
             <!-- Profile Edit Form -->
             <div class="profile-card">
-                <form id="profileEditForm" asp-antiforgery="true" asp-controller="Profile" asp-action="Update">
+                <form id="profileEditForm" asp-antiforgery="true" asp-controller="Profile" asp-action="Update" enctype="multipart/form-data">
                     <!-- Personal Information Section -->
                     <div class="form-section">
                         <h4>Personal Information</h4>
@@ -419,6 +411,14 @@
                                     <label for="confirmPassword">Confirm Password</label>
                                     <input type="password" class="form-control" asp-for="ConfirmPassword" id="confirmPassword">
                                     <i class="fas fa-eye password-toggle-icon" data-target="confirmPassword"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="Avatar">Avatar</label>
+                                    <input type="file" class="form-control" asp-for="Avatar" id="Avatar">
                                 </div>
                             </div>
                         </div>

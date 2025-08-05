@@ -36,6 +36,8 @@ public class User
     [StringLength(100, ErrorMessage = "Address cannot exceed 100 characters.")]
     public string Address { get; set; } = string.Empty;
     
+    public string? AvatarUrl { get; set; } = null;
+    
     [Required]
     [StringLength(20, ErrorMessage = "Role cannot exceed 20 characters.")]
     public Role Role { get; set; } = Role.User;

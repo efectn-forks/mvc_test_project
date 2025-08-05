@@ -64,6 +64,16 @@ public class UserRepository
     {
         var user = _dbCtx.Users.Find(id);
         if (user == null) return false;
+        
+        // remove avatar file if it exists
+        if (!string.IsNullOrEmpty(user.AvatarUrl))
+        {
+            var avatarPath = Path.Combine("wwwroot", "images", "avatars", user.AvatarUrl);
+            if (File.Exists(avatarPath))
+            {
+                File.Delete(avatarPath);
+            }
+        }
 
         _dbCtx.Users.Remove(user);
         return _dbCtx.SaveChanges() > 0;

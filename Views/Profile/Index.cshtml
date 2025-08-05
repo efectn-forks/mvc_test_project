@@ -262,7 +262,7 @@
             <div class="d-flex align-items-center profile-info">
                 <div class="profile-avatar">
                     <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                        src="@(string.IsNullOrEmpty(Model.AvatarUrl) ? "https://via.placeholder.com/150" : Url.Content(Model.AvatarUrl))"
                         alt="User Avatar">
                 </div>
                 <div>

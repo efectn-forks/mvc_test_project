@@ -97,7 +97,7 @@
                     <div class="d-flex mb-4">
                         <div class="d-flex align-items-center">
                             <img class="rounded-circle"
-                                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80"
+                                 src="@(string.IsNullOrEmpty(Model.Post.User.AvatarUrl) ? "https://via.placeholder.com/150" : Url.Content(Model.Post.User.AvatarUrl))"
                                  alt="Author" style="width: 50px; height: 50px;">
                             <div class="ps-3">
                                 <h6 class="mb-1">@Model.Post.User.FullName</h6>
@@ -144,7 +144,7 @@
                 <div class="author-card wow fadeInUp" data-wow-delay="0.1s">
                     <div class="d-flex align-items-center mb-4">
                         <img class="img-fluid rounded-circle"
-                             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80"
+                             src="@(string.IsNullOrEmpty(Model.Post.User.AvatarUrl) ? "https://via.placeholder.com/150" : Url.Content(Model.Post.User.AvatarUrl))"
                              alt="Author" style="width: 100px; height: 100px;">
                         <div class="ps-4">
                             <h4 class="mb-1">@Model.Post.User.FullName</h4>

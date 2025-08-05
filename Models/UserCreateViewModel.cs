@@ -33,4 +33,6 @@ public class UserCreateViewModel
     
     [Required]
     public Role Role { get; set; } = Role.User;
+    
+    public IFormFile? Avatar { get; set; }
 }
