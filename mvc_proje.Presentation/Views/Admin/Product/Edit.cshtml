@@ -6,11 +6,7 @@
 
 @model mvc_proje.Application.Dtos.Admin.Product.ProductEditDto
 
-<script>
-  $(document).ready(function() {
-    $('#summernote').summernote();
-  });
-</script>
+@await Html.PartialAsync("_Editor")
 
 <!--end::App Content Header-->
 <!--begin::App Content-->

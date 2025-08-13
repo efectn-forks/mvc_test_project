@@ -2,11 +2,7 @@
   Layout = "_AdminLayout";
 }
 
-<script>
-  $(document).ready(function() {
-    $('#summernote').summernote();
-  });
-</script>
+@await Html.PartialAsync("_Editor")
 
 <!--end::App Content Header-->
 <!--begin::App Content-->
@@ -19,7 +15,8 @@
         <div class="card mb-8">
           <div class="card card-primary card-outline mb-4">
             <!--begin::Form-->
-            <form method="post" asp-action="Create" asp-controller="Post" asp-antiforgery="true" enctype="multipart/form-data">
+            <form method="post" asp-action="Create" asp-controller="Post" asp-antiforgery="true"
+                  enctype="multipart/form-data">
               <input type="hidden" name="UserId" value="1">
               <!--begin::Body-->
               <div class="card-body">
@@ -45,7 +42,7 @@
                     class="form-control"
                     id="tags">
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="Image" class="form-label">Resim</label>
                   <input

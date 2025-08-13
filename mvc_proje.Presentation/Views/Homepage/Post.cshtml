@@ -111,7 +111,7 @@
                     <h1 class="mb-4">@Model.Post.Title</h1>
 
                     <div class="blog-content">
-                        @Model.Post.Content
+                        @Html.Raw(Model.Post.Content)
                     </div>
 
                     <div class="mt-5">

@@ -5,11 +5,7 @@
     Layout = "_AdminLayout";
 }
 
-<script>
-  $(document).ready(function() {
-    $('#summernote').summernote();
-  });
-</script>
+@await Html.PartialAsync("_Editor")
 
 <style>
     .image-upload-container {

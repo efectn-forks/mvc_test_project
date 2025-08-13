@@ -4,11 +4,7 @@
 
 @model mvc_proje.Application.Dtos.Admin.Post.PostEditDto
 
-<script>
-  $(document).ready(function() {
-    $('#summernote').summernote();
-  });
-</script>
+@await Html.PartialAsync("_Editor")
 
 <!--end::App Content Header-->
 <!--begin::App Content-->

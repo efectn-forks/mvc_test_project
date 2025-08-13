@@ -12,4 +12,8 @@
       <ProjectReference Include="..\mvc_proje.Domain\mvc_proje.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images\editor\" />
+    </ItemGroup>
+
 </Project>
