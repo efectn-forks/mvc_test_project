@@ -5,6 +5,7 @@ using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.Admin.Post;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -36,6 +37,20 @@ public class PostService
         };
     }
 
+    public async Task<PagedResult<Post>> GetPagedAsync(int pageNumber)
+    {
+        var totalPosts = await _unitOfWork.PostRepository.CountAsync();
+        var posts = await _unitOfWork.PostRepository.GetPagedAsync(pageNumber, includeFunc: q => q
+            .Include(p => p.User)
+            .Include(p => p.Tags));
+
+        return new PagedResult<Post>
+        {
+            Items = posts,
+            TotalCount = totalPosts,
+        };
+    }
+
     public async Task<PostEditDto> GetByIdAsync(int id)
     {
         var post = await _unitOfWork.PostRepository.GetByIdAsync(id, includeFunc: q => q
@@ -58,7 +73,7 @@ public class PostService
             ImageUrl = post.ImageUrl
         };
     }
-    
+
     public async Task<Post> GetById2Async(int id)
     {
         var post = await _unitOfWork.PostRepository.GetByIdAsync(id, includeFunc: q => q
@@ -116,8 +131,8 @@ public class PostService
             ImageUrl = post.ImageUrl
         };
     }
-    
-public async Task<PostEditDto> UpdateAsync(PostEditDto dto)
+
+    public async Task<PostEditDto> UpdateAsync(PostEditDto dto)
     {
         var validationResult = await _postEditValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
@@ -152,7 +167,7 @@ public async Task<PostEditDto> UpdateAsync(PostEditDto dto)
                     File.Delete(oldImagePath);
                 }
             }
-            
+
             var fileName = $"{Guid.NewGuid()}.{Path.GetExtension(dto.Image.FileName)}";
             var imagePath = Path.Combine("wwwroot", "images", "posts", fileName);
             await using (var stream = new FileStream(imagePath, FileMode.Create))
@@ -198,7 +213,7 @@ public async Task<PostEditDto> UpdateAsync(PostEditDto dto)
         await _unitOfWork.PostRepository.DeleteAsync(id);
         await _unitOfWork.SaveChangesAsync();
     }
-    
+
     public async Task<IEnumerable<Post>> GetRecentPostsAsync(int count = 5)
     {
         return await _unitOfWork.PostRepository.GetRecentPostsAsync(count);

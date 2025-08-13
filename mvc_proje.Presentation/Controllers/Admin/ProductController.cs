@@ -19,12 +19,20 @@ public class ProductController : Controller
 
     [HttpGet]
     [Route("/admin/products")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Ürünler";
-        var products = await _productService.GetAllAsync();
+        var products = await _productService.GetPagedAsync(page);
+        
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = products.TotalCount;
+        
+        var productDto = new ProductDto
+        {
+            Products = products.Items,
+        };
 
-        return View("Admin/Product/Index", products);
+        return View("Admin/Product/Index", productDto);
     }
 
     [HttpGet]

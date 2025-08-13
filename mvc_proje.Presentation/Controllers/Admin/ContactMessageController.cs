@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using mvc_proje.Application.Dtos.Admin.ContactMessage;
 using mvc_proje.Application.Services.Admin;
 
 namespace mvc_proje.Presentation.Controllers.Admin;
@@ -16,12 +17,20 @@ public class ContactMessageController : Controller
     
     [HttpGet]
     [Route("admin/contact-messages")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "İletişim Mesajları";
-        var messages = await _contactMessageService.GetAllAsync();
+        var messages = await _contactMessageService.GetPagedAsync(page);
         
-        return View("Admin/ContactMessage/Index", messages);
+        ViewData["TotalItems"] = messages.TotalCount;
+        ViewData["CurrentPage"] = page;
+        
+        var contactMessageDto = new ContactMessageDto
+        {
+            ContactMessages = messages.Items
+        };
+        
+        return View("Admin/ContactMessage/Index", contactMessageDto);
     }
     
     [HttpGet]

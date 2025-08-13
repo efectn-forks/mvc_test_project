@@ -3,6 +3,7 @@ using mvc_proje.Application.Dtos.Admin.User;
 using mvc_proje.Application.Validators.Admin.User;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -30,6 +31,20 @@ public class UserService
         return new UserDto
         {
             Users = users,
+        };
+    }
+    
+    public async Task<PagedResult<User>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.UserRepository.CountAsync();
+        var users = await _unitOfWork.UserRepository.GetPagedAsync(pageNumber, includeFunc: q => q
+            .Include(u => u.Orders)
+            .Include(u => u.Posts));
+
+        return new PagedResult<User>
+        {
+            Items = users,
+            TotalCount = totalCount,
         };
     }
     

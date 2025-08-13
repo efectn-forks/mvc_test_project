@@ -17,12 +17,20 @@ public class FeatureController : Controller
     
     [HttpGet]
     [Route("admin/features")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Özellikler";
-        var features = await _featureService.GetAllAsync();
+        var features = await _featureService.GetPagedAsync(page);
         
-        return View("Admin/Feature/Index", features);
+        ViewData["TotalItems"] = features.TotalCount;
+        ViewData["CurrentPage"] = page;
+
+        var featureDto = new FeatureDto
+        {
+            Features = features.Items,
+        };
+        
+        return View("Admin/Feature/Index", featureDto);
     }
     
     [HttpPost]

@@ -18,12 +18,20 @@ public class CategoryController : Controller
 
     [HttpGet]
     [Route("admin/categories")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Kategoriler";
-        var categories = await _categoryService.GetAllAsync();
+        var categories = await _categoryService.GetPagedAsync(page);
+
+        var categoryIndexDto = new CategoryIndexDto
+        {
+            Categories = categories.Items
+        };
         
-        return View("Admin/Category/Index", categories);
+        ViewData["TotalItems"] = categories.TotalCount;
+        ViewData["CurrentPage"] = page;
+
+        return View("Admin/Category/Index", categoryIndexDto);
     }
 
     [HttpPost]

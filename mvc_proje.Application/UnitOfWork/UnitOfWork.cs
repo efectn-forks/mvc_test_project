@@ -3,7 +3,7 @@ using mvc_proje.Domain.Interfaces;
 using mvc_proje.Domain.Interfaces.Repositories;
 using mvc_proje.Infrastructure.Database.Context;
 
-namespace mvc_proje.Infrastructure.Database.UnitOfWork;
+namespace mvc_proje.Application.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork
 {
@@ -25,6 +25,7 @@ public class UnitOfWork : IUnitOfWork
         SliderRepository = new SliderRepository(_context);
         TagRepository = new TagRepository(_context);
         UserRepository = new UserRepository(_context);
+        ProductFeatureRepository = new ProductFeatureRepository(_context);
     }
 
     public ICategoryRepository CategoryRepository { get; set; }
@@ -39,6 +40,7 @@ public class UnitOfWork : IUnitOfWork
     public ISliderRepository SliderRepository { get; set; }
     public ITagRepository TagRepository { get; set; }
     public IUserRepository UserRepository { get; set; }
+    public IProductFeatureRepository ProductFeatureRepository { get; set; }
 
 
     public async Task<int> SaveChangesAsync()

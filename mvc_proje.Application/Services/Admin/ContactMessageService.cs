@@ -2,7 +2,9 @@ using mvc_proje.Application.Dtos.Admin.ContactMessage;
 using mvc_proje.Application.Dtos.ContactMessage;
 using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.ContactMessage;
+using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -23,6 +25,18 @@ public class ContactMessageService
         return new ContactMessageDto
         {
             ContactMessages = messages
+        };
+    }
+    
+    public async Task<PagedResult<ContactMessage>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.ContactMessageRepository.CountAsync();
+        var messages = await _unitOfWork.ContactMessageRepository.GetPagedAsync(pageNumber);
+        
+        return new PagedResult<ContactMessage>
+        {
+            Items = messages,
+            TotalCount = totalCount,
         };
     }
     

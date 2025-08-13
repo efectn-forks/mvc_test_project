@@ -15,12 +15,20 @@ public class TagController : Controller
 
     [HttpGet]
     [Route("admin/tags")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Etiketler";
-        var tags = await _tagService.GetAllAsync();
+        var tags = await _tagService.GetPagedAsync(page);
+            
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = tags.TotalCount;
         
-        return View("Admin/Tag/Index", tags);
+        var tagDto = new TagDto
+        {
+            Tags = tags.Items,
+        };
+        
+        return View("Admin/Tag/Index", tagDto);
     }
 
     [HttpPost]
@@ -35,6 +43,8 @@ public class TagController : Controller
         }
         catch (Exception ex)
         {
+            //Console.WriteLine(model.Name);
+            //Console.WriteLine(ex.InnerException.Message);
             TempData["ErrorMessage"] = $"Etiket oluşturulurken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }

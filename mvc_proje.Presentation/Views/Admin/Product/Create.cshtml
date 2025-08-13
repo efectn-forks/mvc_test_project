@@ -5,6 +5,12 @@
     Layout = "_AdminLayout";
 }
 
+<script>
+  $(document).ready(function() {
+    $('#summernote').summernote();
+  });
+</script>
+
 <style>
     .image-upload-container {
         border: 2px dashed #dee2e6;
@@ -190,6 +196,11 @@
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Açıklama</label>
                                     <textarea class="form-control" name="description" id="description"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="summernote" class="form-label">İçerik</label>
+                                    <textarea class="form-control" name="content" id="summernote"></textarea>
                                 </div>
 
                                 <div class="row mb-3">

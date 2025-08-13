@@ -5,6 +5,7 @@ using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.Admin.Product;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -34,6 +35,19 @@ public class ProductService
             Products = products
         };
     }
+    
+    public async Task<PagedResult<Product>> GetPagedAsync(int pageNumber)
+    {
+        var totalProducts = await _unitOfWork.ProductRepository.CountAsync();
+        var products = await _unitOfWork.ProductRepository.GetPagedAsync(pageNumber, includeFunc: q => q
+            .Include(p => p.Category));
+
+        return new PagedResult<Product>
+        {
+            Items = products,
+            TotalCount = totalProducts,
+        };
+    }
 
     public async Task CreateAsync(ProductCreateDto model)
     {
@@ -51,6 +65,7 @@ public class ProductService
             CategoryId = model.CategoryId,
             SkuNumber = model.SkuNumber,
             Stock = model.Stock,
+            Content = model.Content,
         };
 
         if (model.Image != null)
@@ -72,7 +87,8 @@ public class ProductService
     public async Task<ProductEditDto> GetByIdAsync(int id)
     {
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, includeFunc: q => q
-            .Include(p => p.Category));
+            .Include(p => p.Category)
+            .Include(p => p.ProductFeatures));
 
         if (product == null)
         {
@@ -84,14 +100,16 @@ public class ProductService
             Id = product.Id,
             Name = product.Name,
             Description = product.Description,
+            Content = product.Content,
             Price = product.Price,
             CategoryId = product.CategoryId,
             SkuNumber = product.SkuNumber,
             ImageUrl = product.ImageUrl,
-            Stock = product.Stock
+            Stock = product.Stock,
+            ProductFeatures = product.ProductFeatures.ToList(),
         };
     }
-    
+
     public async Task<Product> GetByIdAsync2(int id)
     {
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, includeFunc: q => q
@@ -101,7 +119,7 @@ public class ProductService
         {
             throw new KeyNotFoundException($"Product with ID {id} not found.");
         }
-        
+
         return product;
     }
 
@@ -121,6 +139,7 @@ public class ProductService
 
         product.Name = model.Name;
         product.Description = model.Description;
+        product.Content = model.Content;
         product.Price = model.Price;
         product.CategoryId = model.CategoryId;
         product.SkuNumber = model.SkuNumber;

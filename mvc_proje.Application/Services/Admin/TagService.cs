@@ -4,6 +4,7 @@ using mvc_proje.Application.Dtos.Admin.Tag;
 using mvc_proje.Application.Validators.Admin.Tag;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -33,6 +34,19 @@ public class TagService
                 Description = tag.Description,
                 Posts = tag.Posts
             }),
+        };
+    }
+    
+    public async Task<PagedResult<Tag>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.TagRepository.CountAsync();
+        var tags = await _unitOfWork.TagRepository.GetPagedAsync(pageNumber, includeFunc: q => q
+            .Include(t => t.Posts));
+
+        return new PagedResult<Tag>
+        {
+            Items = tags,
+            TotalCount = totalCount,
         };
     }
 

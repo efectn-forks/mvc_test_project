@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using mvc_proje.Application.Dtos.Admin.Comment;
 using mvc_proje.Application.Services.Admin;
 
 namespace mvc_proje.Presentation.Controllers.Admin;
@@ -16,12 +17,20 @@ public class CommentController : Controller
 
     [HttpGet]
     [Route("admin/comments")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Yorumlar";
-        var comments = await _commentService.GetAllAsync();
+        var comments = await _commentService.GetPagedAsync(page);
         
-        return View("Admin/Comment/Index", comments);
+        ViewData["TotalItems"] = comments.TotalCount;
+        ViewData["CurrentPage"] = page;
+        
+        var commentIndexDto = new CommentIndexDto
+        {
+            Comments = comments.Items
+        };
+        
+        return View("Admin/Comment/Index", commentIndexDto);
     }
     
     [HttpGet]

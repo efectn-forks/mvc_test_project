@@ -4,12 +4,10 @@
 
 @model mvc_proje.Application.Dtos.Admin.Post.PostEditDto
 
-<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
-
 <script>
-    const quill = new Quill("#content", {
-        theme: "snow",
-    });
+  $(document).ready(function() {
+    $('#summernote').summernote();
+  });
 </script>
 
 <!--end::App Content Header-->
@@ -68,8 +66,8 @@
                                 }
 
                                 <div class="mb-3">
-                                    <label for="content" class="form-label">İçerik</label>
-                                    <textarea class="form-control" asp-for="Content" id="content"></textarea>
+                                    <label for="summernote" class="form-label">İçerik</label>
+                                    <textarea class="form-control" asp-for="Content" id="summernote"></textarea>
                                 </div>
                             </div>
                             <!--end::Body-->

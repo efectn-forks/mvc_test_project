@@ -19,4 +19,5 @@ public interface IUnitOfWork : IAsyncDisposable
     ISliderRepository SliderRepository { get; }
     ITagRepository TagRepository { get; }
     IUserRepository UserRepository { get; }
+    IProductFeatureRepository ProductFeatureRepository { get; }
 }

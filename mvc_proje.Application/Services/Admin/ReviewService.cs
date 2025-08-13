@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Review;
 using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.Admin.Review;
+using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -25,6 +27,19 @@ public class ReviewService
     {
         var reviews = await _unitOfWork.ReviewRepository.GetAllAsync(includeFunc: q => q.Include(r => r.User));
         return new ReviewDto { Reviews = reviews };
+    }
+    
+    public async Task<PagedResult<Review>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.ReviewRepository.CountAsync();
+        var reviews = await _unitOfWork.ReviewRepository.GetPagedAsync(pageNumber, 
+            includeFunc: q => q.Include(r => r.User));
+
+        return new PagedResult<Review>
+        {
+            Items = reviews,
+            TotalCount = totalCount,
+        };
     }
 
     public async Task CreateAsync(ReviewCreateDto model)

@@ -2,6 +2,7 @@ using mvc_proje.Application.Dtos.Admin.Slider;
 using mvc_proje.Application.Validators.Admin.Slider;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -27,6 +28,18 @@ public class SliderService
         return new SliderDto
         {
             Sliders = sliders
+        };
+    }
+    
+    public async Task<PagedResult<Slider>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.SliderRepository.CountAsync();
+        var sliders = await _unitOfWork.SliderRepository.GetPagedAsync(pageNumber);
+        
+        return new PagedResult<Slider>
+        {
+            Items = sliders,
+            TotalCount = totalCount,
         };
     }
     

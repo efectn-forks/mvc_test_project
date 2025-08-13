@@ -17,6 +17,9 @@ public class Product : BaseEntity
     public string Description { get; set; } = string.Empty;
     
     [Required]
+    public string Content { get; set; } = string.Empty;
+    
+    [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "Price must be a positive value.")]
     public decimal Price { get; set; }
     
@@ -35,4 +38,6 @@ public class Product : BaseEntity
     public IEnumerable<ProductImage> Images { get; set; } = new List<ProductImage>();
   
     public IEnumerable<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    
+    public IEnumerable<ProductFeature> ProductFeatures { get; set; } = new List<ProductFeature>();
 }

@@ -16,12 +16,20 @@ public class OrderController : Controller
     
     [HttpGet]
     [Route("/admin/orders")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Siparişler";
-        var orders = await _orderService.GetAllAsync();
+        var orders = await _orderService.GetPagedAsync(page);
         
-        return View("Admin/Order/Index", orders);
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = orders.TotalCount;
+
+        var orderDto = new OrderDto
+        {
+            Orders = orders.Items
+        };
+        
+        return View("Admin/Order/Index", orderDto);
     }
     
     [HttpGet]

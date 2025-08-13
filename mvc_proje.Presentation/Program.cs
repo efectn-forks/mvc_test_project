@@ -1,9 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Services;
 using mvc_proje.Application.Services.Admin;
 using mvc_proje.Domain.Enums;
 using mvc_proje.Domain.Interfaces;
 using mvc_proje.Infrastructure.Database.Context;
-using mvc_proje.Infrastructure.Database.UnitOfWork;
+using mvc_proje.Application.UnitOfWork;
 using mvc_proje.Misc;
 using AdminOrderService = mvc_proje.Application.Services.Admin.OrderService;
 using OrderService = mvc_proje.Application.Services.OrderService;
@@ -14,14 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Create db context
-var dbCtx = new AppDbCtx();
-dbCtx.Database.EnsureCreated();
 
 // Register the db context with dependency injection
-builder.Services.AddSingleton(dbCtx);
+builder.Services.AddDbContext<AppDbCtx>(ServiceLifetime.Scoped);
+
 
 // Register unit of work
-builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Register services
 var services = new[]
@@ -44,11 +44,12 @@ var services = new[]
     typeof(CartService),
     typeof(HomepageService),
     typeof(ProfileService),
+    typeof(ProductFeatureService)
 };
 
 foreach (var service in services)
 {
-    builder.Services.AddSingleton(service);
+    builder.Services.AddScoped(service);
 }
 
 // Register settings and about us services manually

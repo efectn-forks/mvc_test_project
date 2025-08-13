@@ -18,12 +18,20 @@ public class SliderController : Controller
     
     [HttpGet]
     [Route("admin/sliders")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Sliderlar";
-        var sliders = await _sliderService.GetAllAsync();
+        var sliders = await _sliderService.GetPagedAsync(page);
         
-        return View("Admin/Slider/Index", sliders);
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = sliders.TotalCount;
+        
+        var sliderDto = new SliderDto
+        {
+            Sliders = sliders.Items,
+        };
+        
+        return View("Admin/Slider/Index", sliderDto);
     }
     
     [HttpPost]

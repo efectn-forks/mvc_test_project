@@ -3,7 +3,9 @@ using mvc_proje.Application.Dtos.Admin.Feature;
 using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.Admin.Category;
 using mvc_proje.Application.Validators.Admin.Feature;
+using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -30,6 +32,19 @@ public class FeatureService
         {
             Features = features,
         };
+    }
+
+    public async Task<PagedResult<Feature>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.FeatureRepository.CountAsync();
+        Console.WriteLine((int)Math.Ceiling((int)(totalCount) / 5.0));
+        var features = await _unitOfWork.FeatureRepository.GetPagedAsync(pageNumber);
+
+        return new PagedResult<Feature>
+        {
+            Items = features,
+            TotalCount = totalCount,
+        };  
     }
 
     public async Task<FeatureEditDto> GetByIdAsync(int id)

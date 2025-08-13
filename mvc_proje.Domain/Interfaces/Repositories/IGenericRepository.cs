@@ -5,6 +5,7 @@ namespace mvc_proje.Domain.Interfaces.Repositories;
 
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
+    Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null);
     Task AddAsync(TEntity entity);
     Task UpdateAsync(TEntity entity);
     Task DeleteAsync(int id);
@@ -13,7 +14,7 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);
 
     // Paged list retrieval
-    Task<IEnumerable<TEntity>> GetPagedAsync(int pageNumber, int pageSize,
+    Task<IEnumerable<TEntity>> GetPagedAsync(int pageNumber, int pageSize = 5,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null);

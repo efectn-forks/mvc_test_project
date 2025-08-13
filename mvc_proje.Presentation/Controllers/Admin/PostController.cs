@@ -17,12 +17,20 @@ public class PostController : Controller
 
     [HttpGet]
     [Route("admin/posts")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Yazılar";
-        var posts = await _postService.GetAllAsync();
+        var posts = await _postService.GetPagedAsync(page);
+        
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = posts.TotalCount;
 
-        return View("Admin/Post/Index", posts);
+        var postDto = new PostDto
+        {
+            Posts = posts.Items,
+        };
+
+        return View("Admin/Post/Index", postDto);
     }
 
     [HttpGet]

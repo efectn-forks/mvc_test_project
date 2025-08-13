@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Category;
 using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.Admin.Category;
+using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -29,6 +31,19 @@ public class CategoryService
         return new CategoryIndexDto
         {
             Categories = categories,
+        };
+    }
+    
+    public async Task<PagedResult<Category>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.CategoryRepository.CountAsync();
+        var categories = await _unitOfWork.CategoryRepository.GetPagedAsync(pageNumber, 5,
+            includeFunc: c => c.Include(x => x.Products));
+
+        return new PagedResult<Category>
+        {
+            Items = categories,
+            TotalCount = totalCount,
         };
     }
 

@@ -14,6 +14,18 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     {
         _context = context;
     }
+    
+    public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null)
+    {
+        IQueryable<TEntity> query = _context.Set<TEntity>();
+
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
+
+        return await query.CountAsync();
+    }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)
@@ -44,10 +56,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return await res.FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task AddAsync(TEntity entity)
+    public Task AddAsync(TEntity entity)
     {
         _context.Set<TEntity>().Add(entity);
-        await _context.SaveChangesAsync();
+        
+        return Task.CompletedTask;
     }
 
     public Task UpdateAsync(TEntity entity)
@@ -81,7 +94,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return await query.ToListAsync();
     }
 
-    public async Task<IEnumerable<TEntity>> GetPagedAsync(int pageNumber, int pageSize,
+    public async Task<IEnumerable<TEntity>> GetPagedAsync(int pageNumber, int pageSize = 5,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IQueryable<TEntity>>? includeFunc = null)

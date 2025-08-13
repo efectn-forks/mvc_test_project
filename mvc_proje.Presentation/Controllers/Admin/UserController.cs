@@ -17,12 +17,20 @@ public class UserController : Controller
     
     [HttpGet]
     [Route("admin/users")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Kullanıcılar";
-        var users = await _userService.GetAllAsync();
+        var users = await _userService.GetPagedAsync(page);
         
-        return View("Admin/User/Index", users);
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = users.TotalCount;
+        
+        var userDto = new UserDto
+        {
+            Users = users.Items,
+        };
+        
+        return View("Admin/User/Index", userDto);
     }
     
     [HttpGet]

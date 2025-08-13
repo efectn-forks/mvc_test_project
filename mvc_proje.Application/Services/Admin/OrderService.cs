@@ -3,6 +3,7 @@ using mvc_proje.Application.Dtos.Admin.Order;
 using mvc_proje.Application.Repositories;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services.Admin;
 
@@ -26,6 +27,22 @@ public class OrderService
         return new OrderDto
         {
             Orders = orders
+        };
+    }
+    
+    public async Task<PagedResult<Order>> GetPagedAsync(int pageNumber)
+    {
+        var totalCount = await _unitOfWork.OrderRepository.CountAsync();
+        var orders = await _unitOfWork.OrderRepository.GetPagedAsync(pageNumber, includeFunc: q => q
+            .Include(o => o.User)
+            .Include(o => o.OrderTracks)
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product));
+
+        return new PagedResult<Order>
+        {
+            Items = orders,
+            TotalCount = totalCount,
         };
     }
 

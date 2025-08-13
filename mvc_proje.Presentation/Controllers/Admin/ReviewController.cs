@@ -19,14 +19,22 @@ public class ReviewController : Controller
 
     [HttpGet]
     [Route("/admin/reviews")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] int page = 1)
     {
         ViewData["Title"] = "Yorumlar";
         ViewData["Users"] = await _userService.GetAllAsync();
         
-        var reviews = await _reviewService.GetAllAsync();
+        var reviews = await _reviewService.GetPagedAsync(page);
+        
+        ViewData["CurrentPage"] = page;
+        ViewData["TotalItems"] = reviews.TotalCount;
+        
+        var reviewDto = new ReviewDto
+        {
+            Reviews = reviews.Items,
+        };
 
-        return View("Admin/Review/Index", reviews);
+        return View("Admin/Review/Index", reviewDto);
     }
     
     [HttpPost]
