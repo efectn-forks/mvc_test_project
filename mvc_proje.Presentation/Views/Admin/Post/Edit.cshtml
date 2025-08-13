@@ -1,0 +1,90 @@
+@{
+    Layout = "_AdminLayout";
+}
+
+@model mvc_proje.Application.Dtos.Admin.Post.PostEditDto
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+
+<script>
+    const quill = new Quill("#content", {
+        theme: "snow",
+    });
+</script>
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-8">
+                    <div class="card card-primary card-outline mb-4">
+                        <!--begin::Form-->
+                        <form method="post" asp-action="Update" asp-controller="Post" asp-antiforgery="true" enctype="multipart/form-data">
+                            <input type="hidden" name="UserId" value="1">
+                            <input type="hidden" asp-for="Id" value="@Model.Id"/>
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Başlık</label>
+                                    <input
+                                        type="text"
+                                        asp-for="Title"
+                                        class="form-control"
+                                        id="title"/>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Açıklama</label>
+                                    <textarea class="form-control" asp-for="Description" id="description"></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="tags" class="form-label">Etiketler</label>
+                                    <input
+                                        type="text"
+                                        asp-for="Tags"
+                                        class="form-control"
+                                        id="tags">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="Image" class="form-label">Resim</label>
+                                    <input
+                                        type="file"
+                                        name="Image"
+                                        class="form-control"
+                                        id="Image"/>
+                                </div>
+                                
+                                @if (Model.ImageUrl != null)
+                                {
+                                    <div class="mb-3">
+                                        <img src="@Url.Content(Model.ImageUrl)" width="500" height="500" alt="Post Image" class="img-fluid"/>
+                                    </div>
+                                }
+
+                                <div class="mb-3">
+                                    <label for="content" class="form-label">İçerik</label>
+                                    <textarea class="form-control" asp-for="Content" id="content"></textarea>
+                                </div>
+                            </div>
+                            <!--end::Body-->
+                            <!--begin::Footer-->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Gönder</button>
+                            </div>
+                            <!--end::Footer-->
+                        </form>
+                        <!--end::Form-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>

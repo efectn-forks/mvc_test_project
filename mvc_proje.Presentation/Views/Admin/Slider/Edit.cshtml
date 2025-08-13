@@ -1,0 +1,116 @@
+@using SixLabors.ImageSharp.Memory
+@model mvc_proje.Application.Dtos.Admin.Slider.SliderEditDto
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <form method="post" asp-action="Update" asp-controller="Slider" asp-antiforgery="true"
+                  enctype="multipart/form-data">
+              <input type="hidden" name="id" value="@Model.Id"/>
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="Title" class="form-label">Başlık</label>
+                  <input
+                    type="text"
+                    name="Title"
+                    class="form-control"
+                    value="@Model.Title"
+                    id="Title"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="Image" class="form-label">Resim</label>
+                  <input
+                    type="file"
+                    name="Image"
+                    class="form-control"
+                    value="@Model.Image"
+                    id="Image"/>
+                </div>
+                
+                @if (Model.ImageUrl != null)
+                {
+                  <div class="mb-3">
+                    <img src="@Url.Content(Model.ImageUrl)" width="500" height="500" alt="Post Image" class="img-fluid"/>
+                  </div>
+                }
+
+                <div class="col md-4 mb-3">
+                  <div class="col md-2">
+                    <div class="mb-3">
+                      <label for="Button1Text" class="form-label">Buton 1 - Yazı</label>
+                      <input
+                        type="text"
+                        name="Button1Text"
+                        class="form-control"
+                        value="@Model.Button1Text"
+                        id="Button1Text"/>
+                    </div>
+                  </div>
+                  <div class="col md-2">
+                    <div class="mb-3">
+                      <label for="Button1Url" class="form-label">Buton 1 - URL</label>
+                      <input
+                        type="text"
+                        name="Button1Url"
+                        class="form-control"
+                        value="@Model.Button1Url"
+                        id="Button1Url"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col md-4 mb-3">
+                  <div class="col md-2">
+                    <div class="mb-3">
+                      <label for="Button2Text" class="form-label">Buton 2 - Yazı</label>
+                      <input
+                        type="text"
+                        name="Button2Text"
+                        class="form-control"
+                        value="@Model.Button2Text"
+                        id="Button2Text"/>
+                    </div>
+                  </div>
+                  <div class="col md-2">
+                    <div class="mb-3">
+                      <label for="Button2Url" class="form-label">Buton 2 - URL</label>
+                      <input
+                        type="text"
+                        name="Button2Url"
+                        class="form-control"
+                        value="@Model.Button2Url"
+                        id="Button2Url"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>

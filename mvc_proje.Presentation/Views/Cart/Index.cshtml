@@ -1,0 +1,340 @@
+@model mvc_proje.Application.ShoppingCart.ShoppingCart
+
+<style>
+    .cart-page {
+        padding: 60px 0;
+    }
+
+    .cart-header {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+
+    .cart-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 80px;
+        height: 2px;
+        background: #4a7c0f;
+    }
+
+    .cart-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 20px;
+    }
+
+    .cart-table th {
+        padding: 15px;
+        font-weight: 600;
+        text-align: left;
+        color: #333;
+        border-bottom: 1px solid #eee;
+    }
+
+    .cart-item {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .cart-item td {
+        padding: 20px;
+        vertical-align: middle;
+    }
+
+    .cart-item-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-item-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .cart-item-meta {
+        color: #777;
+        font-size: 0.9rem;
+    }
+
+    .cart-item-price {
+        font-weight: 600;
+        color: #4a7c0f;
+    }
+
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+    }
+
+    .quantity-btn {
+        width: 35px;
+        height: 35px;
+        background: #f1f8e9;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .quantity-input {
+        width: 50px;
+        height: 35px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-left: none;
+        border-right: none;
+    }
+
+    .remove-item {
+        color: #dc3545;
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .remove-item:hover {
+        transform: scale(1.1);
+    }
+
+    .cart-summary {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        position: sticky;
+        top: 100px;
+    }
+
+    .summary-title {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+
+    .summary-title::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 50px;
+        height: 2px;
+        background: #4a7c0f;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+    }
+
+    .summary-label {
+        color: #555;
+    }
+
+    .summary-value {
+        font-weight: 600;
+    }
+
+    .summary-total {
+        border-top: 1px solid #eee;
+        margin-top: 10px;
+        padding-top: 15px;
+        font-size: 1.2rem;
+    }
+
+    .summary-total .summary-value {
+        color: #4a7c0f;
+        font-size: 1.3rem;
+    }
+
+    .coupon-form {
+        display: flex;
+        margin-top: 20px;
+    }
+
+    .coupon-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px 0 0 5px;
+    }
+
+    .coupon-btn {
+        background: #4a7c0f;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 50px 0;
+    }
+
+    .empty-cart-icon {
+        font-size: 5rem;
+        color: #e9ecef;
+        margin-bottom: 20px;
+    }
+
+    .cart-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    @@media (max-width: 768px) {
+        .cart-table thead {
+            display: none;
+        }
+
+        .cart-item {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .cart-item td {
+            display: block;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .cart-item-image {
+            margin: 0 auto;
+        }
+
+        .quantity-selector {
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .cart-actions {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Shopping Cart</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a class="text-body" asp-controller="Homepage" asp-action="Index">Home</a>
+                </li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Shopping Cart</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Cart Section Start -->
+<div class="container-xxl cart-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h3 class="cart-header">Your Cart Items</h3>
+
+                <div class="table-responsive">
+                    <table class="cart-table">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Cart Item 1 -->
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr class="cart-item">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="cart-item-image me-3">
+                                            <img
+                                                src="@Url.Content(item.Product.ImageUrl)"
+                                                alt="@item.Product.Name">
+                                        </div>
+                                        <div>
+                                            <h5 class="cart-item-title">@item.Product.Name</h5>
+                                            <div class="cart-item-meta">SKU: @item.Product.SkuNumber</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cart-item-price">$@item.Product.Price</td>
+                                <td>
+                                    <div class="quantity-selector">
+                                        @item.Quantity
+                                    </div>
+                                </td>
+                                <td class="cart-item-price">$@item.Product.Price</td>
+                                <td>
+                                    <a asp-controller="Cart" asp-action="Delete" asp-route-id="@item.ProductId" class="remove-item">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="cart-actions">
+                    <a asp-controller="Homepage" asp-action="Products" class="btn btn-outline-primary py-3 px-5">
+                        <i class="fa fa-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                    <button class="btn btn-primary py-3 px-5">
+                        <i class="fa fa-sync-alt me-2"></i>Update Cart
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="cart-summary">
+                    <h4 class="summary-title">Cart Summary</h4>
+
+                    <div class="summary-row summary-total">
+                        <span class="summary-label">Total:</span>
+                        <span class="summary-value">$@Model.GetTotal()</span>
+                    </div>
+
+                    <a asp-controller="Cart" asp-action="Checkout" class="btn btn-primary w-100 py-3 mt-4">
+                        Proceed to Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart Section End !-->

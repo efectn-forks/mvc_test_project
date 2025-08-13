@@ -1,0 +1,124 @@
+@model mvc_proje.Domain.Misc.Settings
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <form method="post" asp-action="Update" asp-controller="Settings" asp-antiforgery="true">
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="Address" class="form-label">Adres</label>
+                  <input
+                    type="text"
+                    asp-for="Address"
+                    class="form-control"
+                    id="Address"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="Phone" class="form-label">Telefon No.</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="Phone"
+                    asp-for="Phone"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="Email" class="form-label">Email</label>
+                  <input
+                    type="text"
+                    asp-for="Email"
+                    class="form-control"
+                    id="Email"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="FacebookUrl" class="form-label">Facebook URL'si</label>
+                  <input
+                    type="text"
+                    asp-for="FacebookUrl"
+                    class="form-control"
+                    id="FacebookUrl"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="InstagramUrl" class="form-label">Instagram URL'si</label>
+                  <input
+                    type="text"
+                    asp-for="InstagramUrl"
+                    class="form-control"
+                    id="InstagramUrl"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="TwitterUrl" class="form-label">Twitter URL'si</label>
+                  <input
+                    type="text"
+                    asp-for="TwitterUrl"
+                    class="form-control"
+                    id="TwitterUrl"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="LinkedinUrl" class="form-label">Linkedin URL'si</label>
+                  <input
+                    type="text"
+                    asp-for="LinkedinUrl"
+                    class="form-control"
+                    id="LinkedinUrl"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="Sitename" class="form-label">Website Adı</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="Sitename"
+                    asp-for="Sitename"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="GoogleMapsUrl" class="form-label">Google Maps Iframe URL'si</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="GoogleMapsUrl"
+                    asp-for="GoogleMapsUrl"/>
+                </div>
+
+                <div class="mb-3">
+                  <label for="FooterDescription" class="form-label">Footer Açıklaması</label>
+                  <textarea class="form-control"
+                            id="FooterDescription"
+                            asp-for="FooterDescription"></textarea>
+                </div>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>

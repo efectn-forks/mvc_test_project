@@ -1,0 +1,115 @@
+using mvc_proje.Application.Services;
+using mvc_proje.Application.Services.Admin;
+using mvc_proje.Domain.Enums;
+using mvc_proje.Domain.Interfaces;
+using mvc_proje.Infrastructure.Database.Context;
+using mvc_proje.Infrastructure.Database.UnitOfWork;
+using mvc_proje.Misc;
+using AdminOrderService = mvc_proje.Application.Services.Admin.OrderService;
+using OrderService = mvc_proje.Application.Services.OrderService;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Create db context
+var dbCtx = new AppDbCtx();
+dbCtx.Database.EnsureCreated();
+
+// Register the db context with dependency injection
+builder.Services.AddSingleton(dbCtx);
+
+// Register unit of work
+builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
+
+// Register services
+var services = new[]
+{
+    typeof(CategoryService),
+    typeof(ContactMessageService),
+    typeof(FeatureService),
+    typeof(AdminOrderService),
+    typeof(OrderService),
+    typeof(ProductService),
+    typeof(CommentService),
+    typeof(OrderTrackService),
+    typeof(PostService),
+    typeof(ReviewService),
+    typeof(SliderService),
+    typeof(TagService),
+    typeof(UserService),
+    typeof(AboutUsService),
+    typeof(AuthService),
+    typeof(CartService),
+    typeof(HomepageService),
+    typeof(ProfileService),
+};
+
+foreach (var service in services)
+{
+    builder.Services.AddSingleton(service);
+}
+
+// Register settings and about us services manually
+var resourcesPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
+
+builder.Services.AddSingleton<SettingsService>(sp =>
+{
+    var settingsService = new SettingsService(Path.Combine(resourcesPath, "settings.json"));
+    return settingsService;
+});
+
+builder.Services.AddSingleton<AboutUsService>(sp =>
+{
+    var aboutUsService = new AboutUsService(Path.Combine(resourcesPath, "about-us.json"));
+    return aboutUsService;
+});
+
+builder.Services.AddSession();
+
+// Add support for Views/Admin views discovery
+builder.Services.AddControllersWithViews()
+    .AddRazorOptions(options => { options.ViewLocationExpanders.Add(new CustomViewLocationExpander()); });
+
+builder.Services.AddAuthentication()
+    .AddCookie(options => { options.LoginPath = "/auth/login/"; });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole(nameof(Role.Admin)));
+
+    options.AddPolicy("UserPolicy", policy =>
+        policy.RequireRole(nameof(Role.User), nameof(Role.Admin)));
+});
+
+var app = builder.Build();
+
+app.UseStatusCodePagesWithReExecute("/404");
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseSession();
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapStaticAssets();
+
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Homepage}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+
+app.Run();

@@ -56,8 +56,8 @@ nunit-*.xml
 .idea/*
 .vs/*
 
-app.db
-wwwroot/images/products/*
-wwwroot/images/posts/*
-wwwroot/images/sliders/*
-wwwroot/images/avatars/*
+mvc_proje.Presentation/app.db*
+mvc_proje.Presentation/wwwroot/images/products/*
+mvc_proje.Presentation/wwwroot/images/posts/*
+mvc_proje.Presentation/wwwroot/images/sliders/*
+mvc_proje.Presentation/wwwroot/images/avatars/*

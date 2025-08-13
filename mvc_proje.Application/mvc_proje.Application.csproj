@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\mvc_proje.Domain\mvc_proje.Domain.csproj" />
+      <ProjectReference Include="..\mvc_proje.Infrastructure\mvc_proje.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+    </ItemGroup>
+
+</Project>
