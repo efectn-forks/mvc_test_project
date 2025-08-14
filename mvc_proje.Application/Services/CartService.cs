@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Cart;
 using mvc_proje.Application.Validators.Cart;
 using mvc_proje.Domain.Entities;
@@ -14,12 +16,17 @@ public class CartService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly CartCreateValidator _cartCreateValidator;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
     private const string CartSessionKey = "Cart";
     
     public CartService(IUnitOfWork unitOfWork, CartCreateValidator cartCreateValidator = null)
     {
         _unitOfWork = unitOfWork;
         _cartCreateValidator = cartCreateValidator ?? new CartCreateValidator();
+        _jsonSerializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
     }
     
     public async Task CreateAsync(ISession sess, CartCreateDto model)
@@ -30,7 +37,8 @@ public class CartService
             throw new ArgumentException("Some fields are invalid: ", string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var product = await _unitOfWork.ProductRepository.GetByIdAsync(model.ProductId);
+        var product = await _unitOfWork.ProductRepository.GetByIdAsync(model.ProductId, includeFunc: 
+            q => q.Include(p => p.Images));
         if (product == null)
         {
             throw new KeyNotFoundException("Product not found.");
@@ -172,12 +180,14 @@ public class CartService
         cart.Clear();
         _setCart(sess, cart);
         
+        await _unitOfWork.SaveChangesAsync();
+        
         return order;
     }
 
     private void _setCart(ISession sess, ShoppingCart.ShoppingCart cart)
     {
-        var jsonSerialized = JsonSerializer.Serialize(cart);
+        var jsonSerialized = JsonSerializer.Serialize(cart, _jsonSerializerOptions);
         sess.SetString(CartSessionKey, jsonSerialized);
     }
 }

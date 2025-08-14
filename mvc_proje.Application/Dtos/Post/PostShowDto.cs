@@ -1,4 +1,5 @@
 using mvc_proje.Application.Dtos.Admin.Tag;
+using mvc_proje.Application.Dtos.Comment;
 using mvc_proje.Domain.Entities;
 
 namespace mvc_proje.Application.Dtos.Post;
@@ -9,5 +10,6 @@ public class PostShowDto
 {
     public Entities.Post Post { get; set; }
     public TagDto Tags { get; set; } = new TagDto();
+    public CommentDto Comments { get; set; } = new CommentDto();
     public IEnumerable<Entities.Post> LatestPosts { get; set; } = new List<Entities.Post>();
 }

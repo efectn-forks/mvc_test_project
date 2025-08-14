@@ -16,4 +16,8 @@
       <Folder Include="wwwroot\images\editor\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Iyzipay" Version="2.1.67" />
+    </ItemGroup>
+
 </Project>

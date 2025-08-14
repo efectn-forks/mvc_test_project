@@ -8,6 +8,8 @@ using mvc_proje.Application.UnitOfWork;
 using mvc_proje.Misc;
 using AdminOrderService = mvc_proje.Application.Services.Admin.OrderService;
 using OrderService = mvc_proje.Application.Services.OrderService;
+using AdminCommentService = mvc_proje.Application.Services.Admin.CommentService;
+using CommentService = mvc_proje.Application.Services.CommentService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,7 @@ var services = new[]
     typeof(AdminOrderService),
     typeof(OrderService),
     typeof(ProductService),
+    typeof(AdminCommentService),
     typeof(CommentService),
     typeof(OrderTrackService),
     typeof(PostService),

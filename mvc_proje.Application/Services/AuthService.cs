@@ -94,4 +94,20 @@ public class AuthService
     {
         return user.Identity?.IsAuthenticated ?? false;
     }
+    
+    public int GetUserId(ClaimsPrincipal user)
+    {
+        if (!IsLoggedIn(user))
+        {
+            throw new UnauthorizedAccessException("User is not logged in");
+        }
+
+        var userIdClaim = user.FindFirst("UserId");
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+        {
+            throw new InvalidOperationException("User ID claim is missing or invalid");
+        }
+
+        return userId;
+    }
 }

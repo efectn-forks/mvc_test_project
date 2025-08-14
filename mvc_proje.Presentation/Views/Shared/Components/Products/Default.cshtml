@@ -36,7 +36,7 @@
                             <div class="col-xl-3 col-lg-4 col-md-6">
                                 <div class="product-item">
                                     <div class="position-relative bg-light overflow-hidden">
-                                        <img asp-controller="Homepage" asp-action="Product" asp-route-id="@product.Id" class="img-fluid w-100" src="@Url.Content(product.ImageUrl)" alt="">
+                                        <img class="img-fluid w-100" src="@Url.Content(product.GetMainImage().ImageUrl)" alt="@product.Name">
                                     </div>
                                     <div class="text-center p-4">
                                         <a class="d-block h5 mb-2" asp-controller="Homepage" asp-action="Product" asp-route-id="@product.Id">@product.Name</a>

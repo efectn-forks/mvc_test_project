@@ -1,12 +1,16 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Application.Dtos.Admin.Product;
+using mvc_proje.Application.Dtos.Comment;
 using mvc_proje.Application.Dtos.ContactMessage;
 using mvc_proje.Application.Dtos.Post;
 using mvc_proje.Application.Dtos.Product;
 using mvc_proje.Application.Dtos.Tag;
+using mvc_proje.Application.Services;
 using mvc_proje.Application.Services.Admin;
+using CommentService = mvc_proje.Application.Services.CommentService;
 using mvc_proje.Domain.Entities;
+using mvc_proje.Domain.Interfaces.Repositories;
 
 namespace mvc_proje.Presentation.Controllers;
 
@@ -17,19 +21,25 @@ public class HomepageController : Controller
     private readonly ProductService _productService;
     private readonly PostService _postService;
     private readonly TagService _tagService;
+    private readonly CommentService _commentService;
+    private readonly AuthService _authService;
 
     public HomepageController(
         ContactMessageService contactMessageService,
         SettingsService settingsService,
         ProductService productService,
         PostService postService,
-        TagService tagService)
+        TagService tagService,
+        CommentService commentService,
+        AuthService authService)
     {
         _contactMessageService = contactMessageService;
         _settingsService = settingsService;
         _productService = productService;
         _postService = postService;
         _tagService = tagService;
+        _commentService = commentService;
+        _authService = authService;
     }
 
     public IActionResult Index()
@@ -91,7 +101,53 @@ public class HomepageController : Controller
             Post = post,
             Tags = await _tagService.GetAllAsync(),
             LatestPosts = await _postService.GetRecentPostsAsync(),
+            Comments = await _commentService.GetCommentTreeAsync(id)
         });
+    }
+    
+    [HttpPost]
+    [Route("post/make-comment")]
+    public async Task<IActionResult> MakeComment(CommentCreateDto model)
+    {
+        try 
+        {
+            model.UserId = _authService.GetUserId(User);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Kullanıcı bilgileri alınırken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Post", new { id = model.PostId });
+        }
+
+        try
+        {
+            await _commentService.AddCommentAsync(model);
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yorum gönderilirken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Post", new { id = model.PostId });
+        }
+
+        TempData["SuccessMessage"] = "Yorumunuz başarıyla gönderildi!";
+        return RedirectToAction("Post", new { id = model.PostId });
+    }
+    
+    [HttpGet]
+    [Route("post/delete-comment/{id}")]
+    public async Task<IActionResult> DeleteComment(int id)
+    {
+        try
+        {
+            await _commentService.DeleteCommentAsync(User, id);
+            TempData["SuccessMessage"] = "Yorum başarıyla silindi.";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yorum silinirken bir hata oluştu: {ex.Message}";
+        }
+
+        return RedirectToAction("Index", "Profile");
     }
 
     [HttpGet]

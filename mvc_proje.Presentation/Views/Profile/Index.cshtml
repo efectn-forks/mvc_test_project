@@ -366,88 +366,29 @@
             <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
                 <div class="profile-card">
                     <h4 class="mb-4">My Comments</h4>
-
-                    <div class="comment-card">
-                        <div class="comment-header">
-                            <div class="comment-avatar">
-                                <img
-                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-                                    alt="User Avatar">
+                    
+                    @foreach(var comment in Model.Comments)
+                    {
+                        <div class="comment-card">
+                            <div class="comment-header">
+                                <div class="comment-avatar">
+                                    <img src="@Url.Content(Model.AvatarUrl ?? "https://via.placeholder.com/40")"
+                                         alt="User Avatar">
+                                </div>
+                                <div class="comment-meta">
+                                    <h5 class="mb-0">@Model.Username</h5>
+                                    <p class="mb-0">On: <a asp-controller="Homepage" asp-action="Post" asp-route-id="@comment.Post.Id" class="post-link">@comment.Post.Title</a></p>
+                                    <div class="comment-date">Posted on @comment.CreatedAt.ToShortDateString()</div>
+                                </div>
                             </div>
-                            <div class="comment-meta">
-                                <h5 class="mb-0">Sarah Johnson</h5>
-                                <p class="mb-0">On: <a href="#" class="post-link">The Benefits of Organic
-                                        Farming</a></p>
-                                <div class="comment-date">Posted on August 15, 2023</div>
+                            <div class="comment-content">
+                                <p>@comment.Text</p>
                             </div>
-                        </div>
-                        <div class="comment-content">
-                            <p>This was such an insightful article! I've been buying organic for the past two years
-                                and I can definitely feel the difference in my health. The section about pesticide
-                                reduction was particularly eye-opening. I hope more farms adopt these practices.</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="action-btn"><i class="far fa-thumbs-up me-1"></i> 24</button>
-                            <button class="action-btn"><i class="far fa-comment me-1"></i> 5</button>
-                            <button class="action-btn"><i class="fas fa-pencil-alt me-1"></i> Edit</button>
-                            <button class="action-btn"><i class="fas fa-trash-alt me-1"></i> Delete</button>
-                        </div>
-                    </div>
-
-                    <div class="comment-card">
-                        <div class="comment-header">
-                            <div class="comment-avatar">
-                                <img
-                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-                                    alt="User Avatar">
-                            </div>
-                            <div class="comment-meta">
-                                <h5 class="mb-0">Sarah Johnson</h5>
-                                <p class="mb-0">On: <a href="#" class="post-link">Seasonal Recipes for Summer</a>
-                                </p>
-                                <div class="comment-date">Posted on July 28, 2023</div>
+                            <div class="comment-actions">
+                                <a class="action-btn" asp-controller="Homepage" asp-action="DeleteComment" asp-route-id="@comment.Id"><i class="fas fa-trash-alt me-1"></i> Delete</a>
                             </div>
                         </div>
-                        <div class="comment-content">
-                            <p>I tried the watermelon feta salad recipe last weekend and it was a huge hit at our
-                                family gathering! The combination of sweet and salty was perfect. I added some mint
-                                from my garden which gave it a lovely freshness. Can't wait to try more recipes from
-                                this series.</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="action-btn"><i class="far fa-thumbs-up me-1"></i> 18</button>
-                            <button class="action-btn"><i class="far fa-comment me-1"></i> 3</button>
-                            <button class="action-btn"><i class="fas fa-pencil-alt me-1"></i> Edit</button>
-                            <button class="action-btn"><i class="fas fa-trash-alt me-1"></i> Delete</button>
-                        </div>
-                    </div>
-
-                    <div class="comment-card">
-                        <div class="comment-header">
-                            <div class="comment-avatar">
-                                <img
-                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-                                    alt="User Avatar">
-                            </div>
-                            <div class="comment-meta">
-                                <h5 class="mb-0">Sarah Johnson</h5>
-                                <p class="mb-0">On: <a href="#" class="post-link">How to Store Fresh Produce</a></p>
-                                <div class="comment-date">Posted on June 10, 2023</div>
-                            </div>
-                        </div>
-                        <div class="comment-content">
-                            <p>This guide has been a game-changer for me! I never knew that storing tomatoes in the
-                                refrigerator actually makes them lose flavor. Since reading this article, my produce
-                                lasts much longer and tastes better. The tip about wrapping celery in foil was
-                                particularly helpful.</p>
-                        </div>
-                        <div class="comment-actions">
-                            <button class="action-btn"><i class="far fa-thumbs-up me-1"></i> 32</button>
-                            <button class="action-btn"><i class="far fa-comment me-1"></i> 7</button>
-                            <button class="action-btn"><i class="fas fa-pencil-alt me-1"></i> Edit</button>
-                            <button class="action-btn"><i class="fas fa-trash-alt me-1"></i> Delete</button>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>

@@ -439,7 +439,7 @@
                     <div class="order-item">
                         <div class="order-item-image">
                             <img
-                                src="@Url.Content(item.Product.ImageUrl)"
+                                src="@Url.Content(item.Product.GetMainImage().ImageUrl)"
                                 alt="@item.Product.Name">
                         </div>
                         <div class="order-item-details">

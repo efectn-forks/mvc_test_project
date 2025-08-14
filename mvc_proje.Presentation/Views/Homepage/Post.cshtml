@@ -1,3 +1,4 @@
+@using mvc_proje.Domain.Entities
 @model mvc_proje.Application.Dtos.Post.PostShowDto
 
 <style>
@@ -73,7 +74,8 @@
         <h1 class="display-3 text-white mb-4 animated slideInDown">@Model.Post.Title</h1>
         <nav aria-label="breadcrumb animated slideInDown">
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a class="text-white" asp-controller="Homepage" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" asp-controller="Homepage" asp-action="Index">Home</a>
+                </li>
                 <li class="breadcrumb-item"><a class="text-white" asp-controller="Homepage" asp-action="Blog">Blog</a>
                 </li>
                 <li class="breadcrumb-item text-white active" aria-current="page">@Model.Post.Title</li>
@@ -163,74 +165,52 @@
 
                 <!-- Comments Start -->
                 <div class="wow fadeInUp mt-5" data-wow-delay="0.1s">
-                    <h3 class="mb-4">3 Comments</h3>
-                    <div class="d-flex mb-4">
-                        <img
-                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
-                            class="img-fluid rounded-circle flex-shrink-0" alt="User"
-                            style="width: 45px; height: 45px;">
-                        <div class="ps-3">
-                            <h6><a href="">John Doe</a> <small><i>01 Jan 2045</i></small></h6>
-                            <p class="mb-1">Great article! I've been trying to start my own organic garden and these
-                                tips are exactly what I needed. The section on natural pest control was particularly
-                                helpful.</p>
-                            <a class="btn btn-sm btn-link" href="">Reply</a>
-                        </div>
-                    </div>
-                    <div class="d-flex ms-5 mb-4">
-                        <img
-                            src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
-                            class="img-fluid rounded-circle flex-shrink-0" alt="User"
-                            style="width: 45px; height: 45px;">
-                        <div class="ps-3">
-                            <h6><a href="">Jane Smith</a> <small><i>01 Jan 2045</i></small></h6>
-                            <p class="mb-1">Thanks for the companion planting suggestions. I planted basil with my
-                                tomatoes this year and the difference is amazing!</p>
-                            <a class="btn btn-sm btn-link" href="">Reply</a>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-4">
-                        <img
-                            src="https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=699&q=80"
-                            class="img-fluid rounded-circle flex-shrink-0" alt="User"
-                            style="width: 45px; height: 45px;">
-                        <div class="ps-3">
-                            <h6><a href="">Robert Brown</a> <small><i>01 Jan 2045</i></small></h6>
-                            <p class="mb-1">Could you recommend some organic fertilizers for beginners? I'm just
-                                starting out and want to make sure I get this right.</p>
-                            <a class="btn btn-sm btn-link" href="">Reply</a>
-                        </div>
-                    </div>
+                    <h3 class="mb-4">@Model.Comments.Comments.Count Comments</h3>
+                    @{
+                        void printChildrenComments(List<Comment> children)
+                        {
+                            foreach (var comment in children)
+                            {
+                                <div class="d-flex mb-4">
+                                    <img
+                                        src="@Url.Content(comment.User.AvatarUrl)"
+                                        class="img-fluid rounded-circle flex-shrink-0" alt="@comment.User.Username"
+                                        style="width: 45px; height: 45px;">
+                                    <div class="ps-3">
+                                        <h6><a href="">@comment.User.Username</a>
+                                            <small><i>@comment.CreatedAt.ToShortDateString()</i></small></h6>
+                                        <p class="mb-1">@comment.Text</p>
+                                        <a class="btn btn-sm btn-link reply-btn" data-comment-id="@comment.Id"
+                                           href="#make-comment">Reply</a>
+                                    </div>
+                                </div>
+
+                                if (comment.Children != null && comment.Children.Count > 0)
+                                {
+                                    <div class="ms-5">
+                                        @{ printChildrenComments(comment.Children); }
+                                    </div>
+                                }
+                            }
+                        }
+
+                        printChildrenComments(Model.Comments.Comments);
+                    }
                 </div>
                 <!-- Comments End -->
 
                 <!-- Comment Form Start -->
-                <div class="wow fadeInUp mt-5" data-wow-delay="0.1s">
+                <div class="wow fadeInUp mt-5" data-wow-delay="0.1s" id="make-comment">
                     <h3 class="mb-4">Leave a comment</h3>
-                    <form>
+                    <form asp-controller="Homepage" asp-action="MakeComment" asp-antiforgery="true">
+                        <input type="hidden" name="postId" value="@Model.Post.Id">
+                        <input type="hidden" name="parentId" id="parentId" value="0">
+
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" placeholder="Your Name">
-                                    <label for="name">Your Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" placeholder="Your Email">
-                                    <label for="email">Your Email</label>
-                                </div>
-                            </div>
                             <div class="col-12">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
-                                    <label for="subject">Subject</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a message here" id="message"
-                                                  style="height: 150px"></textarea>
+                                    <textarea class="form-control" placeholder="Leave a message here" id="message"
+                                              style="height: 150px" name="text"></textarea>
                                     <label for="message">Message</label>
                                 </div>
                             </div>
@@ -293,3 +273,17 @@
     </div>
 </div>
 <!-- Blog Content End -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const replyButtons = document.querySelectorAll(".reply-btn");
+        const parentInput = document.getElementById("parentId");
+
+        replyButtons.forEach(btn => {
+            btn.addEventListener("click", function () {
+                const commentId = this.getAttribute("data-comment-id");
+                parentInput.value = commentId;
+            });
+        });
+    });
+</script>

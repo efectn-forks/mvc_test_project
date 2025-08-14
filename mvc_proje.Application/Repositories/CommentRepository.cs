@@ -11,14 +11,16 @@ public class CommentRepository : GenericRepository<Comment>, ICommentRepository
     {
     }
 
-    public async Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(int postId)
+    public async Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(int postId,
+        Func<IQueryable<Comment>, IQueryable<Comment>>? includeFunc = null)
     {
-        return await FindAsync(c => c.PostId == postId);
+        return await FindAsync(c => c.PostId == postId, includeFunc);
     }
 
-    public async Task<IEnumerable<Comment>> GetCommentsByUserIdAsync(int userId)
+    public async Task<IEnumerable<Comment>> GetCommentsByUserIdAsync(int userId,
+        Func<IQueryable<Comment>, IQueryable<Comment>>? includeFunc = null)
     {
-        return await FindAsync(c => c.UserId == userId);
+        return await FindAsync(c => c.UserId == userId, includeFunc);
     }
 
     public async Task<IEnumerable<Comment>> GetCommentsByParentCommentIdAsync(int parentCommentId)

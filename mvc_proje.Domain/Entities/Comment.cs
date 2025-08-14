@@ -18,4 +18,6 @@ public class Comment : BaseEntity
 
     public int? ParentCommentId { get; set; } = null;
     public Comment? ParentComment { get; set; } = null;
+    
+    public List<Comment> Children { get; set; } = new List<Comment>();
 }

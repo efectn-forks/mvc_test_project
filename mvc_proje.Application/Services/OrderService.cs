@@ -31,7 +31,10 @@ public class OrderService
         
         var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, includeFunc: q => q
             .Include(o => o.OrderItems)
-            .Include(o => o.User));
+            .ThenInclude(oi => oi.Product)
+            .ThenInclude(p => p.Images)
+            .Include(o => o.User)
+        );
         if (order == null)
         {
             throw new KeyNotFoundException("Order not found.");
@@ -68,6 +71,7 @@ public class OrderService
         var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, includeFunc: q => q
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
+            .ThenInclude(p => p.Images)
             .Include(o => o.User)
             .Include(o => o.OrderTracks));
         

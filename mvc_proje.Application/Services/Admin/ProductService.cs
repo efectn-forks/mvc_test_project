@@ -35,7 +35,7 @@ public class ProductService
             Products = products
         };
     }
-    
+
     public async Task<PagedResult<Product>> GetPagedAsync(int pageNumber)
     {
         var totalProducts = await _unitOfWork.ProductRepository.CountAsync();
@@ -68,18 +68,6 @@ public class ProductService
             Content = model.Content,
         };
 
-        if (model.Image != null)
-        {
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.Image.FileName)}";
-            var filePath = Path.Combine("wwwroot", "images", "products", fileName);
-            await using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.Image.CopyToAsync(stream);
-            }
-
-            product.ImageUrl = $"/images/products/{fileName}";
-        }
-
         var productImages = new List<ProductImage>();
         var i = 0;
         foreach (var image in model.Files)
@@ -102,7 +90,7 @@ public class ProductService
 
             i++;
         }
-        
+
         if (productImages.Count > 0)
         {
             product.Images = productImages;
@@ -133,7 +121,6 @@ public class ProductService
             Price = product.Price,
             CategoryId = product.CategoryId,
             SkuNumber = product.SkuNumber,
-            ImageUrl = product.ImageUrl,
             Stock = product.Stock,
             ProductFeatures = product.ProductFeatures.ToList(),
             ProductImages = product.Images.ToList()
@@ -143,7 +130,9 @@ public class ProductService
     public async Task<Product> GetByIdAsync2(int id)
     {
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, includeFunc: q => q
-            .Include(p => p.Category));
+            .Include(p => p.Category)
+            .Include(p => p.ProductFeatures)
+            .Include(p => p.Images));
 
         if (product == null)
         {
@@ -175,7 +164,7 @@ public class ProductService
         product.CategoryId = model.CategoryId;
         product.SkuNumber = model.SkuNumber;
         product.Stock = model.Stock;
-        
+
         // delete old images 
         if (model.DeletedImageIds != null && model.DeletedImageIds.Count > 0)
         {
@@ -196,7 +185,7 @@ public class ProductService
                 }
             }
         }
-        
+
         // add new images
         var newImages = new List<ProductImage>();
         if (model.Files != null && model.Files.Count > 0)
@@ -219,13 +208,13 @@ public class ProductService
                 }
             }
         }
-        
+
         // Set main image
         foreach (var img in product.Images)
             img.IsMain = false;
 
         var mainSet = false;
-        
+
         if (model.MainExistingImageId.HasValue &&
             (model.DeletedImageIds == null || !model.DeletedImageIds.Contains(model.MainExistingImageId.Value)))
         {
@@ -245,7 +234,7 @@ public class ProductService
                 newImages[idx].IsMain = true;
             }
         }
-        
+
         if (newImages.Count > 0)
         {
             product.Images.AddRange(newImages);
@@ -263,10 +252,10 @@ public class ProductService
             throw new KeyNotFoundException($"Product with ID {id} not found.");
         }
 
-        // Delete image if exists
-        if (!string.IsNullOrEmpty(product.ImageUrl))
+        // Delete product images
+        foreach (var image in product.Images)
         {
-            var imagePath = Path.Combine("wwwroot", product.ImageUrl.TrimStart('/'));
+            var imagePath = Path.Combine("wwwroot", image.ImageUrl.TrimStart('/'));
             if (File.Exists(imagePath))
             {
                 File.Delete(imagePath);

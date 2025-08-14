@@ -34,6 +34,7 @@ public class ProfileService
 
         var profile = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username, includeFunc: q => q
             .Include(u => u.Comments)
+            .ThenInclude(c => c.Post)
             .Include(u => u.Orders)
             .ThenInclude(o => o.OrderItems));
         if (profile == null)

@@ -166,17 +166,19 @@
             <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="product-gallery">
                     <div class="position-relative bg-light overflow-hidden rounded">
-                        <img class="img-fluid w-100"
-                             src="@Url.Content(Model.Product.ImageUrl)" width="200" height="80"
+                        <img class="img-fluid w-100" width="200" height="80"
+                             src="@Url.Content(Model.Product.GetMainImage().ImageUrl)"
                              alt="@Model.Product.Name">
                     </div>
 
                     <div class="gallery-thumbnails">
-                        <div class="thumbnail active">
-                            <img
-                                src="@Url.Content(Model.Product.ImageUrl)" width="200" height="80"
-                                alt="@Model.Product.Name">
-                        </div>
+                        @foreach (var image in Model.Product.Images)
+                        {
+                            <div class="thumbnail @(image.IsMain ? "active" : "")">
+                                <img src="@Url.Content(image.ImageUrl)" width="200" height="80"
+                                     alt="@Model.Product.Name">
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -244,12 +246,36 @@
                             aria-controls="pills-description" aria-selected="true">Description
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-specs-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-specs" type="button" role="tab" aria-controls="pills-specs"
+                            aria-selected="false">Specs
+                    </button>
+                </li>
             </ul>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
                      aria-labelledby="pills-description-tab">
                     <h4 class="mb-3">About This Product</h4>
-                    @Model.Product.Description
+                    @Html.Raw(Model.Product.Content)
+                </div>
+                <div class="tab-pane fade" id="pills-specs" role="tabpanel"
+                     aria-labelledby="pills-specs-tab">
+                    <h4 class="mb-3">Specs</h4>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                            @foreach (var spec in Model.Product.ProductFeatures)
+                            {
+                                <tr>
+                                    <td><strong>@spec.Key</strong></td>
+                                    <td>@spec.Value</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -265,7 +291,7 @@
                         <div class="product-item">
                             <div class="position-relative bg-light overflow-hidden rounded">
                                 <img class="img-fluid w-100"
-                                     src="@Url.Content(product.ImageUrl)"
+                                     src="@Url.Content(product.GetMainImage().ImageUrl)"
                                      alt="@product.Name">
                             </div>
                             <div class="text-center p-4">

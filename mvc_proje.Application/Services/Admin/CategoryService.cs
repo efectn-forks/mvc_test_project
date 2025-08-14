@@ -27,7 +27,8 @@ public class CategoryService
     public async Task<CategoryIndexDto> GetAllAsync()
     {
         var categories = await _unitOfWork.CategoryRepository.GetAllAsync(includeFunc:
-            c => c.Include(x => x.Products));
+            c => c.Include(x => x.Products)
+            .ThenInclude(p => p.Images));
         return new CategoryIndexDto
         {
             Categories = categories,
