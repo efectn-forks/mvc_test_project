@@ -229,10 +229,12 @@
             <div class="col-lg-4">
                 <!-- Search Form Start -->
                 <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="input-group">
-                        <input type="text" class="form-control p-3" placeholder="Search">
-                        <button class="btn btn-primary px-4"><i class="fa fa-search"></i></button>
-                    </div>
+                    <form method="get" asp-controller="Search" asp-action="SearchPost">
+                        <div class="input-group">
+                            <input type="text" name="searchTerm" class="form-control p-3" placeholder="Search">
+                            <button class="btn btn-primary px-4"><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>
                 </div>
                 <!-- Search Form End -->
 

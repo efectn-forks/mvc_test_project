@@ -54,6 +54,7 @@ var services = new[]
     typeof(ProfileService),
     typeof(ProductFeatureService),
     typeof(ImageService),
+    typeof(SearchService)
 };
 
 foreach (var service in services)

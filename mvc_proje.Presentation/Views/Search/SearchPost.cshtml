@@ -1,0 +1,232 @@
+@model mvc_proje.Application.Dtos.Search.SearchPostDto
+
+<style>
+    .search-hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+        background-size: cover;
+        background-position: center;
+        padding: 100px 0;
+        color: white;
+        border-radius: 12px;
+        margin-bottom: 40px;
+    }
+
+    .search-result-item {
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .search-result-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-result-img {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .search-result-content {
+        padding: 25px;
+    }
+
+    .search-highlight {
+        background-color: #e8f5e9;
+        color: #3a7d34;
+        font-weight: 600;
+    }
+
+    .search-pagination .page-item .page-link {
+        color: #3a7d34;
+        border: 1px solid #dee2e6;
+        margin: 0 5px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .search-pagination .page-item.active .page-link {
+        background: #3a7d34;
+        border-color: #3a7d34;
+        color: white;
+    }
+
+    .search-pagination .page-item .page-link:hover {
+        background: #e8f5e9;
+    }
+
+    .no-results-card {
+        border-radius: 12px;
+        background: #f9f9f9;
+        padding: 40px;
+        text-align: center;
+        border-top: 3px solid #3a7d34;
+    }
+
+    .search-suggestion {
+        background: #e8f5e9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .search-suggestion ul {
+        padding-left: 20px;
+        margin-bottom: 0;
+    }
+
+    .search-suggestion li {
+        margin-bottom: 8px;
+    }
+
+    .search-filter-bar {
+        background: #f9f9f9;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .search-filter-bar h5 {
+        color: #3a7d34;
+        margin-bottom: 15px;
+    }
+</style>
+
+
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container text-center py-5">
+        <h1 class="display-3 text-white mb-4 animated slideInDown">Search Results</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" asp-controller="Homepage" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item text-white active" aria-current="page">Search</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Search Content Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="search-hero rounded text-center p-5">
+            <h2 class="mb-4">Find What You're Looking For</h2>
+            <div class="position-relative mx-auto" style="max-width: 700px;">
+                <form asp-controller="Search" asp-action="SearchPost" method="get">
+                    <div class="input-group">
+                        <input type="text" name="searchTerm" class="form-control border-0 py-3 px-4"
+                               value="@Model.SearchTerm" placeholder="Search...">
+                        <button type="submit" class="btn btn-primary px-4 py-3"><i class="fa fa-search me-2"></i>
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <p class="mt-3 mb-0">Showing results for: <strong>"@Model.SearchTerm"</strong></p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4>@Model.TotalCount Results Found</h4>
+                    </div>
+                </div>
+
+                <!-- Search Results List -->
+                <div class="mb-5">
+                    <!-- Result Item 1 -->
+                    @foreach (var post in Model.Posts)
+                    {
+                        <div class="search-result-item wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img src="@Url.Content(post.ImageUrl)"
+                                         class="search-result-img" alt="@post.Title">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="search-result-content">
+                                        <a asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id"
+                                           class="h5 d-block">@post.Title</a>
+                                        <p class="mt-2 mb-3">@post.Description</p>
+                                        <div class="d-flex text-muted">
+                                            <small class="me-3"><i
+                                                    class="fa fa-user text-primary me-1"></i> @post.User.FullName
+                                            </small>
+                                            <small class="me-3"><i
+                                                    class="fa fa-calendar text-primary me-1"></i> @post.CreatedAt.ToShortTimeString()
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Pagination -->
+                    <nav class="mt-5 wow fadeInUp" data-wow-delay="0.1s">
+                        <ul class="pagination search-pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <i class="fa fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    <i class="fa fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Sidebar Start -->
+            <div class="col-lg-4">
+                <!-- Recent Post Start -->
+                <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <h3 class="mb-4">Recent Posts</h3>
+                    @foreach (var post in Model.RecentPosts)
+                    {
+                        <div class="d-flex mb-3">
+                            <img class="img-fluid rounded"
+                                 src="@Url.Content(post.ImageUrl)"
+                                 alt="Recent Post" style="width: 80px; height: 80px; object-fit: cover;">
+                            <div class="ps-3">
+                                <h6><a asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id" class="text-truncate">@post.Title</a></h6>
+                                <small class="text-body"><i class="fa fa-calendar me-1"></i>@post.CreatedAt.ToShortDateString()</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <!-- Recent Post End -->
+
+                <!-- Tags Start -->
+                <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <h3 class="mb-4">Tags</h3>
+                    <div class="d-flex flex-wrap m-n1">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <a asp-controller="Homepage" asp-action="Tag" asp-route-id="@tag.Id" class="btn btn-light m-1">@tag.Name</a>
+                        }
+                    </div>
+                </div>
+                <!-- Tags End -->
+            </div>
+            <!-- Sidebar End -->
+        </div>
+    </div>
+</div>
+<!-- Search Content End -->
