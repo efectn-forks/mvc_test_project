@@ -8,177 +8,44 @@
 @await Html.PartialAsync("_Editor")
 
 <style>
-    .image-upload-container {
-        border: 2px dashed #dee2e6;
-        border-radius: 10px;
-        padding: 25px;
-        text-align: center;
-        margin-bottom: 20px;
-        background-color: #fafbfc;
-        transition: all 0.3s;
+    .main-selected {
+        border: 3px solid green;
     }
 
-    .image-upload-container:hover {
-        border-color: var(--primary);
-        background-color: rgba(67, 97, 238, 0.03);
-    }
-
-    .upload-icon {
-        font-size: 48px;
-        color: var(--primary);
-        margin-bottom: 15px;
-    }
-
-    .upload-text {
-        font-size: 18px;
-        color: #6c757d;
-        margin-bottom: 20px;
-    }
-
-    .image-preview-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .image-preview {
-        position: relative;
-        width: 140px;
-        height: 140px;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s;
-    }
-
-    .image-preview:hover {
-        transform: scale(1.03);
-    }
-
-    .image-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .image-actions {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        display: flex;
-        gap: 5px;
-    }
-
-    .image-action-btn {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .btn-main {
+        display: block;
+        margin-top: 5px;
+        background: orange;
+        color: white;
+        border: none;
+        padding: 3px 8px;
         cursor: pointer;
-        transition: all 0.3s;
-        color: white;
-    }
-
-    .remove-image {
-        background: rgba(230, 57, 70, 0.85);
-    }
-
-    .remove-image:hover {
-        background: #e63946;
-        transform: scale(1.1);
-    }
-
-    .set-main-image {
-        background: rgba(255, 193, 7, 0.85);
-    }
-
-    .set-main-image:hover {
-        background: #ffc107;
-        transform: scale(1.1);
-    }
-
-    .main-image-indicator {
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        background: rgba(40, 167, 69, 0.9);
-        color: white;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 10px;
-        font-weight: bold;
-    }
-
-    .image-counter {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--primary);
-        color: white;
-        border-radius: 50%;
-        width: 28px;
-        height: 28px;
-        text-align: center;
-        margin-right: 10px;
-        font-size: 14px;
-    }
-
-    .main-image-info {
-        background-color: #e8f4ff;
-        border-left: 4px solid var(--primary);
-        padding: 10px 15px;
-        border-radius: 4px;
-        margin-top: 10px;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-    }
-
-    .main-image-info i {
-        color: var(--primary);
-        margin-right: 8px;
-        font-size: 18px;
-    }
-
-    .upload-status {
-        margin-top: 15px;
-        font-size: 14px;
-        color: #6c757d;
-    }
-
-    @@media (max-width: 768px) {
-        .image-preview {
-            width: 120px;
-            height: 120px;
-        }
     }
 </style>
 
 <!--end::App Content Header-->
 <!--begin::App Content-->
 <div class="app-content">
-  <!--begin::Container-->
-  <div class="container-fluid">
-    <!--begin::Row-->
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card mb-8">
-          <div class="card card-primary card-outline mb-4">
-            <!--begin::Form-->
-            <form method="post" asp-action="Create" asp-controller="Product" asp-antiforgery="true" enctype="multipart/form-data">
-              <!--begin::Body-->
-              <div class="card-body">
-                <div class="mb-3">
-                  <label for="name" class="form-label">İsim</label>
-                  <input
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    id="name"/>
-                </div>
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-8">
+                    <div class="card card-primary card-outline mb-4">
+                        <!--begin::Form-->
+                        <form method="post" asp-action="Create" asp-controller="Product" asp-antiforgery="true"
+                              enctype="multipart/form-data">
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">İsim</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        class="form-control"
+                                        id="name"/>
+                                </div>
 
                                 <div class="mb-3">
                                     <label for="SkuNumber" class="form-label">SKU Numarası</label>
@@ -193,7 +60,7 @@
                                     <label for="description" class="form-label">Açıklama</label>
                                     <textarea class="form-control" name="description" id="description"></textarea>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="summernote" class="form-label">İçerik</label>
                                     <textarea class="form-control" name="content" id="summernote"></textarea>
@@ -221,14 +88,10 @@
                                     </select>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="Image" class="form-label">Resim</label>
-                                    <input
-                                        type="file"
-                                        name="Image"
-                                        class="form-control"
-                                        id="Image"/>
-                                </div>
+                                <input type="file" id="realFileInput" name="files" multiple hidden />
+
+                                <input type="hidden" id="mainImageIndex" name="MainImageIndex" value=""/>
+                                <div id="dropzone" class="dropzone"></div>
                             </div>
                             <!--end::Body-->
                             <!--begin::Footer-->
@@ -246,3 +109,53 @@
     </div>
     <!--end::Container-->
 </div>
+
+<script>
+Dropzone.autoDiscover = false;
+
+var realInput = document.getElementById("realFileInput");
+
+var myDropzone = new Dropzone("#dropzone", {
+    url: "#", // Gerçekte kullanılmayacak
+    autoProcessQueue: false,
+    clickable: true,
+    addRemoveLinks: true,
+    previewsContainer: "#dropzone",
+    init: function () {
+        var dz = this;
+
+        dz.on("addedfile", function (file) {
+            // Ana resim seçme butonu
+            var btn = Dropzone.createElement("<button type='button' class='btn-main'>Ana Resim Yap</button>");
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.getElementById("mainImageIndex").value = dz.files.indexOf(file);
+                document.querySelectorAll(".dz-preview").forEach(p => p.classList.remove("main-selected"));
+                file.previewElement.classList.add("main-selected");
+            });
+            file.previewElement.appendChild(btn);
+        });
+
+        // Dropzone'a dosya eklendiğinde gerçek input'a da ekle
+        dz.on("addedfile", function(file) {
+            // FileList append edilemez, bu yüzden DataTransfer ile yeni liste oluşturacağız
+            let dt = new DataTransfer();
+            // Önce var olan dosyaları ekle
+            Array.from(realInput.files).forEach(f => dt.items.add(f));
+            // Yeni dosyayı ekle
+            dt.items.add(file);
+            // Input'a ata
+            realInput.files = dt.files;
+        });
+
+        // Dropzone'dan dosya silinirse gerçek input'tan da sil
+        dz.on("removedfile", function(file) {
+            let dt = new DataTransfer();
+            Array.from(realInput.files)
+                 .filter(f => f.name !== file.name)
+                 .forEach(f => dt.items.add(f));
+            realInput.files = dt.files;
+        });
+    }
+});
+</script>

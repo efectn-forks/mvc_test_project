@@ -35,7 +35,7 @@ public class Product : BaseEntity
 
     public string? ImageUrl { get; set; } = string.Empty;
     
-    public IEnumerable<ProductImage> Images { get; set; } = new List<ProductImage>();
+    public List<ProductImage> Images { get; set; } = new List<ProductImage>();
   
     public IEnumerable<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     

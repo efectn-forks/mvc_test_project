@@ -1,3 +1,5 @@
+@using System.Text.Json
+@using System.Text.Json.Serialization
 @using mvc_proje.Application.Dtos.Admin.Category
 @using mvc_proje.Domain.Entities
 @{
@@ -8,6 +10,21 @@
 
 @await Html.PartialAsync("_Editor")
 
+<style>
+  .main-selected {
+    border: 3px solid green;
+  }
+
+  .btn-main {
+    display: block;
+    margin-top: 5px;
+    background: orange;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+</style>
 <!--end::App Content Header-->
 <!--begin::App Content-->
 <div class="app-content">
@@ -20,7 +37,7 @@
           <div class="card card-primary card-outline mb-4">
             <!--begin::Form-->
             <form method="post" asp-action="Update" asp-controller="Product" asp-antiforgery="true"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data" id="myForm">
               <input type="hidden" asp-for="Id" value="@Model.Id"/>
               <!--begin::Body-->
               <div class="card-body">
@@ -48,7 +65,7 @@
                   <label for="description" class="form-label">Açıklama</label>
                   <textarea class="form-control" name="description" id="description">@Model.Description</textarea>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="summernote" class="form-label">İçerik</label>
                   <textarea class="form-control" asp-for="Content" id="summernote"></textarea>
@@ -78,22 +95,11 @@
                   </select>
                 </div>
 
-                <div class="mb-3">
-                  <label for="Image" class="form-label">Resim</label>
-                  <input
-                    type="file"
-                    name="Image"
-                    class="form-control"
-                    id="Image"/>
-                </div>
+                <input type="file" id="realFileInput" name="files" multiple hidden/>
+                <input type="hidden" id="MainExistingImageId" name="MainExistingImageId" />
+                <input type="hidden" id="MainNewFileIndex"  name="MainNewFileIndex"  />
 
-                @if (Model.ImageUrl != null)
-                {
-                  <div class="mb-3">
-                    <img src="@Url.Content(Model.ImageUrl)" width="500" height="500" alt="Post Image"
-                         class="img-fluid"/>
-                  </div>
-                }
+                <div id="dropzone" class="dropzone"></div>
               </div>
               <!--end::Body-->
               <!--begin::Footer-->
@@ -197,3 +203,107 @@
   </div>
   <!--end::Container-->
 </div>
+
+<script>
+  function setMainHiddenFieldsFor(file, dz){
+    const hExisting = document.getElementById("MainExistingImageId");
+    const hNew      = document.getElementById("MainNewFileIndex");
+    hExisting.value = "";
+    hNew.value      = "";
+
+    if (file.isMock && file.dbId){  
+      hExisting.value = file.dbId;
+    } else {                           
+      const newFiles = dz.files.filter(f => !f.isMock);
+      const newIndex = newFiles.indexOf(file);
+      if (newIndex >= 0) hNew.value = newIndex;
+    }
+    
+    console.log("MainExistingImageId: " + hExisting.value);
+    console.log("MainNewFileIndex: " + hNew.value);
+  }
+
+  Dropzone.autoDiscover = false;
+  var realInput = document.getElementById("realFileInput");
+
+  var myDropzone = new Dropzone("#dropzone", {
+    url: "#",
+    autoProcessQueue: false,
+    clickable: true,
+    addRemoveLinks: true,
+    previewsContainer: "#dropzone",
+    init: function () {
+      var dz = this;
+
+      dz.on("addedfile", function (file) {
+        var btn = Dropzone.createElement("<button type='button' class='btn-main'>Ana Resim Yap</button>");
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.querySelectorAll(".dz-preview").forEach(p => p.classList.remove("main-selected"));
+          file.previewElement.classList.add("main-selected");
+          setMainHiddenFieldsFor(file, dz);
+        });
+        file.previewElement.appendChild(btn);
+      });
+
+      dz.on("addedfile", function (file) {
+        let dt = new DataTransfer();
+        Array.from(realInput.files).forEach(f => dt.items.add(f));
+        if (!(file.isMock)) {
+          dt.items.add(file);
+        }
+        realInput.files = dt.files;
+      });
+
+      dz.on("removedfile", function (file) {
+        let dt = new DataTransfer();
+        Array.from(realInput.files)
+          .filter(f => f.name !== file.name)
+          .forEach(f => dt.items.add(f));
+        realInput.files = dt.files;
+        
+        if (file.isMock && file.dbId) {
+          console.log(file.dbId);
+          let deletedInput = document.createElement("input");
+          deletedInput.type = "hidden";
+          deletedInput.name = "DeletedImageIds";
+          deletedInput.value = file.dbId;
+          document.getElementById("myForm").appendChild(deletedInput);
+        }
+      });
+
+      @{
+        JsonSerializerOptions options = new()
+        {
+          ReferenceHandler = ReferenceHandler.IgnoreCycles,
+          WriteIndented = true,
+        };
+        var request = Context.Request;
+        var baseUri = $"{request.Scheme}://{request.Host}{request.PathBase}";
+      }
+
+      var existingImages = @Html.Raw(JsonSerializer.Serialize(
+                             Model.ProductImages.Select(x => new
+                             {
+                               FileName = x.ImageUrl,
+                               Url = baseUri + x.ImageUrl,
+                               Size = 12345,
+                               IsMain = x.IsMain,
+                               Id = x.Id,
+                             })
+                           ));
+      
+      console.log(existingImages);
+      existingImages.forEach(function (img, index) {
+        var mockFile = { name: img.FileName, size: img.Size, isMock: true, dbId: img.Id };
+        dz.emit("addedfile", mockFile);
+        dz.emit("thumbnail", mockFile, img.Url);
+        dz.emit("complete", mockFile);
+        if (img.IsMain) {
+          mockFile.previewElement.classList.add("main-selected");
+        }
+        dz.files.push(mockFile);
+      });
+    }
+  });
+</script>

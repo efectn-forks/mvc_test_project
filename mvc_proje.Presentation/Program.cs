@@ -15,6 +15,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Create db context
+using (var dbContext = new AppDbCtx())
+{
+    // Ensure the database is created
+    dbContext.Database.EnsureCreated();
+}
 
 // Register the db context with dependency injection
 builder.Services.AddDbContext<AppDbCtx>(ServiceLifetime.Scoped);

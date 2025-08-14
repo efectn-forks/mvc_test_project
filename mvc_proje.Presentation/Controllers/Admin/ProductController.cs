@@ -51,7 +51,7 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürün Oluştur";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
-
+        
         try
         {
             await _productService.CreateAsync(model);

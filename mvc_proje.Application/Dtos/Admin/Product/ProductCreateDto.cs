@@ -12,4 +12,6 @@ public class ProductCreateDto
     public int Stock { get; set; }
     public int CategoryId { get; set; }
     public IFormFile? Image { get; set; }
+    public List<IFormFile> Files { get; set; } = new List<IFormFile>();
+    public int MainImageIndex { get; set; } = 0;
 }
