@@ -26,6 +26,7 @@ public class UnitOfWork : IUnitOfWork
         TagRepository = new TagRepository(_context);
         UserRepository = new UserRepository(_context);
         ProductFeatureRepository = new ProductFeatureRepository(_context);
+        ProductReviewRepository = new ProductReviewRepository(_context);
     }
 
     public ICategoryRepository CategoryRepository { get; set; }
@@ -41,6 +42,7 @@ public class UnitOfWork : IUnitOfWork
     public ITagRepository TagRepository { get; set; }
     public IUserRepository UserRepository { get; set; }
     public IProductFeatureRepository ProductFeatureRepository { get; set; }
+    public IProductReviewRepository ProductReviewRepository { get; set; }
 
 
     public async Task<int> SaveChangesAsync()

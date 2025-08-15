@@ -74,4 +74,6 @@ public class AppDbCtx : DbContext
     public DbSet<Slider> Sliders { get; set; } = null!;
     public DbSet<Tag> Tags { get; set; } = null!;
     public DbSet<OrderTrack> OrderTrack { get; set; } = null!;
+    public DbSet<OrderItem> OrderItems { get; set; } = null!;
+    public DbSet<ProductReview> ProductReviews { get; set; } = null!;
 }

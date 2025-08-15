@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mvc_proje.Application.Dtos.Admin.Product;
+using mvc_proje.Application.Services;
 using mvc_proje.Application.Services.Admin;
 
 namespace mvc_proje.Presentation.Controllers.Admin;
@@ -10,11 +11,14 @@ public class ProductController : Controller
 {
     private readonly ProductService _productService;
     private readonly CategoryService _categoryService;
+    private readonly ProductReviewService _productReviewService;
 
-    public ProductController(ProductService productService, CategoryService categoryService)
+    public ProductController(ProductService productService, CategoryService categoryService,
+        ProductReviewService productReviewService)
     {
         _productService = productService;
         _categoryService = categoryService;
+        _productReviewService = productReviewService;
     }
 
     [HttpGet]
@@ -23,10 +27,10 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürünler";
         var products = await _productService.GetPagedAsync(page);
-        
+
         ViewData["CurrentPage"] = page;
         ViewData["TotalItems"] = products.TotalCount;
-        
+
         var productDto = new ProductDto
         {
             Products = products.Items,
@@ -41,7 +45,7 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürün Oluştur";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
-        
+
         return View("Admin/Product/Create");
     }
 
@@ -51,11 +55,12 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürün Oluştur";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
-        
+
         try
         {
             await _productService.CreateAsync(model);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             ModelState.AddModelError("", $"Ürün oluşturulurken bir hata oluştu: {ex.Message}");
             return View("Admin/Product/Create", model);
@@ -80,7 +85,7 @@ public class ProductController : Controller
                 TempData["ErrorMessage"] = "Ürün bulunamadı.";
                 return RedirectToAction("Index");
             }
-            
+
             return View("Admin/Product/Edit", product);
         }
         catch (Exception ex)
@@ -116,8 +121,8 @@ public class ProductController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         ViewData["Title"] = "Ürün Sil";
-        
-        try 
+
+        try
         {
             await _productService.DeleteAsync(id);
         }
@@ -129,5 +134,25 @@ public class ProductController : Controller
 
         TempData["SuccessMessage"] = "Ürün başarıyla silindi.";
         return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Route("/admin/products/delete-review/{id}")]
+    public async Task<IActionResult> DeleteReview(int id)
+    {
+        ViewData["Title"] = "Yorum Sil";
+
+        try
+        {
+            await _productReviewService.DeleteReviewAsync(null, id);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yorum bulunamadı: {ex.Message}";
+            return RedirectToAction("Index");
+        }
+
+        TempData["SuccessMessage"] = "Yorum başarıyla silindi.";
+        return Redirect(Request.Headers["Referer"].ToString() ?? "/admin/products");
     }
 }

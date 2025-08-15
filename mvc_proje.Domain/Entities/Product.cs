@@ -35,11 +35,22 @@ public class Product : BaseEntity
     public IEnumerable<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public IEnumerable<ProductFeature> ProductFeatures { get; set; } = new List<ProductFeature>();
+    public IEnumerable<ProductReview> Reviews { get; set; } = new List<ProductReview>();
 
     public ProductImage GetMainImage()
     {
         return Images.Any(img => img.IsMain)
             ? Images.First(img => img.IsMain)
             : Images.FirstOrDefault() ?? new ProductImage { };
+    }
+    
+    public double GetAverageRating()
+    {
+        if (Reviews == null || !Reviews.Any())
+        {
+            return 0;
+        }
+
+        return Reviews.Average(r => r.Rating);
     }
 }

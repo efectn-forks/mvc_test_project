@@ -105,7 +105,9 @@ public class ProductService
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, includeFunc: q => q
             .Include(p => p.Category)
             .Include(p => p.ProductFeatures)
-            .Include(p => p.Images));
+            .Include(p => p.Images)
+            .Include(p => p.Reviews)
+            .ThenInclude(r => r.User));
 
         if (product == null)
         {
@@ -123,7 +125,8 @@ public class ProductService
             SkuNumber = product.SkuNumber,
             Stock = product.Stock,
             ProductFeatures = product.ProductFeatures.ToList(),
-            ProductImages = product.Images.ToList()
+            ProductImages = product.Images.ToList(),
+            ProductReviews = product.Reviews.ToList(),
         };
     }
 
@@ -132,7 +135,9 @@ public class ProductService
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, includeFunc: q => q
             .Include(p => p.Category)
             .Include(p => p.ProductFeatures)
-            .Include(p => p.Images));
+            .Include(p => p.Images)
+            .Include(p => p.Reviews)
+            .ThenInclude(r => r.User));
 
         if (product == null)
         {

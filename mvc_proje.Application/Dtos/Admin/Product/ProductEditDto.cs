@@ -24,4 +24,6 @@ public class ProductEditDto
     
     public int? MainExistingImageId { get; set; }
     public int? MainNewFileIndex    { get; set; }
+    
+    public List<Domain.Entities.ProductReview> ProductReviews { get; set; } = new List<Domain.Entities.ProductReview>();
 }

@@ -5,6 +5,7 @@ using mvc_proje.Application.Dtos.Comment;
 using mvc_proje.Application.Dtos.ContactMessage;
 using mvc_proje.Application.Dtos.Post;
 using mvc_proje.Application.Dtos.Product;
+using mvc_proje.Application.Dtos.ProductReview;
 using mvc_proje.Application.Dtos.Tag;
 using mvc_proje.Application.Services;
 using mvc_proje.Application.Services.Admin;
@@ -23,6 +24,7 @@ public class HomepageController : Controller
     private readonly TagService _tagService;
     private readonly CommentService _commentService;
     private readonly AuthService _authService;
+    private readonly ProductReviewService _productReviewService;
 
     public HomepageController(
         ContactMessageService contactMessageService,
@@ -31,7 +33,8 @@ public class HomepageController : Controller
         PostService postService,
         TagService tagService,
         CommentService commentService,
-        AuthService authService)
+        AuthService authService,
+        ProductReviewService productReviewService)
     {
         _contactMessageService = contactMessageService;
         _settingsService = settingsService;
@@ -40,6 +43,7 @@ public class HomepageController : Controller
         _tagService = tagService;
         _commentService = commentService;
         _authService = authService;
+        _productReviewService = productReviewService;
     }
 
     public IActionResult Index()
@@ -85,8 +89,53 @@ public class HomepageController : Controller
         return View(new ProductShowDto
         {
             Product = product,
-            RelatedProducts = await _productService.GetRelatedProducts(product.CategoryId, product.Id)
+            RelatedProducts = await _productService.GetRelatedProducts(product.CategoryId, product.Id),
+            CanUserReview = await _productReviewService.CanUserReviewProductAsync(User, product.Id),
+            CurrentUserId = _authService.GetUserId(User)
         });
+    }
+    
+    [HttpPost]
+    [Route("product/review")]
+    public async Task<IActionResult> Review(ProductReviewCreateDto model)
+    {
+        // check user has purchased the product
+        if (!await _productReviewService.CanUserReviewProductAsync(User, model.ProductId))
+        {
+            TempData["ErrorMessage"] = "Bu ürünü satın almadığınız için yorum yapamazsınız.";
+            return RedirectToAction("Product", new { id = model.ProductId });
+        }
+
+        try
+        {
+            await _productReviewService.CreateReviewAsync(User, model);
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"İnceleme gönderilirken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Product", new { id = model.ProductId });
+        }
+
+        TempData["SuccessMessage"] = "İnceleme başarıyla gönderildi!";
+        return RedirectToAction("Product", new { id = model.ProductId });
+    }
+    
+    [HttpGet]
+    [Route("product/delete-review/{id}")]
+    public async Task<IActionResult> DeleteReview(int id)
+    {
+        try
+        {
+            await _productReviewService.DeleteReviewAsync(User, id);
+            TempData["SuccessMessage"] = "İnceleme başarıyla silindi.";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"İnceleme silinirken bir hata oluştu: {ex.Message}";
+        }
+
+        // redirect to back
+        return Redirect(Request.Headers["Referer"].ToString() ?? "/products");
     }
 
     [HttpGet]

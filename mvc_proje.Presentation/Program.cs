@@ -60,7 +60,8 @@ var services = new[]
     typeof(ProfileService),
     typeof(ProductFeatureService),
     typeof(ImageService),
-    typeof(SearchService)
+    typeof(SearchService),
+    typeof(ProductReviewService)
 };
 
 foreach (var service in services)

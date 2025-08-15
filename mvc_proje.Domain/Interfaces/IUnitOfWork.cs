@@ -20,4 +20,5 @@ public interface IUnitOfWork : IAsyncDisposable
     ITagRepository TagRepository { get; }
     IUserRepository UserRepository { get; }
     IProductFeatureRepository ProductFeatureRepository { get; }
+    IProductReviewRepository ProductReviewRepository { get; }
 }

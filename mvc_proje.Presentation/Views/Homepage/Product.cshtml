@@ -188,6 +188,20 @@
                 <div class="product-details">
                     <h1 class="product-title">@Model.Product.Name</h1>
 
+                    <div class="rating">
+                        @for (int i = 0; i < Model.Product.GetAverageRating(); i++)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+
+                        @for (int i = (int)Model.Product.GetAverageRating(); i < 5; i++)
+                        {
+                            <i class="far fa-star"></i>
+                        }
+
+                        <span class="ms-2">(@Model.Product.Reviews.Count() reviews)</span>
+                    </div>
+
                     <div class="product-price">
                         $@Model.Product.Price
                     </div>
@@ -252,6 +266,12 @@
                             aria-selected="false">Specs
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-reviews-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-reviews" type="button" role="tab" aria-controls="pills-reviews"
+                            aria-selected="false">Reviews (@Model.Product.Reviews.Count())
+                    </button>
+                </li>
             </ul>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
@@ -276,6 +296,63 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="tab-pane fade" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab">
+                    <h4 class="mb-4">Customer Reviews</h4>
+
+                    @foreach (var review in Model.Product.Reviews)
+                    {
+                        <div class="review-item mb-4">
+                            <div class="review-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="review-author">@review.User.FullName</span>
+                                    <div class="rating">
+                                        @for (int i = 0; i < review.Rating; i++)
+                                        {
+                                            <i class="fas fa-star"></i>
+                                        }
+                                        @for (int i = review.Rating; i < 5; i++)
+                                        {
+                                            <i class="far fa-star"></i>
+                                        }
+                                    </div>
+                                </div>
+                                <span class="review-date">@review.CreatedAt.ToString("MMMM dd, yyyy")</span>
+                            </div>
+                            <p>@review.Text</p>
+                            @if (review.UserId == Model.CurrentUserId)
+                            {
+                                <a class="text-danger" asp-controller="Homepage" asp-action="DeleteReview"
+                                   asp-route-id="@review.Id">Delete Review</a>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.CanUserReview)
+                    {
+                        <div class="mt-5">
+                            <h5>Add a Review</h5>
+                            <form asp-controller="Homepage" asp-action="Review" method="post" asp-antiforgery="true">
+                                <input type="hidden" name="ProductId" value="@Model.Product.Id"/>
+                                <div class="mb-3">
+                                    <label class="form-label">Your Rating</label>
+                                    <div class="rating-form">
+                                        <i class="far fa-star" data-value="1"></i>
+                                        <i class="far fa-star" data-value="2"></i>
+                                        <i class="far fa-star" data-value="3"></i>
+                                        <i class="far fa-star" data-value="4"></i>
+                                        <i class="far fa-star" data-value="5"></i>
+                                    </div>
+                                    <input type="hidden" name="rating" id="rating-value">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Your Review</label>
+                                    <textarea class="form-control" name="Text" rows="4"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </form>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -356,27 +433,26 @@
             mainImage.src = newSrc;
         });
     });
+</script>
 
-    // Review star rating functionality
-    const reviewStars = document.querySelectorAll('#pills-reviews .rating .far, #pills-reviews .rating .fas');
-    reviewStars.forEach(star => {
-        star.addEventListener('click', function () {
-            const rating = this.getAttribute('data-value') || 0;
-            const parent = this.parentNode;
+<script>
+    const stars = document.querySelectorAll('.rating-form i');
+    const ratingInput = document.getElementById('rating-value');
 
-            // Reset all stars
-            parent.querySelectorAll('i').forEach(s => {
-                s.classList.remove('fas');
-                s.classList.add('far');
-            });
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = star.getAttribute('data-value');
+            ratingInput.value = value;
 
-            // Fill stars up to clicked star
-            for (let i = 0; i <= rating; i++) {
-                if (parent.children[i]) {
-                    parent.children[i].classList.remove('far');
-                    parent.children[i].classList.add('fas');
+            stars.forEach(s => {
+                if (s.getAttribute('data-value') <= value) {
+                    s.classList.remove('far');
+                    s.classList.add('fas');
+                } else {
+                    s.classList.remove('fas');
+                    s.classList.add('far');
                 }
-            }
+            });
         });
     });
 </script>
