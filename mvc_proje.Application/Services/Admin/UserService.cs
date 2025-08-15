@@ -65,7 +65,12 @@ public class UserService
             PhoneNumber = user.PhoneNumber,
             Address = user.Address,
             Role = user.Role,
-            AvatarUrl = user.AvatarUrl
+            AvatarUrl = user.AvatarUrl,
+            Country = user.Country,
+            City = user.City,
+            ZipCode = user.ZipCode,
+            BirthDate = user.BirthDate,
+            IdentifyNumber = user.IdentifyNumber,
         };
     }
     
@@ -121,8 +126,14 @@ public class UserService
         user.PhoneNumber = model.PhoneNumber;
         user.Address = model.Address;
         user.Role = model.Role;
+        user.Country = model.Country;
+        user.City = model.City;
+        user.ZipCode = model.ZipCode;
+        user.BirthDate = model.BirthDate;
+        user.IdentifyNumber = model.IdentifyNumber;
         
         await _unitOfWork.UserRepository.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
     }
     
     public async Task CreateAsync(UserCreateDto model)
@@ -148,6 +159,11 @@ public class UserService
             Address = model.Address,
             Role = model.Role,
             Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+            Country = model.Country,
+            City = model.City,
+            ZipCode = model.ZipCode,
+            BirthDate = model.BirthDate,
+            IdentifyNumber = model.IdentifyNumber,
         };
         
         if (model.Avatar != null)
@@ -161,6 +177,7 @@ public class UserService
         }
 
         await _unitOfWork.UserRepository.AddAsync(user);
+        await _unitOfWork.SaveChangesAsync();
     }
     
     public async Task DeleteAsync(int id)
@@ -182,5 +199,6 @@ public class UserService
         }
 
         await _unitOfWork.UserRepository.DeleteAsync(user.Id);
+        await _unitOfWork.SaveChangesAsync();
     }
 }

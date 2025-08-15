@@ -243,12 +243,23 @@
             <div class="success-icon">
                 <i class="fas fa-check-circle"></i>
             </div>
-
-            <div class="success-header">
-                <h1>Thank You For Your Order!</h1>
-                <p>Your order has been placed successfully and will be delivered soon.</p>
-                <p>Order ID: <strong>#@Model.Order.OrderNumber</strong></p>
-            </div>
+            
+            @if(Model.Order.PaymentStatus == PaymentStatus.Completed)
+            {
+                <div class="success-header">
+                    <h1>Thank You For Your Order!</h1>
+                    <p>Your order has been placed successfully and will be delivered soon.</p>
+                    <p>Order ID: <strong>#@Model.Order.OrderNumber</strong></p>
+                </div>
+            }
+            else
+            {
+                <div class="success-header">
+                    <h1>Order Failed</h1>
+                    <p>Unfortunately, your order could not be processed. Please try again later.</p>
+                    <p>Order ID: <strong>#@Model.Order.OrderNumber</strong></p>
+                </div>
+            }
 
             <div class="order-summary">
                 <div class="order-row">
@@ -294,7 +305,7 @@
                 <p>Your order is being prepared and will be shipped soon. You can track its progress here.</p>
 
                 <div class="tracking-bar">
-                    @if (Model.LatestTrackStatus != TrackStatus.Cancelled)
+                    @if (Model.LatestTrackStatus != TrackStatus.Cancelled && Model.Order.PaymentStatus == PaymentStatus.Completed)
                     {
                         <div class="tracking-step">
                             <div class="step-icon @(Model.LatestTrackStatus >= TrackStatus.Pending ? "active" : "")">
@@ -330,6 +341,14 @@
                                 <i class="fas fa-home"></i>
                             </div>
                             <div class="step-label">Cancelled</div>
+                            @if (Model.Order.PaymentStatus == PaymentStatus.Failed)
+                            {
+                                <span class="status-badge status-cancelled">Payment Cancelled</span>
+                            }
+                            else if (Model.Order.PaymentStatus == PaymentStatus.Pending)
+                            {
+                                <span class="status-badge status-preparing">Preparing for Payment</span>
+                            }
                         </div>
                     }
                 </div>

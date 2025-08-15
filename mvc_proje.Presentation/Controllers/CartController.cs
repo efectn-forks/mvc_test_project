@@ -79,31 +79,51 @@ public class CartController : Controller
 
         return RedirectToAction("Index");
     }
-
+    
     [HttpGet]
-    [Route("/cart/checkout")]
-    public async Task<IActionResult> Checkout()
+    [Route("/cart/checkout/payment")]
+    public async Task<IActionResult> CheckoutPayment()
     {
-        var id = 0;
         try
         {
-            var order = await _cartService.CheckoutAsync(HttpContext.Session, User);
+            var order = await _cartService.CheckoutIyizicoAsync(HttpContext.Session, Url, User);
             if (order == null)
             {
                 TempData["ErrorMessage"] = "No items in the cart to checkout.";
                 return RedirectToAction("Index");
             }
 
-            id = order.Id;
+            return View(order);
         }
         catch (Exception ex)
         {
             TempData["ErrorMessage"] = $"An error occurred during checkout: {ex.Message}";
             return RedirectToAction("Index");
         }
+    }
+    
+    [HttpPost]
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("/cart/checkout/callback/{id}")]
+    public async Task<IActionResult> CheckoutCallback(string id)
+    {
+        try
+        {
+            var order = await _cartService.CheckoutCallbackAsync(id);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = "No items in the cart to checkout.";
+                return RedirectToAction("Index");
+            }
 
-        // Redirect to order confirmation page
-        return RedirectToAction("OrderConfirmation", new { orderId = id });
+            return RedirectToAction("OrderConfirmation", new { orderId = order.Id });
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"An error occurred during the payment callback: {ex.Message}";
+            return RedirectToAction("Index");
+        }
     }
 
     [HttpGet]

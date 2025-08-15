@@ -175,7 +175,6 @@ public class ProductService
                 {
                     // Delete image file
                     var imagePath = Path.Combine("wwwroot", image.ImageUrl.TrimStart('/'));
-                    Console.WriteLine(imagePath);
                     if (File.Exists(imagePath))
                     {
                         File.Delete(imagePath);

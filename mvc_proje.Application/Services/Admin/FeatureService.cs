@@ -37,7 +37,6 @@ public class FeatureService
     public async Task<PagedResult<Feature>> GetPagedAsync(int pageNumber)
     {
         var totalCount = await _unitOfWork.FeatureRepository.CountAsync();
-        Console.WriteLine((int)Math.Ceiling((int)(totalCount) / 5.0));
         var features = await _unitOfWork.FeatureRepository.GetPagedAsync(pageNumber);
 
         return new PagedResult<Feature>

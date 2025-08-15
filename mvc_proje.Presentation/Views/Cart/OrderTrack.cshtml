@@ -357,7 +357,7 @@
             </div>
 
             <div class="tracking-bar">
-                @if (Model.LatestTrackStatus != TrackStatus.Cancelled)
+                @if (Model.LatestTrackStatus != TrackStatus.Cancelled && Model.Order.PaymentStatus == PaymentStatus.Completed)
                 {
                     <div class="tracking-step">
                         <div class="step-icon @(Model.LatestTrackStatus >= TrackStatus.Pending ? "active" : "")">
@@ -393,6 +393,15 @@
                             <i class="fas fa-home"></i>
                         </div>
                         <div class="step-label">Cancelled</div>
+                        
+                        @if (Model.Order.PaymentStatus == PaymentStatus.Failed)
+                        {
+                            <span class="status-badge status-cancelled">Payment Cancelled</span>
+                        }
+                        else if (Model.Order.PaymentStatus == PaymentStatus.Pending)
+                        {
+                            <span class="status-badge status-preparing">Preparing for Payment</span>
+                        }
                     </div>
                 }
             </div>

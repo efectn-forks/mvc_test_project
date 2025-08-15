@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Services;
 using mvc_proje.Application.Services.Admin;
@@ -5,6 +6,7 @@ using mvc_proje.Domain.Enums;
 using mvc_proje.Domain.Interfaces;
 using mvc_proje.Infrastructure.Database.Context;
 using mvc_proje.Application.UnitOfWork;
+using mvc_proje.Domain.Misc;
 using mvc_proje.Misc;
 using AdminOrderService = mvc_proje.Application.Services.Admin.OrderService;
 using OrderService = mvc_proje.Application.Services.OrderService;
@@ -15,6 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add configuration for Iyizico payment gateway
+builder.Services.AddOptions();
+builder.Services.Configure<IyizicoConfig>(builder.Configuration.GetSection("Iyizico"));
 
 // Create db context
 using (var dbContext = new AppDbCtx())
@@ -94,6 +100,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserPolicy", policy =>
         policy.RequireRole(nameof(Role.User), nameof(Role.Admin)));
 });
+
+StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 var app = builder.Build();
 

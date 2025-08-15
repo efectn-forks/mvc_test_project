@@ -52,6 +52,11 @@ public class ProfileService
             Username = profile.Username,
             Comments = profile.Comments,
             Orders = profile.Orders,
+            Country = profile.Country,
+            City = profile.City,
+            ZipCode = profile.ZipCode,
+            BirthDate = profile.BirthDate,
+            IdentifyNumber = profile.IdentifyNumber
         };
     }
     
@@ -82,6 +87,11 @@ public class ProfileService
             Address = profile.Address,
             Username = profile.Username,
             AvatarUrl = profile.AvatarUrl,
+            Country = profile.Country,
+            City = profile.City,
+            ZipCode = profile.ZipCode,
+            BirthDate = profile.BirthDate,
+            IdentifyNumber = profile.IdentifyNumber,
         };
     }
     
@@ -150,6 +160,12 @@ public class ProfileService
         profile.Email = profileEditDto.Email;
         profile.PhoneNumber = profileEditDto.PhoneNumber;
         profile.Address = profileEditDto.Address;
+        profile.Country = profileEditDto.Country;
+        profile.City = profileEditDto.City;
+        profile.ZipCode = profileEditDto.ZipCode;
+        profile.BirthDate = profileEditDto.BirthDate;
+        profile.IdentifyNumber = profileEditDto.IdentifyNumber;
+        profile.Username = profileEditDto.Username;
 
         await _unitOfWork.UserRepository.UpdateAsync(profile);
         await _unitOfWork.SaveChangesAsync();
@@ -164,6 +180,11 @@ public class ProfileService
             Username = profile.Username,
             Comments = profile.Comments,
             Orders = profile.Orders,
+            Country = profile.Country,
+            City = profile.City,
+            ZipCode = profile.ZipCode,
+            BirthDate = profile.BirthDate,
+            IdentifyNumber = profile.IdentifyNumber
         };
     }
 }

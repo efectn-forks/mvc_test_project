@@ -12,6 +12,12 @@ public class ProfileEditValidator : AbstractValidator<ProfileEditDto>
         RuleFor(x => x.Email).NotEmpty().EmailAddress();
         RuleFor(x => x.PhoneNumber).NotEmpty().Matches(@"^\+?[1-9]\d{1,14}$");
         RuleFor(x => x.Address).NotEmpty().MaximumLength(300);
+        RuleFor(x => x.Country).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.City).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.ZipCode).NotEmpty().MaximumLength(10);
+        RuleFor(x => x.BirthDate).NotEmpty().LessThan(DateTime.Now);
+        RuleFor(x => x.IdentifyNumber).NotEmpty().MaximumLength(15);
+        RuleFor(x => x.IdentifyNumber).Matches(@"^\d{11}$");
         RuleFor(x => x.AvatarUrl).MaximumLength(200);
         RuleFor(x => x.CurrentPassword).Must((dto, currentPassword) =>
             string.IsNullOrEmpty(currentPassword) || !string.IsNullOrEmpty(dto.NewPassword));

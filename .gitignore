@@ -58,3 +58,5 @@ nunit-*.xml
 
 mvc_proje.Presentation/app.db*
 mvc_proje.Presentation/wwwroot/images/*/*
+
+appsettings*.json

@@ -28,6 +28,25 @@ public class User : BaseEntity
     [StringLength(100, ErrorMessage = "Address cannot exceed 100 characters.")]
     public string Address { get; set; } = string.Empty;
     
+    [Required]
+    [StringLength(50, ErrorMessage = "Country cannot exceed 100 characters.")]
+    public string Country { get; set; } = string.Empty;
+    
+    [Required]
+    [StringLength(50, ErrorMessage = "City cannot exceed 50 characters.")]
+    public string City { get; set; } = string.Empty;
+    
+    [Required]
+    [StringLength(10, ErrorMessage = "Zip code cannot exceed 50 characters.")]
+    public string ZipCode { get; set; } = string.Empty;
+    
+    [Required]
+    public DateTime BirthDate { get; set; }
+    
+    [Required]
+    [StringLength(15, ErrorMessage = "Identify number cannot exceed 15 characters.")]
+    public string IdentifyNumber { get; set; } = string.Empty;
+    
     public string? AvatarUrl { get; set; } = null;
     
     [Required]

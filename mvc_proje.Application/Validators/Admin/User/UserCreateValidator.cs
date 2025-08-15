@@ -14,6 +14,12 @@ public class UserCreateValidator : AbstractValidator<UserCreateDto>
         RuleFor(x => x.FullName).NotEmpty().MaximumLength(50);
         RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(15);
         RuleFor(x => x.Address).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Country).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.City).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.ZipCode).NotEmpty().MaximumLength(10);
+        RuleFor(x => x.BirthDate).NotEmpty().LessThan(DateTime.Now);
+        RuleFor(x => x.IdentifyNumber).NotEmpty().MaximumLength(15);
+        RuleFor(x => x.IdentifyNumber).Matches(@"^\d{11}$");
         RuleFor(x => x.Role).IsInEnum();
         RuleFor(x => x.Avatar).Must(file => file == null || (file.Length > 0 && file.Length <= 5 * 1024 * 1024))
             .Must(file => file == null || file.ContentType == "image/jpeg" || file.ContentType == "image/png");

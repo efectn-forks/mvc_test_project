@@ -317,12 +317,32 @@
                         <div class="detail-label">Phone Number</div>
                         <div class="detail-value">@Model.PhoneNumber</div>
                     </div>
+                    <div class="profile-detail-row">
+                        <div class="detail-label">Date of Birth</div>
+                        <div class="detail-value">@Model.BirthDate</div>
+                    </div>
+                    <div class="profile-detail-row">
+                        <div class="detail-label">Identity Number</div>
+                        <div class="detail-value">@Model.IdentifyNumber</div>
+                    </div>
 
                     <h4 class="my-4">Address Information</h4>
                     <div class="profile-detail-row">
                         <div class="detail-label">Address</div>
                         <div class="detail-value">
                             <p class="mb-0">@Model.Address</p>
+                        </div>
+                    </div>
+                    <div class="profile-detail-row">
+                        <div class="detail-label">City / Country</div>
+                        <div class="detail-value">
+                            <p class="mb-0">@Model.City / @Model.Country</p>
+                        </div>
+                    </div>
+                    <div class="profile-detail-row">
+                        <div class="detail-label">Zip Code</div>
+                        <div class="detail-value">
+                            <p class="mb-0">@Model.ZipCode</p>
                         </div>
                     </div>
                 </div>
@@ -340,6 +360,7 @@
                                 <th>Date</th>
                                 <th>Items</th>
                                 <th>Total</th>
+                                <th>Payment</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -352,6 +373,7 @@
                                     <td>@order.CreatedAt.ToShortDateString() @order.CreatedAt.ToShortTimeString()</td>
                                     <td>@order.OrderItems.Sum(i => i.Quantity) items</td>
                                     <td>$@order.OrderItems.Sum(i => i.Quantity * i.UnitPrice)</td>
+                                    <td>@order.PaymentStatus</td>
                                     <td><span class="order-status status-delivered">@order.GetLatestTrack().Status</span></td>
                                     <td><a asp-controller="Cart" asp-action="OrderTrack" asp-route-orderId="@order.Id" class="btn btn-sm btn-outline-primary">View</a></td>
                                 </tr>

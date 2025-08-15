@@ -43,8 +43,6 @@ public class TagController : Controller
         }
         catch (Exception ex)
         {
-            //Console.WriteLine(model.Name);
-            //Console.WriteLine(ex.InnerException.Message);
             TempData["ErrorMessage"] = $"Etiket oluşturulurken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
