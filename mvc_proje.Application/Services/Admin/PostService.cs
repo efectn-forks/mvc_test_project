@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Post;
 using mvc_proje.Application.Repositories;
+using mvc_proje.Application.Utils;
 using mvc_proje.Application.Validators.Admin.Post;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
@@ -70,7 +71,8 @@ public class PostService
             Content = post.Content,
             UserId = post.UserId,
             Tags = string.Join(",", post.Tags.Select(t => t.Name)),
-            ImageUrl = post.ImageUrl
+            ImageUrl = post.ImageUrl,
+            Slug = post.Slug
         };
     }
 
@@ -83,6 +85,20 @@ public class PostService
         if (post == null)
         {
             throw new KeyNotFoundException($"Post with ID {id} not found.");
+        }
+
+        return post;
+    }
+    
+    public async Task<Post> GetBySlugAsync(string slug)
+    {
+        var post = await _unitOfWork.PostRepository.GetBySlugAsync(slug, includeFunc: q => q
+            .Include(p => p.User)
+            .Include(p => p.Tags));
+
+        if (post == null)
+        {
+            throw new KeyNotFoundException($"Post with slug '{slug}' not found.");
         }
 
         return post;
@@ -101,7 +117,8 @@ public class PostService
             Title = dto.Title,
             Description = dto.Description,
             Content = dto.Content,
-            UserId = dto.UserId
+            UserId = dto.UserId,
+            Slug = dto.Slug
         };
 
         await _updateTags(post, dto.Tags);
@@ -116,6 +133,18 @@ public class PostService
             }
 
             post.ImageUrl = $"/images/posts/{fileName}";
+        }
+        
+        // generate new unique slug using SlugHelper in case it was not provided
+        if (string.IsNullOrWhiteSpace(post.Slug))
+        {
+            int i = 0;
+            post.Slug = SlugUtils.Slugify(post.Title);
+            while (await _unitOfWork.PostRepository.SlugExistsAsync(post.Slug))
+            {
+                i++;
+                post.Slug += $"-{i}";
+            }
         }
 
         await _unitOfWork.PostRepository.AddAsync(post);

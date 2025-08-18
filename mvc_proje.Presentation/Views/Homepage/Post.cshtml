@@ -1,6 +1,11 @@
 @using mvc_proje.Domain.Entities
 @model mvc_proje.Application.Dtos.Post.PostShowDto
 
+@{
+    var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+    var userIdInt = string.IsNullOrEmpty(userId) ? 0 : int.Parse(userId);
+}
+
 <style>
     .blog-content img {
         border-radius: 12px;
@@ -121,7 +126,8 @@
                         <div class="d-flex flex-wrap">
                             @foreach (var tag in Model.Post.Tags)
                             {
-                                <a href="#" class="tag-badge me-2 mb-2">@tag.Name</a>
+                                <a asp-controller="Homepage" asp-action="Tag" asp-route-id="@tag.Id"
+                                   class="tag-badge me-2 mb-2">@tag.Name</a>
                             }
                         </div>
                     </div>
@@ -167,7 +173,7 @@
                 <div class="wow fadeInUp mt-5" data-wow-delay="0.1s">
                     <h3 class="mb-4">@Model.Comments.Comments.Count Comments</h3>
                     @{
-                        void printChildrenComments(List<Comment> children)
+                        async Task printChildrenComments(List<Comment> children)
                         {
                             foreach (var comment in children)
                             {
@@ -178,23 +184,30 @@
                                         style="width: 45px; height: 45px;">
                                     <div class="ps-3">
                                         <h6><a href="">@comment.User.Username</a>
-                                            <small><i>@comment.CreatedAt.ToShortDateString()</i></small></h6>
+                                            <small><i>@comment.CreatedAt.ToShortDateString() @(comment.CreatedAt != comment.UpdatedAt ? "(updated)" : "") </i></small>
+                                        </h6>
                                         <p class="mb-1">@comment.Text</p>
                                         <a class="btn btn-sm btn-link reply-btn" data-comment-id="@comment.Id"
                                            href="#make-comment">Reply</a>
+                                        @if (comment.User.Id == userIdInt)
+                                        {
+                                            <a class="btn btn-sm btn-link"
+                                               asp-controller="Homepage" asp-action="EditComment"
+                                               asp-route-id="@comment.Id">Edit</a>
+                                        }
                                     </div>
                                 </div>
 
                                 if (comment.Children != null && comment.Children.Count > 0)
                                 {
                                     <div class="ms-5">
-                                        @{ printChildrenComments(comment.Children); }
+                                        @{ await printChildrenComments(comment.Children); }
                                     </div>
                                 }
                             }
                         }
 
-                        printChildrenComments(Model.Comments.Comments);
+                        await printChildrenComments(Model.Comments.Comments);
                     }
                 </div>
                 <!-- Comments End -->
@@ -264,7 +277,8 @@
                     <div class="d-flex flex-wrap m-n1">
                         @foreach (var tag in Model.Tags.Tags)
                         {
-                            <a href="#" class="btn btn-light m-1">@tag.Name</a>
+                            <a asp-controller="Homepage" asp-action="Tag" asp-route-id="@tag.Id"
+                               class="btn btn-light m-1">@tag.Name</a>
                         }
                     </div>
                 </div>

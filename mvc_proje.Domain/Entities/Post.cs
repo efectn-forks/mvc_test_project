@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace mvc_proje.Domain.Entities;
 
-public class Post : BaseEntity
+public class Post : SlugEntity
 {
     [Required]
     [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters.")]

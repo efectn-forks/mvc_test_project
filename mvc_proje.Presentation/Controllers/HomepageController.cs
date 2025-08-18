@@ -12,6 +12,7 @@ using mvc_proje.Application.Services.Admin;
 using CommentService = mvc_proje.Application.Services.CommentService;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces.Repositories;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Presentation.Controllers;
 
@@ -69,18 +70,17 @@ public class HomepageController : Controller
     }
 
     [HttpGet]
-    [Route("product/{id}")]
-    public async Task<IActionResult> Product(int id)
+    [Route("product/{slug}")]
+    public async Task<IActionResult> Product(string slug)
     {
         Product product;
         
         try 
         {
-            product = await _productService.GetByIdAsync2(id);
+            product = await _productService.GetBySlugAsync(slug);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error fetching product: {ex.Message}");
             return RedirectToAction("PageNotFound");
         }
 
@@ -99,11 +99,29 @@ public class HomepageController : Controller
     [Route("product/review")]
     public async Task<IActionResult> Review(ProductReviewCreateDto model)
     {
+        var slug = "";
+        
+        try
+        {
+            var product = await _productService.GetByIdAsync(model.ProductId);
+            if (product == null)
+            {
+                TempData["ErrorMessage"] = "Ürün bulunamadı.";
+                return RedirectToAction("Index");
+            }
+            slug = product.Slug;
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Ürün bilgileri alınırken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Product", new { slug });
+        }
+        
         // check user has purchased the product
         if (!await _productReviewService.CanUserReviewProductAsync(User, model.ProductId))
         {
             TempData["ErrorMessage"] = "Bu ürünü satın almadığınız için yorum yapamazsınız.";
-            return RedirectToAction("Product", new { id = model.ProductId });
+            return RedirectToAction("Product", new { slug });
         }
 
         try
@@ -113,11 +131,54 @@ public class HomepageController : Controller
         catch (Exception ex)
         {
             TempData["ErrorMessage"] = $"İnceleme gönderilirken bir hata oluştu: {ex.Message}";
-            return RedirectToAction("Product", new { id = model.ProductId });
+            return RedirectToAction("Product", new { slug });
         }
 
         TempData["SuccessMessage"] = "İnceleme başarıyla gönderildi!";
-        return RedirectToAction("Product", new { id = model.ProductId });
+        return RedirectToAction("Product", new { slug });
+    }
+    
+    [HttpGet]
+    [Route("product/edit-review/{id}")]
+    public async Task<IActionResult> EditReview(int id)
+    {
+        ProductReviewEditDto review;
+        try
+        {
+            review = await _productReviewService.GetByIdAsync(id);
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"İnceleme bulunamadı: {ex.Message}";
+            return RedirectToAction("Index");
+        }
+
+        if (review.User.Id != _authService.GetUserId(User))
+        {
+            TempData["ErrorMessage"] = "Bu incelemeyi düzenleme izniniz yok.";
+            return RedirectToAction("Index");
+        }
+
+        ViewData["Title"] = "İnceleme Düzenle - " + review.Product.Name;
+        return View(review);
+    }
+    
+    [HttpPost]
+    [Route("product/update-review")]
+    public async Task<IActionResult> UpdateReview(ProductReviewEditDto model)
+    {
+        try
+        {
+            await _productReviewService.EditReviewAsync(User, model);
+            TempData["SuccessMessage"] = "İnceleme başarıyla güncellendi.";
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"İnceleme güncellenirken bir hata oluştu: {ex.Message}";
+        }
+
+        // redirect to back
+        return Redirect(Request.Headers["Referer"].ToString() ?? "/products");
     }
     
     [HttpGet]
@@ -139,10 +200,18 @@ public class HomepageController : Controller
     }
 
     [HttpGet]
-    [Route("post/{id}")]
-    public async Task<IActionResult> Post(int id)
+    [Route("post/{slug}")]
+    public async Task<IActionResult> Post(string slug)
     {
-        var post = await _postService.GetById2Async(id);
+        Post post;
+        try
+        {
+            post = await _postService.GetBySlugAsync(slug);
+        } catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yazı bulunamadı: {ex.Message}";
+            return RedirectToAction("Index");
+        }
 
         ViewData["Title"] = "Blog - " + post.Title;
         return View(new PostShowDto
@@ -150,7 +219,7 @@ public class HomepageController : Controller
             Post = post,
             Tags = await _tagService.GetAllAsync(),
             LatestPosts = await _postService.GetRecentPostsAsync(),
-            Comments = await _commentService.GetCommentTreeAsync(id)
+            Comments = await _commentService.GetCommentTreeAsync(post.Id)
         });
     }
     
@@ -158,6 +227,24 @@ public class HomepageController : Controller
     [Route("post/make-comment")]
     public async Task<IActionResult> MakeComment(CommentCreateDto model)
     {
+        var slug = "";
+        
+        try
+        {
+            var post = await _postService.GetByIdAsync(model.PostId);
+            if (post == null)
+            {
+                TempData["ErrorMessage"] = "Yorum yapılacak yazı bulunamadı.";
+                return RedirectToAction("Index");
+            }
+            slug = post.Slug;
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yazı bilgileri alınırken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Index");
+        }
+        
         try 
         {
             model.UserId = _authService.GetUserId(User);
@@ -165,7 +252,7 @@ public class HomepageController : Controller
         catch (Exception ex)
         {
             TempData["ErrorMessage"] = $"Kullanıcı bilgileri alınırken bir hata oluştu: {ex.Message}";
-            return RedirectToAction("Post", new { id = model.PostId });
+            return RedirectToAction("Post", new { slug });
         }
 
         try
@@ -175,11 +262,11 @@ public class HomepageController : Controller
         catch (Exception ex)
         {
             TempData["ErrorMessage"] = $"Yorum gönderilirken bir hata oluştu: {ex.Message}";
-            return RedirectToAction("Post", new { id = model.PostId });
+            return RedirectToAction("Post", new { slug });
         }
 
         TempData["SuccessMessage"] = "Yorumunuz başarıyla gönderildi!";
-        return RedirectToAction("Post", new { id = model.PostId });
+        return RedirectToAction("Post", new { slug });
     }
     
     [HttpGet]
@@ -198,17 +285,75 @@ public class HomepageController : Controller
 
         return RedirectToAction("Index", "Profile");
     }
+    
+    [HttpGet]
+    [Route("post/edit-comment/{id}")]
+    public async Task<IActionResult> EditComment(int id)
+    {
+        CommentEditDto comment;
+        try
+        {
+            comment = await _commentService.GeyByIdAsync(id);
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yorum bulunamadı: {ex.Message}";
+            return RedirectToAction("Index");
+        }
+
+        if (comment.User.Id != _authService.GetUserId(User))
+        {
+            TempData["ErrorMessage"] = "Bu yorumu düzenleme izniniz yok.";
+            return RedirectToAction("Index");
+        }
+
+        ViewData["Title"] = "Yorum Düzenle - " + comment.Post.Title;
+        return View(comment);
+    }
+    
+    [HttpPost]
+    [Route("post/update-comment")]
+    public async Task<IActionResult> UpdateComment(CommentEditDto model)
+    {
+        try
+        {
+            await _commentService.UpdateCommentAsync(User, model);
+            TempData["SuccessMessage"] = "Yorum başarıyla güncellendi.";
+        } 
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Yorum güncellenirken bir hata oluştu: {ex.Message}";
+        }
+
+        // redirect to back
+        return Redirect(Request.Headers["Referer"].ToString() ?? "/posts");
+    }
 
     [HttpGet]
-    [Route("tag/{id}")]
-    public async Task<IActionResult> Tag(int id)
+    [Route("tag/{slug}")]
+    public async Task<IActionResult> Tag(string slug, [FromQuery] int page = 1)
     {
-        var tag = await _tagService.GetById2Async(id);
-
+        var tag = await _tagService.GetBySlugAsync(slug);
+        var pagedPosts = tag.Posts
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * 10)
+            .Take(5)
+            .ToList();
+        
+        var pagedResult = new PagedResult<Post>
+        {
+            Items = pagedPosts,
+            TotalCount = tag.Posts.Count
+        };
+        
+        ViewData["TotalItems"] = pagedResult.TotalCount;
+        ViewData["CurrentPage"] = page;
         ViewData["Title"] = "Etiket - " + tag.Name;
+        
         return View(new TagShowDto
         {
             Tag = tag,
+            PagedPosts = pagedResult,
             LatestPosts = await _postService.GetRecentPostsAsync(),
             Tags = await _tagService.GetAllAsync(),
         });

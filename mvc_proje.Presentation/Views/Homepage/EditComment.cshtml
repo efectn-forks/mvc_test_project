@@ -1,0 +1,194 @@
+@model mvc_proje.Application.Dtos.Comment.CommentEditDto
+
+<style>
+    /* Custom styles for the review edit page */
+    .review-edit-container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+
+    .product-reference {
+        background-color: #f9f9f9;
+        padding: 25px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .product-reference img {
+        max-width: 100px;
+        border-radius: 8px;
+    }
+
+    .product-reference h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    .edit-review-form {
+        padding: 30px;
+    }
+
+    .form-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+    }
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 80px;
+        height: 2px;
+        background: #4a7c0f;
+    }
+
+    .rating-edit i {
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-right: 5px;
+    }
+
+    .rating-edit i:hover {
+        transform: scale(1.2);
+    }
+
+    .form-control {
+        border-radius: 5px;
+        padding: 12px 15px;
+    }
+
+    .form-control:focus {
+        border-color: #4a7c0f;
+        box-shadow: 0 0 0 0.2rem rgba(74, 124, 15, 0.25);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .btn-save {
+        background-color: #4a7c0f;
+        border-color: #4a7c0f;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-save:hover {
+        background-color: #3a6310;
+        border-color: #3a6310;
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        background-color: #f8f9fa;
+        border-color: #ddd;
+        color: #333;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+        background-color: #e9ecef;
+        border-color: #ccc;
+    }
+
+    .original-review {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+        border-left: 3px solid #4a7c0f;
+    }
+
+    .original-review h5 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .review-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .review-content {
+        color: #555;
+        line-height: 1.6;
+    }
+</style>
+
+
+<!-- Review Edit Section Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="review-edit-container">
+                    <!-- Product Reference -->
+                    <div class="product-reference d-flex align-items-center">
+                        <img
+                            src="@Url.Content(Model.Post.ImageUrl)"
+                            alt="@Model.Post.Title" class="me-4">
+                        <div>
+                            <h4>@Model.Post.Title</h4>
+                            <p class="mb-0">You're editing your comment for this post</p>
+                        </div>
+                    </div>
+
+                    <!-- Review Edit Form -->
+                    <div class="edit-review-form">
+                        <div class="form-header">
+                            <h3 class="mb-0">Edit Your Comment</h3>
+                        </div>
+
+                        <form method="post" asp-controller="Homepage" asp-action="UpdateComment"
+                              asp-antiforgery="true">
+                            <input type="hidden" name="id" value="@Model.Id">
+
+                            <div class="mb-4">
+                                <label for="text" class="form-label">Your Comment</label>
+                                <textarea class="form-control" id="text" name="text" rows="6"
+                                          required>@Model.Text</textarea>
+                            </div>
+
+                            <!-- Original Review for Reference -->
+                            <div class="original-review">
+                                <h5>Your Original Comment</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <strong>@Model.User.FullName</strong>
+                                    <span class="review-date">@Model.CreatedAt.ToShortDateString()</span>
+                                </div>
+                                <p class="review-content mb-0">
+                                    @Model.Text
+                                    
+                                    @if (Model.Parent != null)
+                                    {
+                                        <br />
+                                        <strong>In response to:</strong> @Model.Parent.User.FullName 
+                                        <span class="review-date">@Model.Parent.CreatedAt.ToShortDateString()</span>
+                                        <p class="review-content mb-0">@Model.Parent.Text</p>
+                                    }
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-5">
+                                <a type="button" asp-controller="Homepage" asp-action="Post"
+                                   asp-route-slug="@Model.Post.Slug" class="btn btn-cancel">Cancel</a>
+                                <button type="submit" class="btn btn-primary btn-save">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Review Edit Section End -->

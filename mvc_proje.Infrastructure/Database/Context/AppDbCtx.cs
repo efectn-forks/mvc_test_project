@@ -46,6 +46,22 @@ public class AppDbCtx : DbContext
             .HasIndex(t => t.Name)
             .IsUnique();
         
+        modelBuilder.Entity<Tag>()
+            .HasIndex(t => t.Slug)
+            .IsUnique();
+        
+        modelBuilder.Entity<Product>()
+            .HasIndex(p => p.Slug)
+            .IsUnique();
+        
+        modelBuilder.Entity<Category>()
+            .HasIndex(c => c.Slug)
+            .IsUnique();
+        
+        modelBuilder.Entity<Post>()
+            .HasIndex(c => c.Slug)
+            .IsUnique();
+        
         modelBuilder.Entity<OrderItem>()
             .HasKey(oi => new { oi.OrderId, oi.ProductId });
 

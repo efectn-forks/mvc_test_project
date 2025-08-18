@@ -14,11 +14,13 @@ public class SearchController : Controller
 
     [HttpGet]
     [Route("search/post")]
-    public async Task<IActionResult> SearchPost([FromQuery] string searchTerm)
+    public async Task<IActionResult> SearchPost([FromQuery] string searchTerm, [FromQuery] int page = 1)
     {
         try 
         {
-            var postResults = await _searchService.SearchPostAsync(searchTerm);
+            var postResults = await _searchService.SearchPostPagedAsync(searchTerm, page);
+            ViewData["TotalItems"] = postResults.PagedPosts.TotalCount;
+            ViewData["CurrentPage"] = page;
             return View(postResults);
         }
         catch (Exception ex)

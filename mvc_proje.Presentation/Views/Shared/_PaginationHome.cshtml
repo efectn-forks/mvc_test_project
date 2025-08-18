@@ -1,0 +1,35 @@
+@{
+    var totalPages = (int)Math.Ceiling((int)(ViewData["TotalItems"] ?? 1) / 5.0);
+    var currentPage = (int)(ViewData["CurrentPage"] ?? 1);
+}
+
+@using System.Web
+@{
+    var query = HttpUtility.ParseQueryString(Context.Request.QueryString.ToString());
+}
+
+<nav class="mt-5 wow fadeInUp" data-wow-delay="0.1s">
+    <ul class="pagination search-pagination justify-content-center">
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            @{
+                query.Set("page", (currentPage - 1).ToString());
+            }
+            <a class="page-link" href="?@query.ToString()"><i class="fa fa-chevron-left"></i></a>
+        </li>
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            query.Set("page", i.ToString());
+            <li class="page-item @(currentPage == i ? "active" : "")">
+                <a class="page-link" href="?@query.ToString()">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            @{
+                query.Set("page", (currentPage + 1).ToString());
+            }
+            <a class="page-link" href="?@query.ToString()"><i class="fa fa-chevron-right"></i></a>
+        </li>
+    </ul>
+</nav>

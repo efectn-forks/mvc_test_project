@@ -4,7 +4,7 @@ using mvc_proje.Infrastructure.Database.Context;
 
 namespace mvc_proje.Application.Repositories;
 
-public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+public class CategoryRepository : SlugRepository<Category>, ICategoryRepository
 {
     public CategoryRepository(AppDbCtx context) : base(context)
     {

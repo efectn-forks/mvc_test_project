@@ -5,7 +5,7 @@ using mvc_proje.Infrastructure.Database.Context;
 
 namespace mvc_proje.Application.Repositories;
 
-public class PostRepository : GenericRepository<Post>, IPostRepository
+public class PostRepository : SlugRepository<Post>, IPostRepository
 {
     public PostRepository(AppDbCtx context) : base(context)
     {

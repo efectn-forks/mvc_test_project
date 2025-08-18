@@ -75,6 +75,27 @@ public class ProductReviewService
         await _unitOfWork.ProductReviewRepository.AddAsync(review);
         await _unitOfWork.SaveChangesAsync();
     }
+    
+    public async Task<ProductReviewEditDto> GetByIdAsync(int reviewId)
+    {
+        var review = await _unitOfWork.ProductReviewRepository.GetByIdAsync(reviewId, includeFunc: q => q
+            .Include(r => r.User)
+            .Include(r => r.Product));
+        if (review == null)
+        {
+            throw new KeyNotFoundException("Review not found");
+        }
+
+        return new ProductReviewEditDto
+        {
+            Id = review.Id,
+            Text = review.Text,
+            Rating = review.Rating,
+            User = review.User,
+            Product = review.Product,
+            CreatedAt = review.CreatedAt
+        };
+    }
 
     public async Task EditReviewAsync(ClaimsPrincipal user, ProductReviewEditDto reviewDto)
     {
@@ -84,8 +105,10 @@ public class ProductReviewService
             throw new ValidationException(
                 $"Validation failed: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
-
-        var review = await _unitOfWork.ProductReviewRepository.GetByIdAsync(reviewDto.Id);
+        
+        var review = await _unitOfWork.ProductReviewRepository.GetByIdAsync(reviewDto.Id, includeFunc: q => q
+            .Include(r => r.User)
+            .Include(r => r.Product));
         if (review == null)
         {
             throw new KeyNotFoundException("Review not found");

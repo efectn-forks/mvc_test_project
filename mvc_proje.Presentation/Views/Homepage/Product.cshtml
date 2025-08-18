@@ -324,6 +324,9 @@
                             {
                                 <a class="text-danger" asp-controller="Homepage" asp-action="DeleteReview"
                                    asp-route-id="@review.Id">Delete Review</a>
+                                <a class="text-primary ms-3"
+                                   asp-controller="Homepage" asp-action="EditReview" asp-route-id="@review.Id">Edit
+                                    Review</a>
                             }
                         </div>
                     }
@@ -378,7 +381,7 @@
                             <div class="d-flex border-top">
                                 <small class="w-50 text-center border-end py-2">
                                     <a class="text-body" asp-controller="Homepage" asp-action="Product"
-                                       asp-route-id="@product.Id"><i class="fa fa-eye text-primary me-2"></i>View
+                                       asp-route-slug="@product.Slug"><i class="fa fa-eye text-primary me-2"></i>View
                                         detail</a>
                                 </small>
                                 <small class="w-50 text-center py-2">

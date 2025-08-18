@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace mvc_proje.Domain.Entities;
 
-public class Category : BaseEntity
+public class Category : SlugEntity
 {
     [Required]
     [StringLength(20, ErrorMessage = "Category name cannot exceed 20 characters.")]

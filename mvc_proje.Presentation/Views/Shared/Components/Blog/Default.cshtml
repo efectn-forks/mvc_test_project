@@ -1,4 +1,4 @@
-@model mvc_proje.Application.Dtos.Admin.Post.PostDto
+@model mvc_proje.Domain.Misc.PagedResult<mvc_proje.Domain.Entities.Post>
 
 <!-- Blog Start -->
 <div class="container-xxl py-5">
@@ -9,22 +9,24 @@
             <p>Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
         </div>
         <div class="row g-4">
-            @foreach (var post in Model.Posts)
+            @foreach (var post in Model.Items)
             {
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <img class="img-fluid" src="@Url.Content(post.ImageUrl)" alt="">
                     <div class="bg-light p-4">
-                        <a class="d-block h5 lh-base mb-4" asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id">@post.Title</a>
+                        <a class="d-block h5 lh-base mb-4" asp-controller="Homepage" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a>
                         <div class="text-muted border-top pt-4">
                             <small class="me-3"><i class="fa fa-user text-primary me-2"></i>@post.User.FullName</small>
                             <small class="me-3"><i
-                                    class="fa fa-calendar text-primary me-2"></i>@post.CreatedAt.ToString("dd/MM/yyyy")
+                                                    class="fa fa-calendar text-primary me-2"></i>@post.CreatedAt.ToString("dd/MM/yyyy")
                             </small>
                         </div>
                     </div>
                 </div>
             }
         </div>
+        
+        @await Html.PartialAsync("_PaginationHome")
     </div>
 </div>
 <!-- Blog End -->

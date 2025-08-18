@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Post;
 using mvc_proje.Application.Dtos.Admin.Product;
 using mvc_proje.Application.Dtos.Search;
+using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services;
 
@@ -14,25 +16,31 @@ public class SearchService
     {
         _unitOfWork = unitOfWork;
     }
-
-    public async Task<SearchPostDto> SearchPostAsync(string searchTerm)
+    
+    public async Task<SearchPostDto> SearchPostPagedAsync(string searchTerm, int pageNumber)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
             throw new ArgumentException("Search Term cannot be null or empty");
         }
 
-        var post = await _unitOfWork.PostRepository.FindAsync(p =>
-                p.Title.ToLower().Contains(searchTerm.ToLower()) || p.Description.ToLower().Contains(searchTerm.ToLower()),
+        var totalCount = await _unitOfWork.PostRepository.CountAsync(p =>
+            p.Title.ToLower().Contains(searchTerm.ToLower()) || p.Description.ToLower().Contains(searchTerm.ToLower()));
+
+        var posts = await _unitOfWork.PostRepository.GetPagedAsync(pageNumber, 5,
+            p => p.Title.ToLower().Contains(searchTerm.ToLower()) || p.Description.ToLower().Contains(searchTerm.ToLower()),
             includeFunc: q => q.Include(p => p.User));
 
         var tags = await _unitOfWork.TagRepository.GetAllAsync();
         var recentPosts = await _unitOfWork.PostRepository.GetRecentPostsAsync(5);
-        var totalCount = post.Count();
-        
+
         return new SearchPostDto
         {
-            Posts = post.ToList(),
+            PagedPosts = new PagedResult<Post>
+            {
+                Items = posts,
+                TotalCount = totalCount
+            },
             Tags = tags.ToList(),
             RecentPosts = recentPosts.ToList(),
             TotalCount = totalCount,

@@ -105,4 +105,65 @@ public class CommentService
         await _unitOfWork.CommentRepository.DeleteAsync(comment.Id);
         await _unitOfWork.SaveChangesAsync();
     }
+    
+    public async Task<CommentEditDto> GeyByIdAsync(int commentId)
+    {
+        var comment = await _unitOfWork.CommentRepository.GetByIdAsync(commentId, includeFunc: q => q
+            .Include(c => c.User)
+            .Include(c => c.Post)
+            .Include(c => c.ParentComment)
+            .ThenInclude(pc => pc.User));
+
+        if (comment == null)
+        {
+            throw new KeyNotFoundException($"Comment with ID {commentId} not found.");
+        }
+
+        return new CommentEditDto
+        {
+            Id = comment.Id,
+            Text = comment.Text,
+            User = comment.User,
+            Post = comment.Post,
+            Parent = comment.ParentComment,
+            CreatedAt = comment.CreatedAt
+        };
+    }
+    
+    public async Task UpdateCommentAsync(ClaimsPrincipal user, CommentEditDto comment)
+    {
+        var validationResult = await new CommentEditValidator().ValidateAsync(comment);
+        if (!validationResult.IsValid)
+        {
+            throw new ArgumentException(
+                $"Validation failed: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
+        }
+
+        var existingComment = await _unitOfWork.CommentRepository.GetByIdAsync(comment.Id);
+        if (existingComment == null)
+        {
+            throw new KeyNotFoundException($"Comment with ID {comment.Id} not found.");
+        }
+        
+        if (user == null || !user.Identity.IsAuthenticated)
+        {
+            throw new UnauthorizedAccessException("User is not authenticated.");
+        }
+        
+        if (!int.TryParse(user.FindFirst("UserId")?.Value, out var userId))
+        {
+            throw new UnauthorizedAccessException("User ID is not available.");
+        }
+        
+        if (existingComment.UserId != userId)
+        {
+            throw new UnauthorizedAccessException("You do not have permission to update this comment.");
+        }
+
+        existingComment.Text = comment.Text;
+        existingComment.UpdatedAt = DateTime.UtcNow;
+
+        await _unitOfWork.CommentRepository.UpdateAsync(existingComment);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

@@ -48,7 +48,7 @@ public class CategoryController : Controller
         catch (Exception ex)
         {
             TempData["ErrorMessage"] = $"Kategori oluşturulurken bir hata oluştu: {ex.Message}";
-            return View("Admin/Category/Create", model);
+            return RedirectToAction("Index");
         }
         
         return RedirectToAction("Index");

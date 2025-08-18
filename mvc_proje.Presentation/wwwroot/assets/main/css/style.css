@@ -381,3 +381,29 @@
 .footer .copyright a:hover {
     color: var(--primary);
 }
+
+.search-result-content {
+    padding: 25px;
+}
+
+.search-pagination .page-item .page-link {
+    color: #3a7d34;
+    border: 1px solid #dee2e6;
+    margin: 0 5px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-pagination .page-item.active .page-link {
+    background: #3a7d34;
+    border-color: #3a7d34;
+    color: white;
+}
+
+.search-pagination .page-item .page-link:hover {
+    background: #e8f5e9;
+}

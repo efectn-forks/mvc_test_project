@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Category;
 using mvc_proje.Application.Repositories;
+using mvc_proje.Application.Utils;
 using mvc_proje.Application.Validators.Admin.Category;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
@@ -60,7 +61,8 @@ public class CategoryService
         {
             Id = category.Id,
             Name = category.Name,
-            Description = category.Description
+            Description = category.Description,
+            Slug = category.Slug,
         };
     }
 
@@ -75,9 +77,22 @@ public class CategoryService
         var category = new Domain.Entities.Category
         {
             Name = dto.Name,
-            Description = dto.Description
+            Description = dto.Description,
+            Slug = dto.Slug,
         };
-
+        
+        // generate new unique slug using SlugHelper in case it was not provided
+        if (string.IsNullOrWhiteSpace(category.Slug))
+        {
+            int i = 0;
+            category.Slug = SlugUtils.Slugify(category.Name);
+            while (await _unitOfWork.CategoryRepository.SlugExistsAsync(category.Slug))
+            {
+                i++;
+                category.Slug += $"-{i}";
+            }
+        }
+        
         await _unitOfWork.CategoryRepository.AddAsync(category);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -98,6 +113,7 @@ public class CategoryService
 
         category.Name = dto.Name;
         category.Description = dto.Description;
+        category.Slug = dto.Slug;
 
         await _unitOfWork.CategoryRepository.UpdateAsync(category);
         await _unitOfWork.SaveChangesAsync();

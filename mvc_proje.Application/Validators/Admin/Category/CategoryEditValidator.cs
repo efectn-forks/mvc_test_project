@@ -9,6 +9,7 @@ public class CategoryEditValidator : AbstractValidator<CategoryEditDto>
     {
         RuleFor(x => x.Id).GreaterThan(0);
         RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Slug).NotEmpty();
         RuleFor(x => x.Description).MaximumLength(255);
     }
 }

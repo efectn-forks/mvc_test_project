@@ -14,7 +14,11 @@ public class BlogViewComponent : ViewComponent
     
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var posts = await _postRepository.GetAllAsync();
+        var query = HttpContext.Request.Query;
+    
+        int page = int.TryParse(query["page"], out var p) ? p : 1;
+
+        var posts = await _postRepository.GetPagedAsync(page);
         
         return View(posts);
     }

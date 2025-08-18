@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Tag;
+using mvc_proje.Application.Utils;
 using mvc_proje.Application.Validators.Admin.Tag;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
@@ -31,6 +32,7 @@ public class TagService
             {
                 Id = tag.Id,
                 Name = tag.Name,
+                Slug = tag.Slug,
                 Description = tag.Description,
                 Posts = tag.Posts
             }),
@@ -64,6 +66,7 @@ public class TagService
         {
             Id = tag.Id,
             Name = tag.Name,
+            Slug = tag.Slug,
             Description = tag.Description
         };
     }
@@ -71,11 +74,26 @@ public class TagService
     public async Task<Tag> GetById2Async(int id)
     {
         var tag = await _unitOfWork.TagRepository.GetByIdAsync(id, includeFunc: q => q
-            .Include(t => t.Posts));
+            .Include(t => t.Posts)
+            .ThenInclude(p => p.User));
 
         if (tag == null)
         {
             throw new KeyNotFoundException($"Tag with ID {id} not found.");
+        }
+
+        return tag;
+    }
+    
+    public async Task<Tag> GetBySlugAsync(string slug)
+    {
+        var tag = await _unitOfWork.TagRepository.GetBySlugAsync(slug, includeFunc: q => q
+            .Include(t => t.Posts)
+            .ThenInclude(p => p.User));
+
+        if (tag == null)
+        {
+            throw new KeyNotFoundException($"Tag with slug '{slug}' not found.");
         }
 
         return tag;
@@ -92,8 +110,21 @@ public class TagService
         var tag = new Tag
         {
             Name = dto.Name,
-            Description = dto.Description
+            Description = dto.Description,
+            Slug = dto.Slug,
         };
+        
+        // generate new unique slug using SlugHelper in case it was not provided
+        if (string.IsNullOrWhiteSpace(tag.Slug))
+        {
+            int i = 0;
+            tag.Slug = SlugUtils.Slugify(tag.Name);
+            while (await _unitOfWork.PostRepository.SlugExistsAsync(tag.Slug))
+            {
+                i++;
+                tag.Slug += $"-{i}";
+            }
+        }
 
         await _unitOfWork.TagRepository.AddAsync(tag);
         await _unitOfWork.SaveChangesAsync();
@@ -114,6 +145,7 @@ public class TagService
         }
 
         tag.Name = dto.Name;
+        tag.Slug = dto.Slug;
         tag.Description = dto.Description;
 
         await _unitOfWork.TagRepository.UpdateAsync(tag);

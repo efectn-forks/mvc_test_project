@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Admin.Product;
 using mvc_proje.Application.Repositories;
+using mvc_proje.Application.Utils;
 using mvc_proje.Application.Validators.Admin.Product;
 using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
@@ -66,6 +67,7 @@ public class ProductService
             SkuNumber = model.SkuNumber,
             Stock = model.Stock,
             Content = model.Content,
+            Slug = model.Slug,
         };
 
         var productImages = new List<ProductImage>();
@@ -95,7 +97,19 @@ public class ProductService
         {
             product.Images = productImages;
         }
-
+        
+        // generate new unique slug using SlugHelper in case it was not provided
+        if (string.IsNullOrWhiteSpace(product.Slug))
+        {
+            i = 0;
+            product.Slug = SlugUtils.Slugify(product.Name);
+            while (await _unitOfWork.PostRepository.SlugExistsAsync(product.Slug))
+            {
+                i++;
+                product.Slug += $"-{i}";
+            }
+        }
+        
         await _unitOfWork.ProductRepository.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
     }
@@ -118,6 +132,7 @@ public class ProductService
         {
             Id = product.Id,
             Name = product.Name,
+            Slug = product.Slug,
             Description = product.Description,
             Content = product.Content,
             Price = product.Price,
@@ -146,6 +161,23 @@ public class ProductService
 
         return product;
     }
+    
+    public async Task<Product> GetBySlugAsync(string slug)
+    {
+        var product = await _unitOfWork.ProductRepository.GetBySlugAsync(slug, includeFunc: q => q
+            .Include(p => p.Category)
+            .Include(p => p.ProductFeatures)
+            .Include(p => p.Images)
+            .Include(p => p.Reviews)
+            .ThenInclude(r => r.User));
+
+        if (product == null)
+        {
+            throw new KeyNotFoundException($"Product with slug '{slug}' not found.");
+        }
+
+        return product;
+    }
 
     public async Task UpdateAsync(ProductEditDto model)
     {
@@ -169,6 +201,7 @@ public class ProductService
         product.CategoryId = model.CategoryId;
         product.SkuNumber = model.SkuNumber;
         product.Stock = model.Stock;
+        product.Slug = model.Slug;
 
         // delete old images 
         if (model.DeletedImageIds != null && model.DeletedImageIds.Count > 0)

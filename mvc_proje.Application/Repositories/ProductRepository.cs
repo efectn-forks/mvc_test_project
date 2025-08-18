@@ -5,7 +5,7 @@ using mvc_proje.Infrastructure.Database.Context;
 
 namespace mvc_proje.Application.Repositories;
 
-public class ProductRepository : GenericRepository<Product>, IProductRepository
+public class ProductRepository : SlugRepository<Product>, IProductRepository
 {
     public ProductRepository(AppDbCtx context) : base(context)
     {

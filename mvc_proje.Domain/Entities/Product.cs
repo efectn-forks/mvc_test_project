@@ -3,12 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace mvc_proje.Domain.Entities;
 
-public class Product : BaseEntity
+public class Product : SlugEntity
 {
     [Required]
     [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
     public string Name { get; set; }
-
+    
     [Required]
     [StringLength(30, ErrorMessage = "Sku number cannot exceed 30 characters.")]
     public string SkuNumber { get; set; } = string.Empty;
