@@ -29,7 +29,7 @@ public class CartService
     private readonly Options _iyizicoOptions;
     private const string CartSessionKey = "Cart";
 
-    public CartService(IUnitOfWork unitOfWork, CartCreateValidator cartCreateValidator = null, 
+    public CartService(IUnitOfWork unitOfWork, CartCreateValidator cartCreateValidator = null,
         IOptions<IyizicoConfig> iyizicoConfig = null)
     {
         _unitOfWork = unitOfWork;
@@ -50,20 +50,21 @@ public class CartService
         var validationResult = _cartCreateValidator.Validate(model);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Some fields are invalid: ",
+            throw new ArgumentException("Bazı alanlar geçersiz: ",
                 string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
         }
 
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(model.ProductId, includeFunc:
-            q => q.Include(p => p.Images));
+            q => q.Include(p => p.Images)
+                .Include(p => p.StockTransactions));
         if (product == null)
         {
-            throw new KeyNotFoundException("Product not found.");
+            throw new KeyNotFoundException("Ürün bulunamadı.");
         }
 
-        if (model.Quantity > product.Stock)
+        if (model.Quantity > product.Stock())
         {
-            throw new InvalidOperationException($"Insufficient stock for product {product.Name}.");
+            throw new InvalidOperationException($"{product.Name} ürünü için yeterli stok yok.");
         }
 
         var cart = await _getCart(sess);
@@ -96,15 +97,16 @@ public class CartService
 
         foreach (var dto in dtos)
         {
-            var product = await _unitOfWork.ProductRepository.GetByIdAsync(dto.ProductId);
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(dto.ProductId, includeFunc:
+                q => q.Include(p => p.StockTransactions));
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {dto.ProductId} not found.");
+                throw new KeyNotFoundException($"{dto.ProductId} ID'li ürün bulunamadı.");
             }
 
-            if (dto.Quantity > product.Stock)
+            if (dto.Quantity > product.Stock())
             {
-                throw new InvalidOperationException($"Insufficient stock for product {product.Name}.");
+                throw new InvalidOperationException($"{product.Name} ürünü için yeterli stok yok.");
             }
 
             // if already exists, update quantity
@@ -157,22 +159,23 @@ public class CartService
             });
 
             // Update product stock
-            var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.ProductId);
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.ProductId, includeFunc:
+                q => q.Include(p => p.StockTransactions));
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {item.ProductId} not found.");
+                throw new KeyNotFoundException($"{item.ProductId} ID'li ürün bulunamadı.");
             }
 
-            if (item.Quantity > product.Stock)
+            if (item.Quantity > product.Stock())
             {
-                throw new InvalidOperationException($"Insufficient stock for product {product.Name}.");
+                throw new InvalidOperationException($"{product.Name} ürünü için yeterli stok yok.");
             }
         }
 
         var userIdStr = user.Claims.FirstOrDefault(c => c.Type == "UserId").Value;
         if (!int.TryParse(userIdStr, out var userId))
         {
-            throw new InvalidOperationException("User ID is not valid.");
+            throw new InvalidOperationException("Kullanıcı ID'si bulunamadı.");
         }
 
         order.OrderItems = orderItems;
@@ -184,7 +187,7 @@ public class CartService
         var user2 = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         if (user2 == null)
         {
-            throw new KeyNotFoundException("User not found.");
+            throw new KeyNotFoundException("Kullanıcı bulunamadı.");
         }
 
         var totalPrice = orderItems.Sum(i => i.Quantity * i.UnitPrice).ToString("F2").Replace(",", ".");
@@ -196,7 +199,7 @@ public class CartService
         request.PaidPrice = totalPrice;
         request.Currency = Currency.TRY.ToString();
         request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
-        request.CallbackUrl = url.Action("CheckoutCallback", "Cart", new { id = order.OrderNumber }, 
+        request.CallbackUrl = url.Action("CheckoutCallback", "Cart", new { id = order.OrderNumber },
             url.ActionContext.HttpContext.Request.Scheme);
         request.Buyer = new Buyer();
         request.Buyer.Id = user2.Id.ToString();
@@ -231,7 +234,7 @@ public class CartService
                 q => q.Include(p => p.Category));
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {item.ProductId} not found.");
+                throw new KeyNotFoundException($"{item.ProductId} ID'li ürün bulunamadı.");
             }
 
             basketItems.Add(new BasketItem
@@ -249,7 +252,7 @@ public class CartService
         var result = CheckoutFormInitialize.Create(request, _iyizicoOptions).Result;
         order.PaymentToken = result.Token;
         order.PaymentStatus = PaymentStatus.Pending;
-        
+
         await _unitOfWork.OrderRepository.AddAsync(order);
         await _unitOfWork.SaveChangesAsync();
 
@@ -264,14 +267,14 @@ public class CartService
                 .ThenInclude(p => p.Images))).FirstOrDefault();
         if (order == null)
         {
-            throw new KeyNotFoundException("Order not found for the provided conversation id.");
+            throw new KeyNotFoundException("Sipariş bulunamadı.");
         }
-        
+
         if (order.PaymentStatus == PaymentStatus.Completed)
         {
             return order;
         }
-        
+
         RetrieveCheckoutFormRequest request = new RetrieveCheckoutFormRequest();
         request.Locale = Locale.TR.ToString();
         request.ConversationId = order.OrderNumber;
@@ -289,10 +292,18 @@ public class CartService
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.ProductId);
                 if (product == null)
                 {
-                    throw new KeyNotFoundException($"Product with ID {item.ProductId} not found.");
+                    throw new KeyNotFoundException($"{item.ProductId} ID'li ürün bulunamadı.");
                 }
+                
+                var stockTransaction = new StockTransaction
+                {
+                    ProductId = product.Id,
+                    Change = -item.Quantity,
+                    Description = $"Order {order.OrderNumber} - {item.Quantity} units sold",
+                    TransactionType = TransactionType.Purchase,
+                };
+                product.StockTransactions.Add(stockTransaction);
 
-                product.Stock -= item.Quantity;
                 await _unitOfWork.ProductRepository.UpdateAsync(product);
             }
 
@@ -317,7 +328,7 @@ public class CartService
         await _unitOfWork.OrderRepository.UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();
 
-        throw new InvalidOperationException($"Payment failed: {checkoutForm.ErrorMessage}");
+        throw new InvalidOperationException($"Ödeme başarısız: {checkoutForm.ErrorMessage}");
     }
 
     private void _setCart(ISession sess, ShoppingCart.ShoppingCart cart)

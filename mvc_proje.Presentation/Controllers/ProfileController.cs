@@ -27,7 +27,7 @@ public class ProfileController : Controller
             return View(user);
         } catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while fetching the profile: {ex.Message}";
+            TempData["ErrorMessage"] = $"Profil bilgileri alınırken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index", "Homepage");
         }
     }
@@ -43,7 +43,7 @@ public class ProfileController : Controller
             return View(profile);
         } catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while fetching the profile for editing: {ex.Message}";
+            TempData["ErrorMessage"] = $"Profil düzenleme sayfası alınırken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index", "Home");
         }
     }
@@ -57,11 +57,30 @@ public class ProfileController : Controller
             await _profileService.UpdateAsync(User, model);
         } catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while updating the profile: {ex.Message}";
+            TempData["ErrorMessage"] = $"Profil güncellenirken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
         
-        TempData["SuccessMessage"] = "Profile updated successfully.";
+        TempData["SuccessMessage"] = "Profil başarıyla güncellendi.";
         return RedirectToAction("Index");
+    }
+    
+    [HttpGet]
+    [Route("/user/{username}")]
+    public async Task<IActionResult> UserProfile(string username, [FromQuery] int page = 1)
+    {
+        try
+        {
+            var user = await _profileService.GetProfileShowAsync(username, page);
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalItems"] = user.Posts.TotalCount;
+            
+            return View(user);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Kullanıcı profili alınırken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

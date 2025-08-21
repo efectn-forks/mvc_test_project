@@ -20,4 +20,9 @@
       <PackageReference Include="Iyzipay" Version="2.1.67" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Admin\ProductOption\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Admin\ProductOption\Index.cshtml" />
+    </ItemGroup>
+
 </Project>

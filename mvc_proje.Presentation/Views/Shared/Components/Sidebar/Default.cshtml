@@ -1,0 +1,49 @@
+@model Tuple<IEnumerable<mvc_proje.Domain.Entities.Post>, mvc_proje.Application.Dtos.Admin.Tag.TagDto>
+
+<!-- Sidebar Start -->
+<div class="col-lg-4">
+    <!-- Search Form Start -->
+    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+        <form method="get" asp-controller="Search" asp-action="SearchPost">
+            <div class="input-group">
+                <input type="text" name="searchTerm" class="form-control p-3" placeholder="Search">
+                <button class="btn btn-primary px-4"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <!-- Search Form End -->
+
+    <!-- Recent Post Start -->
+    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+        <h3 class="mb-4">Recent Posts</h3>
+        @foreach (var post in Model.Item1)
+        {
+            <div class="d-flex mb-3">
+                <img class="img-fluid rounded"
+                     src="@Url.Content(post.ImageUrl)"
+                     alt="@post.Title" style="width: 80px; height: 80px; object-fit: cover;">
+                <div class="ps-3">
+                    <h6><a asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id"
+                           class="text-truncate">@post.Title</a></h6>
+                    <small class="text-body"><i
+                            class="fa fa-calendar me-1"></i>@post.CreatedAt.ToShortDateString()</small>
+                </div>
+            </div>
+        }
+    </div>
+    <!-- Recent Post End -->
+
+    <!-- Tags Start -->
+    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+        <h3 class="mb-4">Tag Cloud</h3>
+        <div class="d-flex flex-wrap m-n1">
+            @foreach (var tag in Model.Item2.Tags)
+            {
+                <a asp-controller="Homepage" asp-action="Tag" asp-route-slug="@tag.Slug"
+                   class="btn btn-light m-1">@tag.Name</a>
+            }
+        </div>
+    </div>
+    <!-- Tags End -->
+</div>
+<!-- Sidebar End -->

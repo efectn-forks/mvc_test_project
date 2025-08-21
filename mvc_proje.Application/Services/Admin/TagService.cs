@@ -59,7 +59,7 @@ public class TagService
 
         if (tag == null)
         {
-            throw new KeyNotFoundException($"Tag with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li etiket bulunamadı.");
         }
 
         return new TagEditDto
@@ -79,7 +79,7 @@ public class TagService
 
         if (tag == null)
         {
-            throw new KeyNotFoundException($"Tag with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li etiket bulunamadı.");
         }
 
         return tag;
@@ -93,7 +93,7 @@ public class TagService
 
         if (tag == null)
         {
-            throw new KeyNotFoundException($"Tag with slug '{slug}' not found.");
+            throw new KeyNotFoundException($"{slug} slug'lı etiket bulunamadı.");
         }
 
         return tag;
@@ -104,7 +104,7 @@ public class TagService
         var validationResult = await _tagCreateValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException("Validation failed: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ValidationException("Bazı alanlar geçersiz: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
         var tag = new Tag
@@ -135,13 +135,13 @@ public class TagService
         var validationResult = await _tagEditValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException("Validation failed: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ValidationException("Bazı alanlar geçersiz: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
         var tag = await _unitOfWork.TagRepository.GetByIdAsync(dto.Id);
         if (tag == null)
         {
-            throw new KeyNotFoundException($"Tag with ID {dto.Id} not found.");
+            throw new KeyNotFoundException($"{dto.Id} ID'li etiket bulunamadı.");
         }
 
         tag.Name = dto.Name;
@@ -157,7 +157,7 @@ public class TagService
         var tag = await _unitOfWork.TagRepository.GetByIdAsync(id);
         if (tag == null)
         {
-            throw new KeyNotFoundException($"Tag with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li etiket bulunamadı.");
         }
 
         await _unitOfWork.TagRepository.DeleteAsync(tag.Id);

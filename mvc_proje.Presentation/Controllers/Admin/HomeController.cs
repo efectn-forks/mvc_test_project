@@ -1,16 +1,25 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using mvc_proje.Application.Services;
 
 namespace mvc_proje.Presentation.Controllers.Admin;
 
 [Authorize(Policy = "AdminPolicy")]
 public class HomeController : Controller
 {
+    private readonly HomepageService _homepageService;
+    
+public HomeController(HomepageService homepageService)
+    {
+        _homepageService = homepageService;
+    }
+    
     [HttpGet]
     [Route("admin")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View("Admin/Home/Index");
+        var homepageDto = await _homepageService.GetAdminHomepageDataAsync();
+        return View("Admin/Home/Index", homepageDto);
     }
 
     [HttpGet]

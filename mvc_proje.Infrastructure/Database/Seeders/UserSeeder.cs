@@ -26,7 +26,8 @@ public class UserSeeder : ISeeder
                 Country = "Türkiye",
                 IdentifyNumber = "11111111111",
                 BirthDate = new DateTime(1990, 1, 1),
-                Role = Role.Admin
+                Role = Role.Admin,
+                AvatarUrl = "/images/avatars/testimonial-1.jpg"
             },
             new()
             {
@@ -43,6 +44,7 @@ public class UserSeeder : ISeeder
                 Country = "Türkiye",
                 IdentifyNumber = "11111111111",
                 BirthDate = new DateTime(1990, 1, 1),
+                AvatarUrl = "/images/avatars/testimonial-2.jpg"
             },
             new()
             {
@@ -59,6 +61,7 @@ public class UserSeeder : ISeeder
                 Country = "Türkiye",
                 IdentifyNumber = "11111111111",
                 BirthDate = new DateTime(1990, 1, 1),
+                AvatarUrl = "/images/avatars/testimonial-3.jpg"
             },
             new()
             {
@@ -75,6 +78,7 @@ public class UserSeeder : ISeeder
                 Country = "Türkiye",
                 IdentifyNumber = "11111111111",
                 BirthDate = new DateTime(1990, 1, 1),
+                AvatarUrl = "/images/avatars/testimonial-4.jpg"
             },
             new()
             {
@@ -91,6 +95,7 @@ public class UserSeeder : ISeeder
                 Country = "Türkiye",
                 IdentifyNumber = "11111111111",
                 BirthDate = new DateTime(1990, 1, 1),
+                AvatarUrl = "/images/avatars/testimonial-1.jpg"
             }
         };
 

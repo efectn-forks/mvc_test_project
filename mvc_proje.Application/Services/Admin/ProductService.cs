@@ -41,7 +41,8 @@ public class ProductService
     {
         var totalProducts = await _unitOfWork.ProductRepository.CountAsync();
         var products = await _unitOfWork.ProductRepository.GetPagedAsync(pageNumber, includeFunc: q => q
-            .Include(p => p.Category));
+            .Include(p => p.Category)
+            .Include(p => p.StockTransactions));
 
         return new PagedResult<Product>
         {
@@ -65,7 +66,6 @@ public class ProductService
             Price = model.Price,
             CategoryId = model.CategoryId,
             SkuNumber = model.SkuNumber,
-            Stock = model.Stock,
             Content = model.Content,
             Slug = model.Slug,
         };
@@ -97,7 +97,7 @@ public class ProductService
         {
             product.Images = productImages;
         }
-        
+
         // generate new unique slug using SlugHelper in case it was not provided
         if (string.IsNullOrWhiteSpace(product.Slug))
         {
@@ -109,23 +109,27 @@ public class ProductService
                 product.Slug += $"-{i}";
             }
         }
-        
+
         await _unitOfWork.ProductRepository.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<ProductEditDto> GetByIdAsync(int id)
+    public async Task<ProductEditDto> GetByIdAsync(int id, int pageNumber = 1)
     {
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id, includeFunc: q => q
             .Include(p => p.Category)
             .Include(p => p.ProductFeatures)
             .Include(p => p.Images)
             .Include(p => p.Reviews)
-            .ThenInclude(r => r.User));
+            .ThenInclude(r => r.User)
+            .Include(p => p.StockTransactions));
+
+        var pagedStockTransactions =
+            await _unitOfWork.StockTransactionRepository.GetPagedAsync(pageNumber, predicate: q => q.ProductId == id);
 
         if (product == null)
         {
-            throw new KeyNotFoundException($"Product with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li ürün bulunamadı.");
         }
 
         return new ProductEditDto
@@ -138,10 +142,15 @@ public class ProductService
             Price = product.Price,
             CategoryId = product.CategoryId,
             SkuNumber = product.SkuNumber,
-            Stock = product.Stock,
             ProductFeatures = product.ProductFeatures.ToList(),
             ProductImages = product.Images.ToList(),
             ProductReviews = product.Reviews.ToList(),
+            StockTransactions = new PagedResult<StockTransaction>
+            {
+                Items = pagedStockTransactions,
+                TotalCount = product.StockTransactions.Count()
+            },
+            Stock = product.Stock(),
         };
     }
 
@@ -156,24 +165,25 @@ public class ProductService
 
         if (product == null)
         {
-            throw new KeyNotFoundException($"Product with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li ürün bulunamadı.");
         }
 
         return product;
     }
-    
+
     public async Task<Product> GetBySlugAsync(string slug)
     {
         var product = await _unitOfWork.ProductRepository.GetBySlugAsync(slug, includeFunc: q => q
             .Include(p => p.Category)
             .Include(p => p.ProductFeatures)
             .Include(p => p.Images)
+            .Include(p => p.StockTransactions)
             .Include(p => p.Reviews)
             .ThenInclude(r => r.User));
 
         if (product == null)
         {
-            throw new KeyNotFoundException($"Product with slug '{slug}' not found.");
+            throw new KeyNotFoundException($"{slug} slug'lı ürün bulunamadı.");
         }
 
         return product;
@@ -191,7 +201,7 @@ public class ProductService
             .Include(p => p.Images));
         if (product == null)
         {
-            throw new KeyNotFoundException($"Product with ID {model.Id} not found.");
+            throw new KeyNotFoundException($"{model.Id} ID'li ürün bulunamadı.");
         }
 
         product.Name = model.Name;
@@ -200,7 +210,6 @@ public class ProductService
         product.Price = model.Price;
         product.CategoryId = model.CategoryId;
         product.SkuNumber = model.SkuNumber;
-        product.Stock = model.Stock;
         product.Slug = model.Slug;
 
         // delete old images 
@@ -286,7 +295,7 @@ public class ProductService
         var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
         if (product == null)
         {
-            throw new KeyNotFoundException($"Product with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li ürün bulunamadı.");
         }
 
         // Delete product images

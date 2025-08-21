@@ -7,7 +7,11 @@ public class CommentEditValidator : AbstractValidator<CommentEditDto>
 {
     public CommentEditValidator()
     {
-        RuleFor(c => c.Text).NotEmpty().MaximumLength(500);
-        RuleFor(c => c.Id).GreaterThan(0);
+        RuleFor(c => c.Text).NotEmpty()
+            .WithMessage("Yorum metni boş bırakılamaz.")
+            .MaximumLength(500)
+            .WithMessage("Yorum metni 500 karakterden uzun olamaz.");
+        RuleFor(c => c.Id).GreaterThan(0)
+            .WithMessage("Yorum ID'si 0'dan büyük olmalıdır.");
     }
 }

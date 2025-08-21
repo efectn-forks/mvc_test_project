@@ -85,36 +85,6 @@
             font-size: 1rem;
         }
 
-        .tag-cloud {
-            background: #f9f9f9;
-            border-radius: 12px;
-            padding: 25px;
-            border-top: 3px solid #3a7d34;
-        }
-
-        .tag-item {
-            display: inline-block;
-            background: #e8f5e9;
-            color: #3a7d34;
-            padding: 8px 16px;
-            border-radius: 30px;
-            margin: 0 8px 12px 0;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        .tag-item:hover {
-            background: #3a7d34;
-            color: white;
-            text-decoration: none;
-        }
-
-        .tag-item.active {
-            background: #3a7d34;
-            color: white;
-            font-weight: 600;
-        }
-
         .popular-tags h4 {
             position: relative;
             padding-bottom: 15px;
@@ -190,48 +160,7 @@
                     @await Html.PartialAsync("_PaginationHome")
                 </div>
 
-                <!-- Sidebar Start -->
-                <div class="col-lg-4">
-                    <!-- Search Form Start -->
-                    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="input-group">
-                            <input type="text" class="form-control p-3" placeholder="Search posts...">
-                            <button class="btn btn-primary px-4"><i class="fa fa-search"></i></button>
-                        </div>
-                    </div>
-                    <!-- Search Form End -->
-
-                    <!-- Popular Tags Start -->
-                    <div class="tag-cloud mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="popular-tags">
-                            <h4>Tags</h4>
-                            @foreach(var tag in Model.Tags.Tags)
-                            {
-                                <a asp-controller="Homepage" asp-action="Tag" asp-route-slug="@tag.Slug" class="tag-item @(tag.Name == Model.Tag.Name ? "active" : "")">@tag.Name</a>
-                            }
-                        </div>
-                    </div>
-                    <!-- Popular Tags End -->
-
-                    <!-- Recent Post Start -->
-                    <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                        <h3 class="mb-4">Recent Posts</h3>
-                        @foreach (var post in Model.LatestPosts)
-                        {
-                            <div class="d-flex mb-3">
-                                <img class="img-fluid rounded"
-                                     src="@Url.Content(post.ImageUrl)"
-                                     alt="@post.Title" style="width: 80px; height: 80px; object-fit: cover;">
-                                <div class="ps-3">
-                                    <h6><a asp-controller="Homepage" asp-action="Post" asp-route-slug="@post.Slug" class="text-truncate">@post.Title</a></h6>
-                                    <small class="text-body"><i class="fa fa-calendar me-1"></i>@post.CreatedAt.ToShortDateString()</small>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <!-- Recent Post End -->
-                </div>
-                <!-- Sidebar End -->
+                @await Component.InvokeAsync("Sidebar")
             </div>
         </div>
     </div>

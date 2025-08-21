@@ -57,4 +57,5 @@ public class User : BaseEntity
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<Post> Posts { get; set; } = new List<Post>();
     public ICollection<Order> Orders { get; set; } = new List<Order>();
+    public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
 }

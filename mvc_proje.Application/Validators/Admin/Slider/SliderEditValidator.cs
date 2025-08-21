@@ -7,13 +7,25 @@ public class SliderEditValidator : AbstractValidator<SliderEditDto>
 {
     public SliderEditValidator()
     {
-        RuleFor(x => x.Id).NotEmpty().GreaterThan(0);
-        RuleFor(x => x.Title).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Button1Url).MaximumLength(200);
-        RuleFor(x => x.Button1Text).MaximumLength(50);
-        RuleFor(x => x.Button2Url).MaximumLength(200);
-        RuleFor(x => x.Button2Text).MaximumLength(50);
+        RuleFor(x => x.Id).NotEmpty()
+            .WithMessage("Slider ID'si boş bırakılamaz.")
+            .GreaterThan(0)
+            .WithMessage("Slider ID'si 0'dan büyük olmalıdır.");
+        RuleFor(x => x.Title).NotEmpty()
+            .WithMessage("Başlık boş bırakılamaz.")
+            .MaximumLength(100)
+            .WithMessage("Başlık 100 karakterden uzun olamaz.");
+        RuleFor(x => x.Button1Url).MaximumLength(200)
+            .WithMessage("Buton 1 URL'si 200 karakterden uzun olamaz.");
+        RuleFor(x => x.Button1Text).MaximumLength(50)
+            .WithMessage("Buton 1 metni 50 karakterden uzun olamaz.");
+        RuleFor(x => x.Button2Url).MaximumLength(200)
+            .WithMessage("Buton 2 URL'si 200 karakterden uzun olamaz.");
+        RuleFor(x => x.Button2Text).MaximumLength(50)
+            .WithMessage("Buton 2 metni 50 karakterden uzun olamaz.");
         RuleFor(x => x.Image).Must(file => file == null || (file.Length > 0 && file.Length <= 5 * 1024 * 1024))
-            .Must(file => file == null || file.ContentType == "image/jpeg" || file.ContentType == "image/png");
+            .WithMessage("Resim dosyası boş bırakılamaz veya 5 MB'den büyük olamaz.")
+            .Must(file => file == null || file.ContentType == "image/jpeg" || file.ContentType == "image/png")
+            .WithMessage("Resim dosyası JPEG veya PNG formatında olmalıdır.");
     }
 }

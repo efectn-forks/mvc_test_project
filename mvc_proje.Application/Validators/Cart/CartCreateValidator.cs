@@ -7,7 +7,12 @@ public class CartCreateValidator : AbstractValidator<CartCreateDto>
 {
     public CartCreateValidator()
     {
-        RuleFor(x => x.ProductId).NotEmpty();
-        RuleFor(x => x.Quantity).NotEmpty().GreaterThan(0);
+        RuleFor(x => x.ProductId)
+            .GreaterThan(0)
+            .WithMessage("Ürün ID'si 0'dan büyük olmalıdır.");
+        RuleFor(x => x.Quantity).NotEmpty()
+            .WithMessage("Miktar boş bırakılamaz.")
+            .GreaterThan(0)
+            .WithMessage("Miktar 0'dan büyük olmalıdır.");
     }
 }

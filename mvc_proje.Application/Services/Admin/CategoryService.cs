@@ -54,7 +54,7 @@ public class CategoryService
         var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
         if (category == null)
         {
-            throw new KeyNotFoundException($"Category with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li kategori bulunamadı.");
         }
 
         return new CategoryEditDto
@@ -71,7 +71,7 @@ public class CategoryService
         var validationResult = await _categoryCreateValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed", nameof(dto));
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}", nameof(dto));
         }
 
         var category = new Domain.Entities.Category
@@ -108,7 +108,7 @@ public class CategoryService
         var category = await _unitOfWork.CategoryRepository.GetByIdAsync(dto.Id);
         if (category == null)
         {
-            throw new KeyNotFoundException($"Category with ID {dto.Id} not found.");
+            throw new KeyNotFoundException($"{dto.Id} ID'li kategori bulunamadı.");
         }
 
         category.Name = dto.Name;
@@ -124,7 +124,7 @@ public class CategoryService
         var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
         if (category == null)
         {
-            throw new KeyNotFoundException($"Category with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li kategori bulunamadı.");
         }
 
         await _unitOfWork.CategoryRepository.DeleteAsync(id);

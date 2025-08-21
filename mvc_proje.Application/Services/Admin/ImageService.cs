@@ -18,7 +18,7 @@ public class ImageService
         var validationResult = _editorImageUploadValidator.Validate(file);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException($"Invalid image file: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
         
         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";

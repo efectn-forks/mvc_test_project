@@ -21,11 +21,7 @@ public class Product : SlugEntity
     [Required]
     [Range(0.01, double.MaxValue, ErrorMessage = "Price must be a positive value.")]
     public decimal Price { get; set; }
-
-    [Required]
-    [Range(0, int.MaxValue, ErrorMessage = "Stock must be a non-negative integer.")]
-    public int Stock { get; set; }
-
+    
     [Required] public int CategoryId { get; set; }
 
     [JsonIgnore] public Category Category { get; set; } = null!;
@@ -36,6 +32,9 @@ public class Product : SlugEntity
 
     public IEnumerable<ProductFeature> ProductFeatures { get; set; } = new List<ProductFeature>();
     public IEnumerable<ProductReview> Reviews { get; set; } = new List<ProductReview>();
+    public IEnumerable<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+    public List<StockTransaction> StockTransactions { get; set; } = new List<StockTransaction>();
+    public List<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
 
     public ProductImage GetMainImage()
     {
@@ -52,5 +51,10 @@ public class Product : SlugEntity
         }
 
         return Reviews.Average(r => r.Rating);
+    }
+    
+    public int Stock()
+    {
+        return StockTransactions.Sum(st => st.Change);
     }
 }

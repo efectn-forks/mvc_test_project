@@ -21,12 +21,12 @@ public class OrderService
     {
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı doğrulanmadı.");
         }
         
         if (!int.TryParse(user.FindFirst("UserId")?.Value, out var userId))
         {
-            throw new UnauthorizedAccessException("User ID is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı ID'si bulunamadı.");
         }
         
         var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, includeFunc: q => q
@@ -37,16 +37,14 @@ public class OrderService
         );
         if (order == null)
         {
-            throw new KeyNotFoundException("Order not found.");
+            throw new KeyNotFoundException("Sipariş bulunamadı.");
         }
         
         if (order.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You do not have permission to view this order.");
+            throw new UnauthorizedAccessException("Bu siparişi görüntüleme izniniz yok.");
         }
-
-        Console.Write(userId);
-
+        
         return new OrderConfirmationDto
         {
             Order = order,
@@ -60,12 +58,12 @@ public class OrderService
     {
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı doğrulanmadı.");
         }
         
         if (!int.TryParse(user.FindFirst("UserId")?.Value, out var userId))
         {
-            throw new UnauthorizedAccessException("User ID is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı ID'si bulunamadı.");
         }
         
         var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, includeFunc: q => q
@@ -77,12 +75,12 @@ public class OrderService
         
         if (order == null)
         {
-            throw new KeyNotFoundException("Order not found.");
+            throw new KeyNotFoundException("Sipariş bulunamadı.");
         }
         
         if (order.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You do not have permission to view this order.");
+            throw new UnauthorizedAccessException("Bu siparişi görüntüleme izniniz yok.");
         }
 
         return new OrderTrackDto

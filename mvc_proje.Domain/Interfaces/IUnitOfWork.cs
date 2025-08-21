@@ -21,4 +21,9 @@ public interface IUnitOfWork : IAsyncDisposable
     IUserRepository UserRepository { get; }
     IProductFeatureRepository ProductFeatureRepository { get; }
     IProductReviewRepository ProductReviewRepository { get; }
+    IWishlistRepository WishlistRepository { get; }
+    IStockTransactionRepository StockTransactionRepository { get; }
+    IProductOptionRepository ProductOptionRepository { get; }
+    IProductOptionValueRepository ProductOptionValueRepository { get; }
+    IProductVariantRepository  ProductVariantRepository { get; }
 }

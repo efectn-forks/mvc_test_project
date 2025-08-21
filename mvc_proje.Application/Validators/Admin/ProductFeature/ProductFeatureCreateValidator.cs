@@ -8,12 +8,17 @@ public class ProductFeatureCreateValidator : AbstractValidator<ProductFeatureCre
     public ProductFeatureCreateValidator()
     {
         RuleFor(x => x.ProductId)
-            .GreaterThan(0);
+            .GreaterThan(0)
+            .WithMessage("Ürün ID'si 0'dan büyük olmalıdır.");
         RuleFor(x => x.Key)
             .NotEmpty()
-            .MaximumLength(100);
+            .WithMessage("Anahtar alanı boş bırakılamaz.")
+            .MaximumLength(100)
+            .WithMessage("Anahtar 100 karakterden uzun olamaz.");
         RuleFor(x => x.Value)
             .NotEmpty()
-            .MaximumLength(255);
+            .WithMessage("Değer alanı boş bırakılamaz.")
+            .MaximumLength(255)
+            .WithMessage("Değer 255 karakterden uzun olamaz.");
     }
 }

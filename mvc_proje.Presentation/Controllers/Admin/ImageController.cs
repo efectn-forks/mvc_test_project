@@ -31,7 +31,7 @@ public class ImageController : Controller
         }
         catch (Exception ex)
         {
-            return BadRequest($"Error uploading image: {ex.Message}");
+            return BadRequest($"Resim yüklenirken bir hata oluştu: {ex.Message}");
         }
     }
     

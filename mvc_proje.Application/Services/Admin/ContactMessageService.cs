@@ -45,7 +45,7 @@ public class ContactMessageService
         var message = await _unitOfWork.ContactMessageRepository.GetByIdAsync(id);
         if (message == null)
         {
-            throw new KeyNotFoundException($"Contact message with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li iletişim mesajı bulunamadı.");
         }
 
         await _unitOfWork.ContactMessageRepository.DeleteAsync(id);
@@ -56,7 +56,7 @@ public class ContactMessageService
         var message = await _unitOfWork.ContactMessageRepository.GetByIdAsync(id);
         if (message == null)
         {
-            throw new KeyNotFoundException($"Contact message with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li iletişim mesajı bulunamadı.");
         }
 
         return new ContactMessageShowDto 

@@ -1,0 +1,157 @@
+@model mvc_proje.Application.Dtos.Admin.ProductOption.ProductOptionDto
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+  <!--begin::Container-->
+  <div class="container-fluid">
+    <!--begin::Row-->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card mb-8">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <form method="post" asp-action="Create" asp-controller="ProductOption" asp-antiforgery="true">
+              <!--begin::Body-->
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="name" class="form-label">İsim</label>
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    id="name"/>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="values" class="form-label">Değerler</label>
+                  <input
+                    type="text"
+                    id="values"
+                    class="form-control"
+                    value=""/>
+                </div>
+
+                <!-- list of values -->
+                <div class="mb-3">
+                  <label for="valuesList" class="form-label">Değer Listesi</label>
+                  <ul id="valuesList" class="list-group">
+                  </ul>
+                </div>
+
+                <!-- Hidden input gönderim için -->
+                <input type="hidden" name="values" id="valuesHidden"/>
+              </div>
+              <!--end::Body-->
+              <!--begin::Footer-->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Gönder</button>
+              </div>
+              <!--end::Footer-->
+            </form>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card mb-8">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th style="width: 10px">#</th>
+                <th>İsim</th>
+                <th>Değer Sayısı</th>
+                <th style="width: 80px">İşlemler</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              @foreach (var option in Model.ProductOptions.Items)
+              {
+                <tr class="align-middle">
+                  <td>@option.Id</td>
+                  <td>@option.Name</td>
+                  <td>@option.Values.Count()</td>
+                  <td>
+                    <p class="d-inline-flex gap-1">
+                      <a type="submit" asp-controller="ProductOption" asp-action="Edit" asp-route-id="@option.Id"
+                         class="btn btn-sm btn-primary">Düzenle</a>
+                      <a type="submit" asp-controller="ProductOption" asp-action="Delete" asp-route-id="@option.Id"
+                         class="btn btn-sm btn-danger">Sil</a>
+                    </p>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+          @await Html.PartialAsync("_Pagination")
+        </div>
+      </div>
+    </div>
+    <!--end::Row-->
+  </div>
+  <!--end::Container-->
+</div>
+
+<script>
+  const valuesInput = document.getElementById("values");
+  const valuesList = document.getElementById("valuesList");
+  const valuesHidden = document.getElementById("valuesHidden");
+
+  function addValue(value) {
+    value = value.trim();
+    if (!value) return;
+    
+    if ([...valuesList.querySelectorAll("li span")].some(el => el.textContent === value)) {
+      valuesInput.value = "";
+      return;
+    }
+
+    const li = document.createElement("li");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.innerHTML = `
+      <span>${value}</span>
+      <button type="button" class="btn btn-danger btn-sm">Sil</button>
+    `;
+
+    li.querySelector("button").addEventListener("click", function () {
+      removeValue(value);
+    });
+
+    valuesList.appendChild(li);
+
+    syncHiddenInput();
+
+    valuesInput.value = "";
+  }
+
+  valuesInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addValue(valuesInput.value);
+    }
+  });
+
+  function removeValue(value) {
+    [...valuesList.querySelectorAll("li")].forEach(li => {
+      if (li.querySelector("span").textContent === value) {
+        li.remove();
+      }
+    });
+    syncHiddenInput();
+  }
+
+  function syncHiddenInput() {
+    const items = [...valuesList.querySelectorAll("li span")].map(el => el.textContent);
+    valuesHidden.value = items.join(",");
+  }
+</script>

@@ -34,13 +34,17 @@ public class AppDbCtx : DbContext
             new UserSeeder(),
             new FeatureSeeder(),
             new ContactMessageSeeder(),
-            new PostSeeder()
+            new PostSeeder(),
+            new StockTransactionSeeder(),
+            new ProductImageSeeder(),
+            new SliderSeeder(),
+            new OrderSeeder(),
+            //new OrderTrackSeeder(),
+            new ProductReviewSeeder(),
+            new ReviewSeeder(),
+            new CommentSeeder(),
+            new TagSeeder(),
         };
-        
-        foreach (var seeder in seeders)
-        {
-            seeder.Seed(modelBuilder);
-        }
         
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.Name)
@@ -75,6 +79,11 @@ public class AppDbCtx : DbContext
             .WithMany(p => p.OrderItems)
             .HasForeignKey(oi => oi.ProductId);
         
+        foreach (var seeder in seeders)
+        {
+            seeder.Seed(modelBuilder);
+        }
+        
         base.OnModelCreating(modelBuilder);
     }
     
@@ -92,4 +101,8 @@ public class AppDbCtx : DbContext
     public DbSet<OrderTrack> OrderTrack { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
     public DbSet<ProductReview> ProductReviews { get; set; } = null!;
+    public DbSet<StockTransaction> StockTransactions { get; set; } = null!;
+    public DbSet<ProductOption> ProductOptions { get; set; } = null!;
+    public DbSet<ProductOptionValue> ProductOptionValues { get; set; } = null!;
+    public  DbSet<ProductVariant> ProductVariants { get; set; } = null!;
 }

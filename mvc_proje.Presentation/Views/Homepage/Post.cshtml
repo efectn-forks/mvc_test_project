@@ -107,7 +107,7 @@
                                  src="@(string.IsNullOrEmpty(Model.Post.User.AvatarUrl) ? "https://via.placeholder.com/150" : Url.Content(Model.Post.User.AvatarUrl))"
                                  alt="Author" style="width: 50px; height: 50px;">
                             <div class="ps-3">
-                                <h6 class="mb-1">@Model.Post.User.FullName</h6>
+                                <h6 class="mb-1"><a asp-controller="Profile" asp-action="UserProfile" asp-route-username="@Model.Post.User.Username">@Model.Post.User.FullName</a></h6>
                                 <small class="text-body"><i
                                         class="fa fa-calendar text-primary me-2"></i>@Model.Post.CreatedAt.ToShortDateString()
                                 </small>
@@ -155,7 +155,7 @@
                              src="@(string.IsNullOrEmpty(Model.Post.User.AvatarUrl) ? "https://via.placeholder.com/150" : Url.Content(Model.Post.User.AvatarUrl))"
                              alt="Author" style="width: 100px; height: 100px;">
                         <div class="ps-4">
-                            <h4 class="mb-1">@Model.Post.User.FullName</h4>
+                            <h4 class="mb-1"><a asp-controller="Profile" asp-action="UserProfile" asp-route-username="@Model.Post.User.Username">@Model.Post.User.FullName</a></h4>
                             <p class="text-primary mb-2">@Model.Post.User.Role</p>
                         </div>
                     </div>
@@ -238,53 +238,7 @@
                 <!-- Comment Form End -->
             </div>
 
-            <!-- Sidebar Start -->
-            <div class="col-lg-4">
-                <!-- Search Form Start -->
-                <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                    <form method="get" asp-controller="Search" asp-action="SearchPost">
-                        <div class="input-group">
-                            <input type="text" name="searchTerm" class="form-control p-3" placeholder="Search">
-                            <button class="btn btn-primary px-4"><i class="fa fa-search"></i></button>
-                        </div>
-                    </form>
-                </div>
-                <!-- Search Form End -->
-
-                <!-- Recent Post Start -->
-                <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                    <h3 class="mb-4">Recent Posts</h3>
-                    @foreach (var post in Model.LatestPosts)
-                    {
-                        <div class="d-flex mb-3">
-                            <img class="img-fluid rounded"
-                                 src="@Url.Content(post.ImageUrl)"
-                                 alt="@post.Title" style="width: 80px; height: 80px; object-fit: cover;">
-                            <div class="ps-3">
-                                <h6><a asp-controller="Homepage" asp-action="Post" asp-route-id="@post.Id"
-                                       class="text-truncate">@post.Title</a></h6>
-                                <small class="text-body"><i
-                                        class="fa fa-calendar me-1"></i>@post.CreatedAt.ToShortDateString()</small>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <!-- Recent Post End -->
-
-                <!-- Tags Start -->
-                <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
-                    <h3 class="mb-4">Tag Cloud</h3>
-                    <div class="d-flex flex-wrap m-n1">
-                        @foreach (var tag in Model.Tags.Tags)
-                        {
-                            <a asp-controller="Homepage" asp-action="Tag" asp-route-id="@tag.Id"
-                               class="btn btn-light m-1">@tag.Name</a>
-                        }
-                    </div>
-                </div>
-                <!-- Tags End -->
-            </div>
-            <!-- Sidebar End -->
+            @await Component.InvokeAsync("Sidebar")
         </div>
     </div>
 </div>

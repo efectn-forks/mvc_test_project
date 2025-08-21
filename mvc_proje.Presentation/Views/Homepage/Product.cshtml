@@ -217,9 +217,9 @@
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Availability:</span>
-                            @if (Model.Product.Stock > 0)
+                            @if (Model.Product.Stock() > 0)
                             {
-                                <span class="text-success">In Stock (@Model.Product.Stock units)</span>
+                                <span class="text-success">In Stock (@Model.Product.Stock() units)</span>
                             }
                             else
                             {
@@ -247,6 +247,11 @@
                             </button>
                         </div>
                     </form>
+                    <button class="btn btn-outline-primary border-2 py-3 px-4" 
+                            id="wishlist-btn"
+                            data-product-id="@Model.Product.Id">
+                        <i class="fa fa-heart me-2"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -456,6 +461,48 @@
                     s.classList.add('far');
                 }
             });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const wishlistBtn = document.getElementById('wishlist-btn');
+        const heartIcon = wishlistBtn.querySelector('i');
+        const productId = wishlistBtn.dataset.productId;
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        // Configure Toastr
+        toastr.options = {
+            positionClass: "toast-bottom-right",
+            progressBar: true,
+            closeButton: true,
+            timeOut: 3000
+        };
+
+        // Toggle wishlist status
+        wishlistBtn.addEventListener('click', async function() {
+            try {
+                const response = await fetch(`/wishlist/add/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    }
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+                
+                // Show notification
+                toastr.success("Ürün wishlist'e eklendi!");
+                
+            } catch (error) {
+                console.error('Wishlist error:', error);
+                toastr.error(error.message || "Bir hata oluştu, lütfen tekrar deneyin.");
+            }
         });
     });
 </script>

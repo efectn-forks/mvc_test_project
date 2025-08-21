@@ -31,7 +31,7 @@ public class AboutUsService
         if (!result.IsValid)
         {
             var errorMessages = string.Join(", ", result.Errors.Select(e => e.ErrorMessage));
-            throw new ValidationException($"Validation failed: {errorMessages}");
+            throw new ValidationException($"Bazı alanlar geçersiz: {errorMessages}");
         }
 
         // Update the _aboutUs object with the new data

@@ -7,9 +7,17 @@ public class ReviewEditValidator : AbstractValidator<ReviewEditDto>
 {
     public ReviewEditValidator()
     {
-        RuleFor(x => x.Id).GreaterThan(0);
-        RuleFor(x => x.Text).NotEmpty().MaximumLength(500);
-        RuleFor(x => x.UserId).GreaterThan(0);
-        RuleFor(x => x.UserTitle).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Id).GreaterThan(0)
+            .WithMessage("Yorum ID'si 0'dan büyük olmalıdır.");
+        RuleFor(x => x.Text).NotEmpty()
+            .WithMessage("Yorum metni boş bırakılamaz.")
+            .MaximumLength(500)
+            .WithMessage("Yorum metni 500 karakterden uzun olamaz.");
+        RuleFor(x => x.UserId).GreaterThan(0)
+            .WithMessage("Kullanıcı ID'si 0'dan büyük olmalıdır.");
+        RuleFor(x => x.UserTitle).NotEmpty()
+            .WithMessage("Kullanıcı başlığı boş bırakılamaz.")
+            .MaximumLength(100)
+            .WithMessage("Kullanıcı başlığı 100 karakterden uzun olamaz.");
     }
 }

@@ -82,13 +82,9 @@
                 </div>
 
                 <div class="row mb-3">
-                  <div class="col-6">
+                  <div class="col-12">
                     <label for="price" class="form-label">Fiyat</label>
                     <input type="text" class="form-control" name="price" id="price" value="@Model.Price"/>
-                  </div>
-                  <div class="col-6">
-                    <label for="stock" class="form-label">Stok</label>
-                    <input type="text" class="form-control" name="stock" id="stock" value="@Model.Stock"/>
                   </div>
                 </div>
 
@@ -195,6 +191,116 @@
                       name="Value"
                       class="form-control"
                       id="Value"/>
+                  </div>
+                </div>
+                <!--end::Body-->
+                <!--begin::Footer-->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Gönder</button>
+                </div>
+                <!--end::Footer-->
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <div class="card card-primary card-outline mb-4">
+            <div class="card-header">
+              <h3 class="card-title">Stok Takibi</h3>
+            </div>
+
+            <div class="card-body">
+              
+              <p>Güncel Stok: @Model.Stock</p>
+              
+              <table class="table table-bordered">
+                <thead>
+                <tr>
+                  <th style="width: 10px">#</th>
+                  <th>İşlem Türü</th>
+                  <th>Değişim</th>
+                  <th>Açıklama</th>
+                  <th>Oluşturulma Tarihi</th>
+                  <th style="width: 80px">İşlemler</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                @foreach (var transaction in Model.StockTransactions.Items)
+                {
+                  <tr class="align-middle">
+                    <td>@transaction.Id</td>
+                    <td>@transaction.TransactionType</td>
+                    <td>@transaction.Change</td>
+                    <td>@transaction.Description.Substring(0, Math.Min(transaction.Description.Length, 50))</td>
+                    <td>@transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                      <p class="d-inline-flex gap-1">
+                        <a type="submit" asp-controller="StockTransaction" asp-action="Delete" asp-route-id="@transaction.Id"
+                           class="btn btn-sm btn-danger">Sil</a>
+                      </p>
+                    </td>
+                  </tr>
+                }
+                </tbody>
+              </table>
+              
+              @await Html.PartialAsync("_Pagination")
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="card mb-8">
+          <div class="card card-primary card-outline mb-4">
+            <div class="card-header">
+              <h3 class="card-title">Stok Takibi Ekle</h3>
+            </div>
+
+            <div class="card-body">
+              <form method="post" asp-controller="StockTransaction" asp-action="Create" asp-antiforgery="true">
+                <input type="hidden" name="ProductId" value="@Model.Id"/>
+                <!--begin::Body-->
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="Change" class="form-label">Değişim</label>
+                    <input
+                      type="number"
+                      name="Change"
+                      class="form-control"
+                      id="Change"/>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="TransactionDate" class="form-label">Tarih</label>
+                    <input
+                      type="date"
+                      name="TransactionDate"
+                      class="form-control"
+                      id="TransactionDate"/>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="TransactionType" class="form-label">Tür</label>
+                    <select class="form-select" name="TransactionType" id="TransactionType">
+                      <option value="1">Satın Alma</option>
+                      <option value="2">İade</option>
+                      <option value="3">Stok Düzeltme</option>
+                      <option value="4">Transfer</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="Description" class="form-label">Açıklama</label>
+                    <textarea class="form-control" name="Description" id="Description"></textarea>
                   </div>
                 </div>
                 <!--end::Body-->

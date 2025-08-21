@@ -60,7 +60,7 @@ public class OrderService
         var order = await _unitOfWork.OrderRepository.GetByIdAsync(id);
         if (order == null)
         {
-            throw new KeyNotFoundException($"Order with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li sipariş bulunamadı.");
         }
         
         await _unitOfWork.OrderRepository.DeleteAsync(id);

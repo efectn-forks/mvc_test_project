@@ -25,7 +25,7 @@ public class SearchController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while searching posts: {ex.Message}";
+            TempData["ErrorMessage"] = $"Arama sırasında bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index", "Home");
         }
     }

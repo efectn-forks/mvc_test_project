@@ -7,15 +7,21 @@ public class ProductEditValidator : AbstractValidator<ProductEditDto>
 {
     public ProductEditValidator()
     {
-        RuleFor(x => x.Id).NotEmpty().GreaterThan(0);
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.Slug).NotEmpty();
-        RuleFor(x => x.Description).NotEmpty().MaximumLength(500);
-        RuleFor(x => x.SkuNumber).NotEmpty().MaximumLength(75);
-        RuleFor(x => x.Price).NotEmpty().GreaterThan(0);
-        RuleFor(x => x.Stock).NotEmpty().GreaterThanOrEqualTo(0);
-        RuleFor(x => x.CategoryId).NotEmpty().GreaterThan(0);
+        RuleFor(x => x.Id).NotEmpty().GreaterThan(0)
+            .WithMessage("Ürün ID'si boş bırakılamaz ve 0'dan büyük olmalıdır.");
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100)
+            .WithMessage("Ürün adı boş bırakılamaz ve 100 karakterden uzun olamaz.");
+        RuleFor(x => x.Description).NotEmpty().MaximumLength(500)
+            .WithMessage("Ürün açıklaması boş bırakılamaz ve 500 karakterden uzun olamaz.");
+        RuleFor(x => x.SkuNumber).NotEmpty().MaximumLength(75)
+            .WithMessage("SKU numarası boş bırakılamaz ve 75 karakterden uzun olamaz.");
+        RuleFor(x => x.Price).NotEmpty().GreaterThan(0)
+            .WithMessage("Fiyat alanı boş bırakılamaz ve 0'dan büyük olmalıdır.");
+        RuleFor(x => x.CategoryId).NotEmpty().GreaterThan(0)
+            .WithMessage("Kategori ID'si boş bırakılamaz ve 0'dan büyük olmalıdır.");
         RuleFor(x => x.Image).Must(file => file == null || (file.Length > 0 && file.Length <= 5 * 1024 * 1024))
-            .Must(file => file == null || file.ContentType == "image/jpeg" || file.ContentType == "image/png");
+            .WithMessage("Resim dosyası boş bırakılamaz veya 5 MB'den büyük olamaz.")
+            .Must(file => file == null || file.ContentType == "image/jpeg" || file.ContentType == "image/png")
+            .WithMessage("Resim dosyası JPEG veya PNG formatında olmalıdır.");
     }
 }

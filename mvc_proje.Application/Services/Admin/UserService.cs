@@ -53,7 +53,7 @@ public class UserService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
         if (user == null)
         {
-            throw new KeyNotFoundException($"User with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li kullanıcı bulunamadı.");
         }
 
         return new UserEditDto
@@ -79,20 +79,20 @@ public class UserService
         var validationResult = await _userEditValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ArgumentException("Bazı alanlar geçersiz: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
         var user = await _unitOfWork.UserRepository.GetByIdAsync(model.Id);
         if (user == null)
         {
-            throw new KeyNotFoundException($"User with ID {model.Id} not found.");
+            throw new KeyNotFoundException($"{model.Id} ID'li kullanıcı bulunamadı.");
         }
 
         // Check if the username or email already exists
         var existingUser = await _unitOfWork.UserRepository.GetUsersByUsernameOrEmailAsync(model.Username, model.Email);
         if (existingUser != null && existingUser.Id != model.Id)
         {
-            throw new InvalidOperationException("Username or email already exists.");
+            throw new InvalidOperationException("Kullanıcı adı veya e-posta zaten mevcut.");
         }
         
         if (model.Password != null)
@@ -141,13 +141,13 @@ public class UserService
         var validationResult = await _userCreateValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ArgumentException("Bazı alanlar geçersiz: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
         var existingUser = await _unitOfWork.UserRepository.GetUsersByUsernameOrEmailAsync(model.Username, model.Email);
         if (existingUser != null)
         {
-            throw new InvalidOperationException("Username or email already exists.");
+            throw new InvalidOperationException("Kullanıcı adı veya e-posta zaten mevcut.");
         }
 
         var user = new User
@@ -185,7 +185,7 @@ public class UserService
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
         if (user == null)
         {
-            throw new KeyNotFoundException($"User with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li kullanıcı bulunamadı.");
         }
 
         // remove avatar file if it exists

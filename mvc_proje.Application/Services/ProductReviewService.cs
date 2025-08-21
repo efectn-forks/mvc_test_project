@@ -40,7 +40,7 @@ public class ProductReviewService
             .ThenInclude(oi => oi.Product));
         if (user2 == null)
         {
-            throw new InvalidOperationException("User ID is not valid.");
+            throw new InvalidOperationException("Kullanıcı ID'si geçersiz veya kullanıcı bulunamadı.");
         }
 
         // Check if the user has purchased the product
@@ -60,7 +60,7 @@ public class ProductReviewService
         var userIdStr = user.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
         if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId))
         {
-            throw new InvalidOperationException("User ID is not valid.");
+            throw new InvalidOperationException("Kullanıcı ID'si geçersiz veya kullanıcı bulunamadı.");
         }
 
         var review = new Domain.Entities.ProductReview
@@ -83,7 +83,7 @@ public class ProductReviewService
             .Include(r => r.Product));
         if (review == null)
         {
-            throw new KeyNotFoundException("Review not found");
+            throw new KeyNotFoundException("İnceleme bulunamadı");
         }
 
         return new ProductReviewEditDto
@@ -111,18 +111,18 @@ public class ProductReviewService
             .Include(r => r.Product));
         if (review == null)
         {
-            throw new KeyNotFoundException("Review not found");
+            throw new KeyNotFoundException("İnceleme bulunamadı");
         }
 
         var userIdStr = user.Claims.FirstOrDefault(c => c.Type == "UserId").Value;
         if (!int.TryParse(userIdStr, out var userId))
         {
-            throw new InvalidOperationException("User ID is not valid.");
+            throw new InvalidOperationException("Kullanıcı ID'si geçersiz veya kullanıcı bulunamadı.");
         }
 
         if (review.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You do not have permission to edit this review.");
+            throw new UnauthorizedAccessException("Bu incelemeyi düzenleme izniniz yok.");
         }
 
         review.Rating = reviewDto.Rating;
@@ -138,18 +138,18 @@ public class ProductReviewService
         var review = await _unitOfWork.ProductReviewRepository.GetByIdAsync(reviewId);
         if (review == null)
         {
-            throw new KeyNotFoundException("Review not found");
+            throw new KeyNotFoundException("İnceleme bulunamadı");
         }
 
         var userIdStr = user?.Claims.FirstOrDefault(c => c.Type == "UserId").Value;
         if (!int.TryParse(userIdStr, out var userId) && userIdStr != null)
         {
-            throw new InvalidOperationException("User ID is not valid.");
+            throw new InvalidOperationException("Kullanıcı ID'si geçersiz veya kullanıcı bulunamadı.");
         }
 
         if (review.UserId != userId && user != null)
         {
-            throw new UnauthorizedAccessException("You do not have permission to delete this review.");
+            throw new UnauthorizedAccessException("Bu incelemeyi silme izniniz yok.");
         }
 
         await _unitOfWork.ProductReviewRepository.DeleteAsync(review.Id);

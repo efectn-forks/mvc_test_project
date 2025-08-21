@@ -24,7 +24,7 @@ public class CommentService
         if (!validationResult.IsValid)
         {
             throw new ArgumentException(
-                $"Validation failed: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
+                $"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
 
         var newComment = new Comment
@@ -73,24 +73,24 @@ public class CommentService
     {
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı kimliği doğrulanmadı.");
         }
 
         if (!int.TryParse(user.FindFirst("UserId")?.Value, out var userId))
         {
-            throw new UnauthorizedAccessException("User ID is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı ID'si bulunamadı.");
         }
         
         var comment = await _unitOfWork.CommentRepository.GetByIdAsync(commentId, includeFunc: q => q
             .Include(c => c.Children));
         if (comment == null)
         {
-            throw new KeyNotFoundException($"Comment with ID {commentId} not found.");
+            throw new KeyNotFoundException($"Yorum ID {commentId} bulunamadı.");
         }
         
         if (comment.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You do not have permission to delete this comment.");
+            throw new UnauthorizedAccessException("Bu yorumu silme izniniz yok.");
         }
 
         if (comment.Children.Any())
@@ -136,28 +136,28 @@ public class CommentService
         if (!validationResult.IsValid)
         {
             throw new ArgumentException(
-                $"Validation failed: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
+                $"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
 
         var existingComment = await _unitOfWork.CommentRepository.GetByIdAsync(comment.Id);
         if (existingComment == null)
         {
-            throw new KeyNotFoundException($"Comment with ID {comment.Id} not found.");
+            throw new KeyNotFoundException($"{comment.Id} ID'li yorum bulunamadı.");
         }
         
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı kimliği doğrulanmadı.");
         }
         
         if (!int.TryParse(user.FindFirst("UserId")?.Value, out var userId))
         {
-            throw new UnauthorizedAccessException("User ID is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı ID'si bulunamadı.");
         }
         
         if (existingComment.UserId != userId)
         {
-            throw new UnauthorizedAccessException("You do not have permission to update this comment.");
+            throw new UnauthorizedAccessException("Bu yorumu güncelleme izniniz yok.");
         }
 
         existingComment.Text = comment.Text;

@@ -27,6 +27,11 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = new UserRepository(_context);
         ProductFeatureRepository = new ProductFeatureRepository(_context);
         ProductReviewRepository = new ProductReviewRepository(_context);
+        WishlistRepository = new WishlistRepository(_context);
+        StockTransactionRepository = new StockTransactionRepository(_context);
+        ProductOptionRepository = new ProductOptionRepository(_context);
+        ProductOptionValueRepository = new ProductOptionValueRepository(_context);
+        ProductVariantRepository = new ProductVariantRepository(_context);
     }
 
     public ICategoryRepository CategoryRepository { get; set; }
@@ -43,6 +48,11 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository { get; set; }
     public IProductFeatureRepository ProductFeatureRepository { get; set; }
     public IProductReviewRepository ProductReviewRepository { get; set; }
+    public IWishlistRepository WishlistRepository { get; set; }
+    public IStockTransactionRepository StockTransactionRepository { get; set; }
+    public IProductOptionRepository ProductOptionRepository { get; set; }
+    public IProductOptionValueRepository ProductOptionValueRepository { get; set; }
+    public IProductVariantRepository ProductVariantRepository { get; set; }
 
 
     public async Task<int> SaveChangesAsync()

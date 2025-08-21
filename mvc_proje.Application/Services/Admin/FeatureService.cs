@@ -51,7 +51,7 @@ public class FeatureService
         var feature = await _unitOfWork.FeatureRepository.GetByIdAsync(id);
         if (feature == null)
         {
-            throw new KeyNotFoundException($"Feature with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li özellik bulunamadı.");
         }
 
         return new FeatureEditDto
@@ -69,7 +69,7 @@ public class FeatureService
         var validationResult = await _featureCreateValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed", nameof(dto));
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}", nameof(dto));
         }
 
         var feature = new Domain.Entities.Feature
@@ -89,13 +89,13 @@ public class FeatureService
         var validationResult = await _featureEditValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed", nameof(dto));
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}", nameof(dto));
         }
 
         var feature = await _unitOfWork.FeatureRepository.GetByIdAsync(dto.Id);
         if (feature == null)
         {
-            throw new KeyNotFoundException($"Feature with ID {dto.Id} not found.");
+            throw new KeyNotFoundException($"{dto.Id} ID'li özellik bulunamadı.");
         }
 
         feature.Title = dto.Title;
@@ -112,7 +112,7 @@ public class FeatureService
         var feature = await _unitOfWork.FeatureRepository.GetByIdAsync(id);
         if (feature == null)
         {
-            throw new KeyNotFoundException($"Feature with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li özellik bulunamadı.");
         }
 
         await _unitOfWork.FeatureRepository.DeleteAsync(id);

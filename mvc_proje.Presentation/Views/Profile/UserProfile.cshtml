@@ -1,0 +1,212 @@
+@model mvc_proje.Application.Dtos.Profile.ProfileShowDto
+
+<style>
+    .user-profile-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-stats {
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #3a7d34;
+    }
+
+    .user-post {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .user-post:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-profile-btn {
+        background-color: #3a7d34;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        color: white;
+        transition: all 0.3s;
+    }
+
+    .edit-profile-btn:hover {
+        background-color: #2c5c27;
+        transform: translateY(-2px);
+    }
+
+    .follow-btn {
+        background-color: #f8f9fa;
+        border: 1px solid #3a7d34;
+        color: #3a7d34;
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: all 0.3s;
+    }
+
+    .follow-btn:hover {
+        background-color: #3a7d34;
+        color: white;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #3a7d34;
+        border-radius: 20px;
+    }
+
+    .nav-pills .nav-link {
+        color: #555;
+        border-radius: 20px;
+        margin: 0 5px;
+    }
+
+    .badge-organic {
+        background: #e8f5e9;
+        color: #3a7d34;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+    }
+</style>
+
+@await Html.PartialAsync("_Breadcrumb")
+
+<!-- User Profile Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <!-- User Profile Header Start -->
+                <div class="mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="text-center mb-4">
+                        <img class="user-profile-img mb-3"
+                             src="@Url.Content(Model.User.AvatarUrl)"
+                             alt="User Profile">
+                        <h1>@Model.User.FullName</h1>
+                        <p class="text-primary mb-2">@Model.User.Role</p>
+                        <p class="mb-3">@Model.User.City, @Model.User.Country | Member since @Model.User.CreatedAt.ToShortDateString()</p>
+                    </div>
+
+                    <div class="profile-stats mb-5">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="stat-number">@Model.Posts.TotalCount</div>
+                                <div class="text-body">Posts</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-number">@Model.User.Comments.Count</div>
+                                <div class="text-body">Comments</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bio-section mb-5">
+                        <h3 class="mb-3">About Me</h3>
+                        <p>TODO: add about me section for users.</p>
+                    </div>
+
+                    <!-- User Content Navigation -->
+                    <ul class="nav nav-pills mb-4 justify-content-center" id="userContentTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="posts-tab" data-bs-toggle="pill"
+                                    data-bs-target="#posts" type="button" role="tab" aria-controls="posts"
+                                    aria-selected="true">Posts
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comments-tab" data-bs-toggle="pill"
+                                    data-bs-target="#comments" type="button" role="tab" aria-controls="comments"
+                                    aria-selected="false">Recent Comments
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- User Content -->
+                    <div class="tab-content" id="userContentTabContent">
+                        <!-- Posts Tab -->
+                        <div class="tab-pane fade show active" id="posts" role="tabpanel"
+                             aria-labelledby="posts-tab">
+                            <!-- User Post 1 -->
+                            @foreach (var post in Model.Posts.Items)
+                            {
+                                <div class="user-post bg-light rounded overflow-hidden mb-4">
+                                    <div class="row g-0">
+                                        <div class="col-md-5">
+                                            <img class="img-fluid w-100 h-100"
+                                                 src="@Url.Content(post.ImageUrl)"
+                                                 alt="Post Image" style="object-fit: cover; height: 250px;">
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="p-4">
+                                                <div class="d-flex mb-3">
+                                                    <small class="me-3">
+                                                        <i
+                                                            class="fa fa-calendar text-primary me-2"></i>@post.CreatedAt.ToShortDateString()
+                                                    </small>
+                                                </div>
+                                                <h5 class="mb-3">@post.Title</h5>
+                                                <p class="mb-3">@post.Description</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <a class="text-uppercase" asp-controller="Homepage"
+                                                       asp-action="Post" asp-route-slug="@post.Slug">Read More
+                                                        <i
+                                                            class="bi bi-arrow-right"></i></a>
+                                                    <div class="d-flex">
+                                                        <small class="me-3">
+                                                            <i
+                                                                class="fa fa-comment text-primary me-1"></i> @post.Comments.Count()
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @await Html.PartialAsync("_Pagination")
+                        </div>
+
+                        <!-- Comments Tab -->
+                        <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+                            @foreach (var comment in Model.RecentComments)
+                            {
+                                <div class="bg-light p-4 rounded mb-4">
+                                    <div class="d-flex mb-4">
+                                        <img
+                                            src="@Url.Content(comment.Post.ImageUrl)"
+                                            class="img-fluid rounded flex-shrink-0" alt="Post"
+                                            style="width: 80px; height: 80px; object-fit: cover;">
+                                        <div class="ps-3">
+                                            <h6>
+                                                <a href="" class="text-truncate">@comment.Post.Title</a></h6>
+                                            <p class="mb-1">@comment.Text</p>
+                                            <small class="text-body"><i
+                                                    class="fa fa-calendar me-1"></i>@comment.CreatedAt.ToShortDateString()
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!-- User Profile Header End -->
+            </div>
+
+            @await Component.InvokeAsync("Sidebar")
+        </div>
+    </div>
+</div>
+<!-- User Profile End -->

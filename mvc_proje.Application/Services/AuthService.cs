@@ -29,18 +29,18 @@ public class AuthService
         var validationResult = _loginValidator.Validate(loginDto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Some fields are invalid: ", string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
+            throw new ArgumentException("Bazı alanlar geçersiz: ", string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
         }
         
         var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(loginDto.Username);
         if (user == null)
         {
-            throw new UnauthorizedAccessException("User not found");
+            throw new UnauthorizedAccessException("Kullanıcı bulunamadı!");
         }
 
         if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
         {
-            throw new UnauthorizedAccessException("Invalid password");
+            throw new UnauthorizedAccessException("Geçersiz şifre!");
         }
 
         var claims = new List<Claim>
@@ -69,13 +69,13 @@ public class AuthService
         var validationResult = _registerValidator.Validate(registerDto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Some fields are invalid: ", string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
+            throw new ArgumentException("Bazı alanlar geçersiz: ", string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
         }
 
         var existingUser = await _unitOfWork.UserRepository.GetUsersByUsernameOrEmailAsync(registerDto.Username, registerDto.Email);
         if (existingUser != null)
         {
-            throw new InvalidOperationException("Username or email already exists");
+            throw new InvalidOperationException("Bu kullanıcı adı veya e-posta zaten kullanılıyor.");
         }
 
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
@@ -99,13 +99,13 @@ public class AuthService
     {
         if (!IsLoggedIn(user))
         {
-            throw new UnauthorizedAccessException("User is not logged in");
+            throw new UnauthorizedAccessException("Kullanıcı oturumu açık değil.");
         }
 
         var userIdClaim = user.FindFirst("UserId");
         if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
         {
-            throw new InvalidOperationException("User ID claim is missing or invalid");
+            throw new InvalidOperationException("Kullanıcı ID'si bulunamadı.");
         }
 
         return userId;

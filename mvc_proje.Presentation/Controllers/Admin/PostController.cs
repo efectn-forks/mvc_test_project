@@ -56,7 +56,7 @@ public class PostController : Controller
             return View("Admin/Post/Create", model);
         }
 
-        TempData["SuccessMessage"] = "Post created successfully.";
+        TempData["SuccessMessage"] = "Yazı başarıyla eklendi.";
         return RedirectToAction("Index");
     }
 

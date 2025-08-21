@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using mvc_proje.Application.Dtos.Profile;
 using mvc_proje.Application.Repositories;
 using mvc_proje.Application.Validators.Profile;
+using mvc_proje.Domain.Entities;
 using mvc_proje.Domain.Interfaces;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Services;
 
@@ -12,24 +14,24 @@ public class ProfileService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ProfileEditValidator _profileEditValidator;
-    
+
     public ProfileService(IUnitOfWork unitOfWork, ProfileEditValidator profileEditValidator = null)
     {
         _unitOfWork = unitOfWork;
         _profileEditValidator = profileEditValidator ?? new ProfileEditValidator();
     }
-    
+
     public async Task<ProfileDto> GetAsync(ClaimsPrincipal user)
     {
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı doğrulanmadı.");
         }
 
         var username = user.FindFirst(ClaimTypes.Name)?.Value;
         if (string.IsNullOrEmpty(username))
         {
-            throw new UnauthorizedAccessException("Username is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı adı bulunamadı.");
         }
 
         var profile = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username, includeFunc: q => q
@@ -39,9 +41,9 @@ public class ProfileService
             .ThenInclude(o => o.OrderItems));
         if (profile == null)
         {
-            throw new KeyNotFoundException("User profile not found.");
+            throw new KeyNotFoundException("Kullanıcı profili bulunamadı.");
         }
-        
+
         return new ProfileDto
         {
             FullName = profile.FullName,
@@ -59,24 +61,24 @@ public class ProfileService
             IdentifyNumber = profile.IdentifyNumber
         };
     }
-    
+
     public async Task<ProfileEditDto> GetEditAsync(ClaimsPrincipal user)
     {
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı doğrulanmadı.");
         }
 
         var username = user.FindFirst(ClaimTypes.Name)?.Value;
         if (string.IsNullOrEmpty(username))
         {
-            throw new UnauthorizedAccessException("Username is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
         }
 
         var profile = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (profile == null)
         {
-            throw new KeyNotFoundException("User profile not found.");
+            throw new KeyNotFoundException("Kullanıcı profili bulunamadı.");
         }
 
         return new ProfileEditDto
@@ -94,50 +96,51 @@ public class ProfileService
             IdentifyNumber = profile.IdentifyNumber,
         };
     }
-    
+
     public async Task<ProfileDto> UpdateAsync(ClaimsPrincipal user, ProfileEditDto profileEditDto)
     {
         if (user == null || !user.Identity.IsAuthenticated)
         {
-            throw new UnauthorizedAccessException("User is not authenticated.");
+            throw new UnauthorizedAccessException("Kullanıcı doğrulanmadı.");
         }
-        
+
         var validationResult = _profileEditValidator.Validate(profileEditDto);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException("Profile edit validation failed: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ValidationException("Bazı alanlar geçersiz: " +
+                                          string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
         var username = user.FindFirst(ClaimTypes.Name)?.Value;
         if (string.IsNullOrEmpty(username))
         {
-            throw new UnauthorizedAccessException("Username is not available.");
+            throw new UnauthorizedAccessException("Kullanıcı bulunamadı.");
         }
 
         var profile = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (profile == null)
         {
-            throw new KeyNotFoundException("User profile not found.");
+            throw new KeyNotFoundException("Kullanıcı profili bulunamadı.");
         }
-        
+
         // update password if provided
         if (!string.IsNullOrEmpty(profileEditDto.NewPassword))
         {
             if (profileEditDto.NewPassword != profileEditDto.ConfirmPassword)
             {
-                throw new ValidationException("New password and confirmation do not match.");
+                throw new ValidationException("Şifreler eşleşmiyor.");
             }
 
             profile.Password = BCrypt.Net.BCrypt.HashPassword(profileEditDto.NewPassword);
         }
-        
+
         // update avatar if provided
         // handle avatar upload
         if (profileEditDto.Avatar != null && profileEditDto.Avatar.Length > 0)
         {
             var fileName = $"{Guid.NewGuid()}_{profileEditDto.Avatar.FileName}";
             var filePath = Path.Combine("wwwroot", "images", "avatars", fileName);
-            
+
             // delete old avatar if exists
             if (!string.IsNullOrEmpty(profile.AvatarUrl))
             {
@@ -147,12 +150,12 @@ public class ProfileService
                     System.IO.File.Delete(oldAvatarPath);
                 }
             }
-            
+
             await using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await profileEditDto.Avatar.CopyToAsync(stream);
             }
-            
+
             profile.AvatarUrl = $"/images/avatars/{fileName}";
         }
 
@@ -185,6 +188,38 @@ public class ProfileService
             ZipCode = profile.ZipCode,
             BirthDate = profile.BirthDate,
             IdentifyNumber = profile.IdentifyNumber
+        };
+    }
+
+    public async Task<ProfileShowDto> GetProfileShowAsync(string username, int pageNumber = 1)
+    {
+        if (string.IsNullOrEmpty(username))
+        {
+            throw new ArgumentException("Kullanıcı adı boş olamaz.", nameof(username));
+        }
+
+        var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username, includeFunc: q =>
+            q.Include(u => u.Comments)
+                .ThenInclude(c => c.Post)
+                .Include(u => u.Posts));
+
+        if (user == null)
+        {
+            throw new KeyNotFoundException("Kullanıcı bulunamadı.");
+        }
+
+        var posts = await _unitOfWork.PostRepository.GetPagedAsync(pageNumber, predicate: p => p.UserId == user.Id);
+        var totalPosts = await _unitOfWork.PostRepository.CountAsync(predicate: p => p.UserId == user.Id);
+        
+        return new ProfileShowDto
+        {
+            User = user,
+            Posts = new PagedResult<Post>
+            {
+                Items = posts,
+                TotalCount = totalPosts,
+            },
+            RecentComments = user.Comments.OrderByDescending(c => c.CreatedAt).Take(5)
         };
     }
 }

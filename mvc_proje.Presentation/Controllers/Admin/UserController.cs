@@ -53,11 +53,11 @@ public class UserController : Controller
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError("", $"User creation failed: {ex.Message}");
+            ModelState.AddModelError("", $"Kullanıcı oluşturulurken bir hata meydana geldi: {ex.Message}");
             return View("Admin/User/Create", model);
         }
         
-        TempData["SuccessMessage"] = "User created successfully.";
+        TempData["SuccessMessage"] = "Kullanıcı başarıyla oluşturuldu.";
         return RedirectToAction("Index");
     }
     
@@ -72,7 +72,7 @@ public class UserController : Controller
             var model = await _userService.GetByIdAsync(id);
             if (model == null)
             {
-                TempData["ErrorMessage"] = "User not found.";
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
                 return RedirectToAction("Index");
             }
             
@@ -80,7 +80,7 @@ public class UserController : Controller
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError("", $"Failed to load user: {ex.Message}");
+            ModelState.AddModelError("", $"Kullanıcı yüklenirken bir hata meydana geldi: {ex.Message}");
             return RedirectToAction("Index");
         }
     }
@@ -97,11 +97,11 @@ public class UserController : Controller
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError("", $"User update failed: {ex.Message}");
+            ModelState.AddModelError("", $"Kullanıcı güncellenirken bir hata meydana geldi: {ex.Message}");
             return View("Admin/User/Edit", model);
         }
         
-        TempData["SuccessMessage"] = "User updated successfully.";
+        TempData["SuccessMessage"] = "Kullanıcı başarıyla güncellendi.";
         return RedirectToAction("Index");
     }
     
@@ -114,11 +114,11 @@ public class UserController : Controller
         try 
         {
             await _userService.DeleteAsync(id);
-            TempData["SuccessMessage"] = "User deleted successfully.";
+            TempData["SuccessMessage"] = "Kullanıcı başarıyla silindi.";
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"User deletion failed: {ex.Message}";
+            TempData["ErrorMessage"] = $"Kullanıcı silinirken bir hata meydana geldi: {ex.Message}";
         }
         
         return RedirectToAction("Index");

@@ -7,7 +7,9 @@ public class LoginValidator : AbstractValidator<LoginDto>
 {
     public LoginValidator()
     {
-        RuleFor(x => x.Username).NotEmpty();
-        RuleFor(x => x.Password).NotEmpty();
+        RuleFor(x => x.Username).NotEmpty()
+            .WithMessage("Kullanıcı adı boş bırakılamaz.");
+        RuleFor(x => x.Password).NotEmpty()
+            .WithMessage("Parola boş bırakılamaz.");
     }
 }

@@ -12,10 +12,12 @@ public class ProductController : Controller
     private readonly ProductService _productService;
     private readonly CategoryService _categoryService;
     private readonly ProductReviewService _productReviewService;
+    private readonly StockTransactionService _stockTransactionService;
 
     public ProductController(ProductService productService, CategoryService categoryService,
-        ProductReviewService productReviewService)
+        ProductReviewService productReviewService, StockTransactionService stockTransactionService)
     {
+        _stockTransactionService = stockTransactionService;
         _productService = productService;
         _categoryService = categoryService;
         _productReviewService = productReviewService;
@@ -72,19 +74,22 @@ public class ProductController : Controller
 
     [HttpGet]
     [Route("/admin/products/edit/{id}")]
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int id, [FromQuery] int page = 1)
     {
         ViewData["Title"] = "Ürün Düzenle";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
 
         try
         {
-            var product = await _productService.GetByIdAsync(id);
+            var product = await _productService.GetByIdAsync(id, page);
             if (product == null)
             {
                 TempData["ErrorMessage"] = "Ürün bulunamadı.";
                 return RedirectToAction("Index");
             }
+            
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalItems"] = product.StockTransactions.TotalCount;
 
             return View("Admin/Product/Edit", product);
         }

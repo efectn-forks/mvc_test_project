@@ -16,7 +16,7 @@
                 <ul class="nav nav-pills d-inline-flex justify-content-end mb-5">
                     @foreach (var category in Model.Categories)
                     {
-                        <li class="nav-item @((category == Model.Categories.First() ? "me-0" : "me-2"))">
+                        <li class="nav-item me-2 mb-2">
                             <a class="btn btn-outline-primary border-2 @((category == Model.Categories.First() ? "active" : ""))"
                                data-bs-toggle="pill"
                                href="#tab-@category.Id">@category.Name </a>
@@ -30,16 +30,18 @@
             {
                 <div id="tab-@category.Id"
                      class="tab-pane fade show p-0 @((category == Model.Categories.First() ? "active" : ""))">
-                    <div class="row g-4">
+                    <div class="row g-4 product-list" data-category-id="@category.Id" data-page="1">
                         @foreach (var product in category.Products)
                         {
-                            <div class="col-xl-3 col-lg-4 col-md-6">
+                            <div class="col-xl-3 col-lg-4 col-md-6 product-card">
                                 <div class="product-item">
                                     <div class="position-relative bg-light overflow-hidden">
-                                        <img class="img-fluid w-100" src="@Url.Content(product.GetMainImage().ImageUrl)" alt="@product.Name">
+                                        <img class="img-fluid w-100" src="@Url.Content(product.GetMainImage().ImageUrl)"
+                                             alt="@product.Name">
                                     </div>
                                     <div class="text-center p-4">
-                                        <a class="d-block h5 mb-2" asp-controller="Homepage" asp-action="Product" asp-route-slug="@product.Slug">@product.Name</a>
+                                        <a class="d-block h5 mb-2" asp-controller="Homepage" asp-action="Product"
+                                           asp-route-slug="@product.Slug">@product.Name</a>
                                         <span class="text-primary me-1">$@product.Price</span>
                                     </div>
                                     <div class="d-flex border-top">
@@ -61,9 +63,96 @@
                             </div>
                         }
                     </div>
+                    <div class="text-center my-3">
+                        <button class="btn btn-outline-primary load-more-btn" data-category-id="@category.Id">Load
+                            More
+                        </button>
+                    </div>
                 </div>
             }
         </div>
     </div>
 </div>
 <!-- Product End -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    async function loadMoreProducts(button) {
+        let categoryId = button.dataset.categoryId;
+        let container = document.querySelector(`#tab-${categoryId} .product-list`);
+        let page = parseInt(container.dataset.page) + 1;
+
+        button.disabled = true;
+        button.textContent = "Loading...";
+
+        try {
+            let response = await fetch(`/products/load-more?categoryId=${categoryId}&page=${page}`);
+            let products = await response.json();
+
+            if (products.length > 0) {
+                products.forEach(p => {
+                    let card = document.createElement("div");
+                    card.className = "col-xl-3 col-lg-4 col-md-6 product-card";
+                    card.innerHTML = `
+                        <div class="product-item">
+                            <div class="position-relative bg-light overflow-hidden">
+                                <img class="img-fluid w-100" src="${p.mainImageUrl}" alt="${p.title}">
+                            </div>
+                            <div class="text-center p-4">
+                                <a class="d-block h5 mb-2" href="/product/${p.slug}">${p.title}</a>
+                                <span class="text-primary me-1">$${p.price}</span>
+                            </div>
+                            <div class="d-flex border-top">
+                                <small class="w-50 text-center border-end py-2">
+                                    <a class="text-body" href="/product/${p.slug}"><i class="fa fa-eye text-primary me-2"></i>View detail</a>
+                                </small>
+                                <small class="w-50 text-center py-2">
+                                    <form action="/cart/add" method="post">
+                                        <input type="hidden" name="productId" value="${p.id}" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-link text-body p-0">
+                                            <i class="fa fa-shopping-cart text-primary me-2"></i>Add to cart
+                                        </button>
+                                    </form>
+                                </small>
+                        </div>`;
+                    container.appendChild(card);
+                });
+
+                container.dataset.page = page;
+                button.disabled = false;
+                button.textContent = "Load More";
+            } else {
+                button.textContent = "No more products";
+                button.disabled = true;
+            }
+        } catch (e) {
+            console.error("Error loading products:", e);
+            button.textContent = "Load More";
+            button.disabled = false;
+        }
+    }
+
+    // Tüm load more butonlarına listener ekle
+    document.querySelectorAll(".load-more-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            loadMoreProducts(this);
+        });
+    });
+
+    // Tab değiştiğinde sayfayı resetle
+    document.querySelectorAll('a[data-bs-toggle="pill"]').forEach(tab => {
+        tab.addEventListener("shown.bs.tab", function () {
+            let targetId = this.getAttribute("href");
+            let container = document.querySelector(`${targetId} .product-list`);
+            container.dataset.page = "1";
+
+            let button = document.querySelector(`${targetId} .load-more-btn`);
+            button.textContent = "Load More";
+            button.disabled = false;
+        });
+    });
+
+});
+</script>

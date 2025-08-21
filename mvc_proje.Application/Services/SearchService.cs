@@ -21,7 +21,7 @@ public class SearchService
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
-            throw new ArgumentException("Search Term cannot be null or empty");
+            throw new ArgumentException("Arama terimi boş olamaz", nameof(searchTerm));
         }
 
         var totalCount = await _unitOfWork.PostRepository.CountAsync(p =>
@@ -52,7 +52,7 @@ public class SearchService
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
-            throw new ArgumentException("Search Term cannot be null or empty");
+            throw new ArgumentException("Arama terimi boş olamaz", nameof(searchTerm));
         }
 
         var products = await _unitOfWork.ProductRepository.FindAsync(p =>

@@ -10,6 +10,7 @@ public class Review : BaseEntity
     
     [Required]
     public int UserId { get; set; }
+    
     public User User { get; set; } = null!;
     
     [Required]

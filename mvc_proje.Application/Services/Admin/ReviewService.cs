@@ -67,14 +67,14 @@ public class ReviewService
         var validationResult = await _reviewEditValidator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed: " +
+            throw new ArgumentException("Bazı alanlar geçersiz: " +
                                         string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
         }
 
         var review = await _unitOfWork.ReviewRepository.GetByIdAsync(model.Id);
         if (review == null)
         {
-            throw new KeyNotFoundException("Review not found.");
+            throw new KeyNotFoundException("İnceleme bulunamadı.");
         }
 
         review.Text = model.Text;
@@ -90,7 +90,7 @@ public class ReviewService
         var review = await _unitOfWork.ReviewRepository.GetByIdAsync(id);
         if (review == null)
         {
-            throw new KeyNotFoundException("Review not found.");
+            throw new KeyNotFoundException("İnceleme bulunamadı.");
         }
 
         await _unitOfWork.ReviewRepository.DeleteAsync(review.Id);
@@ -102,7 +102,7 @@ public class ReviewService
         var review = await _unitOfWork.ReviewRepository.GetByIdAsync(id);
         if (review == null)
         {
-            throw new KeyNotFoundException("Review not found.");
+            throw new KeyNotFoundException("İnceleme bulunamadı.");
         }
 
         return new ReviewEditDto

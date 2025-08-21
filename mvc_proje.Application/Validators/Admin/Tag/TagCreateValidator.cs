@@ -7,7 +7,11 @@ public class TagCreateValidator : AbstractValidator<TagCreateDto>
 {
     public TagCreateValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.Description).MaximumLength(200);
+        RuleFor(x => x.Name).NotEmpty()
+            .WithMessage("Etiket adı boş bırakılamaz.")
+            .MaximumLength(50)
+            .WithMessage("Etiket adı 50 karakterden uzun olamaz.");
+        RuleFor(x => x.Description).MaximumLength(200)
+            .WithMessage("Etiket açıklaması 200 karakterden uzun olamaz.");
     }
 }

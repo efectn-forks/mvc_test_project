@@ -44,7 +44,7 @@ public class CommentService
         var comment = await _unitOfWork.CommentRepository.GetByIdAsync(id);
         if (comment == null)
         {
-            throw new KeyNotFoundException($"Comment with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li yorum bulunamadı.");
         }
 
         await _unitOfWork.CommentRepository.DeleteAsync(id);

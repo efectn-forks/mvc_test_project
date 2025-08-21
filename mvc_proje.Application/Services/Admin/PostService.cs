@@ -60,7 +60,7 @@ public class PostService
 
         if (post == null)
         {
-            throw new KeyNotFoundException($"Post with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li gönderi bulunamadı.");
         }
 
         return new PostEditDto
@@ -84,7 +84,7 @@ public class PostService
 
         if (post == null)
         {
-            throw new KeyNotFoundException($"Post with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li gönderi bulunamadı.");
         }
 
         return post;
@@ -98,7 +98,7 @@ public class PostService
 
         if (post == null)
         {
-            throw new KeyNotFoundException($"Post with slug '{slug}' not found.");
+            throw new KeyNotFoundException($"{slug} slug'lı gönderi bulunamadı.");
         }
 
         return post;
@@ -175,7 +175,7 @@ public class PostService
 
         if (post == null)
         {
-            throw new KeyNotFoundException($"Post with ID {dto.Id} not found.");
+            throw new KeyNotFoundException($"{dto.Id} ID'li gönderi bulunamadı.");
         }
 
         post.Title = dto.Title;
@@ -226,7 +226,7 @@ public class PostService
         var post = await _unitOfWork.PostRepository.GetByIdAsync(id);
         if (post == null)
         {
-            throw new KeyNotFoundException($"Post with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li gönderi bulunamadı.");
         }
 
         // Remove the image if it exists

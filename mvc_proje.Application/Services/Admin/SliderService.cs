@@ -48,7 +48,7 @@ public class SliderService
         var validationResult = await _sliderCreateValidator.ValidateAsync(sliderCreateDto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
 
         var slider = new Domain.Entities.Slider
@@ -81,7 +81,7 @@ public class SliderService
         var slider = await _unitOfWork.SliderRepository.GetByIdAsync(id);
         if (slider == null)
         {
-            throw new KeyNotFoundException($"Slider with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li slider bulunamadı.");
         }
 
         return new SliderEditDto
@@ -101,13 +101,13 @@ public class SliderService
         var validationResult = await _sliderEditValidator.ValidateAsync(sliderEditDto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
 
         var slider = await _unitOfWork.SliderRepository.GetByIdAsync(sliderEditDto.Id);
         if (slider == null)
         {
-            throw new KeyNotFoundException($"Slider with ID {sliderEditDto.Id} not found.");
+            throw new KeyNotFoundException($"{sliderEditDto.Id} ID'li slider bulunamadı.");
         }
 
         slider.Title = sliderEditDto.Title;
@@ -146,7 +146,7 @@ public class SliderService
         var slider = await _unitOfWork.SliderRepository.GetByIdAsync(id);
         if (slider == null)
         {
-            throw new KeyNotFoundException($"Slider with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li slider bulunamadı.");
         }
 
         // Delete image if exists

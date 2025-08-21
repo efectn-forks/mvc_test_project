@@ -23,7 +23,7 @@ public class OrderTrackService
         var validationResult = await _orderTrackCreateValidator.ValidateAsync(dto);
         if (!validationResult.IsValid)
         {
-            throw new ArgumentException("Validation failed", nameof(dto));
+            throw new ArgumentException($"Bazı alanlar geçersiz: {string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage))}");
         }
 
         var orderTrack = new Domain.Entities.OrderTrack
@@ -43,7 +43,7 @@ public class OrderTrackService
         var orderTrack = await _unitOfWork.OrderTrackRepository.GetByIdAsync(id);
         if (orderTrack == null)
         {
-            throw new KeyNotFoundException($"Order track with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li sipariş takibi bulunamadı.");
         }
 
         await _unitOfWork.OrderTrackRepository.DeleteAsync(orderTrack.Id);

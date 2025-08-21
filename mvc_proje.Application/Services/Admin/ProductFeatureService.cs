@@ -47,7 +47,7 @@ public class ProductFeatureService
         var productFeature = await _unitOfWork.ProductFeatureRepository.GetByIdAsync(id);
         if (productFeature == null)
         {
-            throw new KeyNotFoundException($"Product feature with ID {id} not found.");
+            throw new KeyNotFoundException($"{id} ID'li ürün özelliği bulunamadı.");
         }
 
         await _unitOfWork.ProductFeatureRepository.DeleteAsync(productFeature.Id);

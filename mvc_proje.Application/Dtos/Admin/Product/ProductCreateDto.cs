@@ -10,7 +10,6 @@ public class ProductCreateDto
     public string Description { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public int Stock { get; set; }
     public int CategoryId { get; set; }
     public IFormFile? Image { get; set; }
     public List<IFormFile> Files { get; set; } = new List<IFormFile>();

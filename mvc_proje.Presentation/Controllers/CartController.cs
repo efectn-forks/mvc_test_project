@@ -39,7 +39,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while adding the product to the cart: {ex.Message}";
+            TempData["ErrorMessage"] = $"Ürün sepete eklenirken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
 
@@ -56,7 +56,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while removing the product from the cart: {ex.Message}";
+            TempData["ErrorMessage"] = $"Ürün sepetten silinirken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
 
@@ -73,7 +73,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while updating the cart: {ex.Message}";
+            TempData["ErrorMessage"] = $"Ürünler güncellenirken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
 
@@ -89,7 +89,7 @@ public class CartController : Controller
             var order = await _cartService.CheckoutIyizicoAsync(HttpContext.Session, Url, User);
             if (order == null)
             {
-                TempData["ErrorMessage"] = "No items in the cart to checkout.";
+                TempData["ErrorMessage"] = "Sipariş oluşturulamadı. Sepetinizde ürün bulunmuyor.";
                 return RedirectToAction("Index");
             }
 
@@ -97,7 +97,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred during checkout: {ex.Message}";
+            TempData["ErrorMessage"] = $"Ödeme işlemi sırasında bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
     }
@@ -113,7 +113,7 @@ public class CartController : Controller
             var order = await _cartService.CheckoutCallbackAsync(id);
             if (order == null)
             {
-                TempData["ErrorMessage"] = "No items in the cart to checkout.";
+                TempData["ErrorMessage"] = "Ödeme işlemi tamamlanamadı. Lütfen tekrar deneyin.";
                 return RedirectToAction("Index");
             }
 
@@ -121,7 +121,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred during the payment callback: {ex.Message}";
+            TempData["ErrorMessage"] = $"Ödeme işlemi sırasında bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
     }
@@ -139,7 +139,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while retrieving the order confirmation: {ex.Message}";
+            TempData["ErrorMessage"] = $"Sipariş onayı alınırken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
     }
@@ -155,7 +155,7 @@ public class CartController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"An error occurred while retrieving the order track: {ex.Message}";
+            TempData["ErrorMessage"] = $"Sipariş takibi alınırken bir hata oluştu: {ex.Message}";
             return RedirectToAction("Index");
         }
     }

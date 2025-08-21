@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using mvc_proje.Domain.Entities;
+using mvc_proje.Domain.Misc;
 
 namespace mvc_proje.Application.Dtos.Admin.Product;
 
@@ -12,7 +13,6 @@ public class ProductEditDto
     public string Description { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public int Stock { get; set; }
     public int CategoryId { get; set; }
     public IFormFile? Image { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
@@ -27,4 +27,6 @@ public class ProductEditDto
     public int? MainNewFileIndex    { get; set; }
     
     public List<Domain.Entities.ProductReview> ProductReviews { get; set; } = new List<Domain.Entities.ProductReview>();
+    public PagedResult<Domain.Entities.StockTransaction> StockTransactions { get; set; } = new PagedResult<Domain.Entities.StockTransaction>();
+    public int Stock { get; set; }
 }
