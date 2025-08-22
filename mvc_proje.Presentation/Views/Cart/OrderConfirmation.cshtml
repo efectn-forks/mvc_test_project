@@ -293,7 +293,7 @@
                         </div>
                         <div class="order-item-details">
                             <h5 class="order-item-title">@item.Product.Name</h5>
-                            <div class="order-item-meta">SKU: @item.Product.SkuNumber | Quantity: @item.Quantity</div>
+                            <div class="order-item-meta">SKU: @item.Product.GetGenericVariant().SkuNumber | Quantity: @item.Quantity</div>
                             <div class="order-item-price">$@item.UnitPrice</div>
                         </div>
                     </div>

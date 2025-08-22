@@ -288,17 +288,17 @@
                                         </div>
                                         <div>
                                             <h5 class="cart-item-title">@item.Product.Name</h5>
-                                            <div class="cart-item-meta">SKU: @item.Product.SkuNumber</div>
+                                            <div class="cart-item-meta">SKU: @item.Product.GetGenericVariant().SkuNumber</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="cart-item-price">$@item.Product.Price</td>
+                                <td class="cart-item-price">$@item.Product.GetGenericVariant().Price</td>
                                 <td>
                                     <div class="quantity-selector">
                                         @item.Quantity
                                     </div>
                                 </td>
-                                <td class="cart-item-price">$@item.Product.Price</td>
+                                <td class="cart-item-price">$@item.Product.GetGenericVariant().Price</td>
                                 <td>
                                     <a asp-controller="Cart" asp-action="Delete" asp-route-id="@item.ProductId" class="remove-item">
                                         <i class="fas fa-trash"></i>

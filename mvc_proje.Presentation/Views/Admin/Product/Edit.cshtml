@@ -4,6 +4,7 @@
 @using mvc_proje.Domain.Entities
 @{
   Layout = "_AdminLayout";
+  var options = ViewData["ProductOptions"] as List<ProductOption>;
 }
 
 @model mvc_proje.Application.Dtos.Admin.Product.ProductEditDto
@@ -50,7 +51,7 @@
                     value="@Model.Name"
                     id="name"/>
                 </div>
-                
+
                 <div class="mb-3">
                   <label for="slug" class="form-label">Slug</label>
                   <input
@@ -62,16 +63,6 @@
                 </div>
 
                 <div class="mb-3">
-                  <label for="SkuNumber" class="form-label">SKU Numarası</label>
-                  <input
-                    type="text"
-                    name="SkuNumber"
-                    class="form-control"
-                    value="@Model.SkuNumber"
-                    id="SkuNumber"/>
-                </div>
-
-                <div class="mb-3">
                   <label for="description" class="form-label">Açıklama</label>
                   <textarea class="form-control" name="description" id="description">@Model.Description</textarea>
                 </div>
@@ -79,13 +70,6 @@
                 <div class="mb-3">
                   <label for="summernote" class="form-label">İçerik</label>
                   <textarea class="form-control" asp-for="Content" id="summernote"></textarea>
-                </div>
-
-                <div class="row mb-3">
-                  <div class="col-12">
-                    <label for="price" class="form-label">Fiyat</label>
-                    <input type="text" class="form-control" name="price" id="price" value="@Model.Price"/>
-                  </div>
                 </div>
 
                 <div class="mb-3">
@@ -102,10 +86,114 @@
                 </div>
 
                 <input type="file" id="realFileInput" name="files" multiple hidden/>
-                <input type="hidden" id="MainExistingImageId" name="MainExistingImageId" />
-                <input type="hidden" id="MainNewFileIndex"  name="MainNewFileIndex"  />
+                <input type="hidden" id="MainExistingImageId" name="MainExistingImageId"/>
+                <input type="hidden" id="MainNewFileIndex" name="MainNewFileIndex"/>
 
                 <div id="dropzone" class="dropzone"></div>
+
+                @if (Model.IsVarianted)
+                {
+                  <div id="variantContainer">
+                    @for (int i = 0; i < Model.Variants.Count; i++)
+                    {
+                      var variant = Model.Variants[i];
+                      <div class="variant-block border p-3 mb-3" data-index="@i">
+                        <button type="button" class="btn-close float-end remove-variant"></button>
+                        <input type="hidden" name="Variants[@i].Id" value="@variant.Id"/>
+                        <div class="mb-2">
+                          <label>SKU</label>
+                          <input type="text" class="form-control variant-sku" name="Variants[@i].SkuNumber"
+                                 value="@variant.SkuNumber"/>
+                        </div>
+                        <div class="mb-2">
+                          <label>Fiyat</label>
+                          <input type="text" class="form-control variant-price" name="Variants[@i].Price"
+                                 value="@variant.Price"/>
+                        </div>
+                        <div class="options-container">
+                          @for (int j = 0; j < variant.OptionValueIds.Count; j++)
+                          {
+                            <div class="option-block mb-2">
+                              <button type="button" class="btn-close float-end remove-option"></button>
+                              <select class="form-select option-select" name="Variants[@i].OptionValueIds[@j]">
+                                <option value="">Seçiniz</option>
+                                @foreach (var option in options)
+                                {
+                                  <optgroup label="@option.Name">
+                                    @foreach (var val in option.Values)
+                                    {
+                                      var selected = val.Id == variant.OptionValueIds[j] ? "selected" : "";
+                                      if (selected == "selected")
+                                      {
+                                        <option value="@val.Id" selected="@selected">@val.Value</option>
+                                      }
+                                      else
+                                      {
+                                        <option value="@val.Id">@val.Value</option>
+                                      }
+                                    }
+                                  </optgroup>
+                                }
+                              </select>
+                            </div>
+                          }
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary add-option">Option Ekle</button>
+                      </div>
+                    }
+                  </div>
+
+                  <button type="button" id="addVariantBtn" class="btn btn-secondary mt-2">Yeni Varyant Ekle</button>
+                }
+                else
+                {
+                  <div class="mb-3">
+                    <label for="SkuNumber" class="form-label">SKU</label>
+                    <input type="text" class="form-control" name="SkuNumber" id="SkuNumber" value="@Model.SkuNumber" />
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="Price" class="form-label">Fiyat</label>
+                    <input type="text" class="form-control" name="Price" id="Price" value="@Model.Price" />
+                  </div>
+                }
+                <template id="variantTemplate">
+                  <div class="variant-block border p-3 mb-3" data-index="">
+                    <button type="button" class="btn-close float-end remove-variant"></button>
+                    <div class="mb-2">
+                      <label>SKU</label>
+                      <input type="text" class="form-control variant-sku" name=""/>
+                    </div>
+                    <div class="mb-2">
+                      <label>Fiyat</label>
+                      <input type="text" class="form-control variant-price" name=""/>
+                    </div>
+                    <div class="mb-2">
+                      <label>Stok</label>
+                      <input type="number" class="form-control variant-stock" name=""/>
+                    </div>
+                    <div class="options-container"></div>
+                    <button type="button" class="btn btn-sm btn-outline-primary add-option">Option Ekle</button>
+                  </div>
+                </template>
+
+                <template id="optionTemplate">
+                  <div class="option-block mb-2">
+                    <button type="button" class="btn-close float-end remove-option"></button>
+                    <select class="form-select option-select" name="">
+                      <option value="">Seçiniz</option>
+                      @foreach (var option in options)
+                      {
+                        <optgroup label="@option.Name">
+                          @foreach (var val in option.Values)
+                          {
+                            <option value="@val.Id">@val.Value</option>
+                          }
+                        </optgroup>
+                      }
+                    </select>
+                  </div>
+                </template>
               </div>
               <!--end::Body-->
               <!--begin::Footer-->
@@ -205,7 +293,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="card mb-8">
@@ -215,9 +303,9 @@
             </div>
 
             <div class="card-body">
-              
+
               <p>Güncel Stok: @Model.Stock</p>
-              
+
               <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -241,7 +329,8 @@
                     <td>@transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>
                       <p class="d-inline-flex gap-1">
-                        <a type="submit" asp-controller="StockTransaction" asp-action="Delete" asp-route-id="@transaction.Id"
+                        <a type="submit" asp-controller="StockTransaction" asp-action="Delete"
+                           asp-route-id="@transaction.Id"
                            class="btn btn-sm btn-danger">Sil</a>
                       </p>
                     </td>
@@ -249,14 +338,14 @@
                 }
                 </tbody>
               </table>
-              
+
               @await Html.PartialAsync("_Pagination")
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="card mb-8">
@@ -268,6 +357,25 @@
             <div class="card-body">
               <form method="post" asp-controller="StockTransaction" asp-action="Create" asp-antiforgery="true">
                 <input type="hidden" name="ProductId" value="@Model.Id"/>
+
+                @if (!Model.IsVarianted)
+                {
+                  <input type="hidden" name="ProductVariantId" value="@Model.Variants.FirstOrDefault()?.Id"/>
+                }
+                else
+                {
+                  <div class="mb-3">
+                    <label for="ProductVariantId" class="form-label">Varyant</label>
+                    <select class="form-select" name="ProductVariantId" id="ProductVariantId">
+                      @foreach (var variant in Model.Variants)
+                      {
+                        <option value="@variant.Id">@variant.SkuNumber - Fiyat: @variant.Price -
+                          Özellikler: @string.Join(", ", variant.OptionValueIds)</option>
+                      }
+                    </select>
+                  </div>
+                }
+
                 <!--begin::Body-->
                 <div class="card-body">
                   <div class="mb-3">
@@ -278,7 +386,7 @@
                       class="form-control"
                       id="Change"/>
                   </div>
-                  
+
                   <div class="mb-3">
                     <label for="TransactionDate" class="form-label">Tarih</label>
                     <input
@@ -287,7 +395,7 @@
                       class="form-control"
                       id="TransactionDate"/>
                   </div>
-                  
+
                   <div class="mb-3">
                     <label for="TransactionType" class="form-label">Tür</label>
                     <select class="form-select" name="TransactionType" id="TransactionType">
@@ -315,7 +423,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="card mb-8">
@@ -365,20 +473,20 @@
 </div>
 
 <script>
-  function setMainHiddenFieldsFor(file, dz){
+  function setMainHiddenFieldsFor(file, dz) {
     const hExisting = document.getElementById("MainExistingImageId");
-    const hNew      = document.getElementById("MainNewFileIndex");
+    const hNew = document.getElementById("MainNewFileIndex");
     hExisting.value = "";
-    hNew.value      = "";
+    hNew.value = "";
 
-    if (file.isMock && file.dbId){  
+    if (file.isMock && file.dbId) {
       hExisting.value = file.dbId;
-    } else {                           
+    } else {
       const newFiles = dz.files.filter(f => !f.isMock);
       const newIndex = newFiles.indexOf(file);
       if (newIndex >= 0) hNew.value = newIndex;
     }
-    
+
     console.log("MainExistingImageId: " + hExisting.value);
     console.log("MainNewFileIndex: " + hNew.value);
   }
@@ -421,7 +529,7 @@
           .filter(f => f.name !== file.name)
           .forEach(f => dt.items.add(f));
         realInput.files = dt.files;
-        
+
         if (file.isMock && file.dbId) {
           console.log(file.dbId);
           let deletedInput = document.createElement("input");
@@ -431,9 +539,8 @@
           document.getElementById("myForm").appendChild(deletedInput);
         }
       });
-
       @{
-        JsonSerializerOptions options = new()
+        JsonSerializerOptions jsonOptions = new()
         {
           ReferenceHandler = ReferenceHandler.IgnoreCycles,
           WriteIndented = true,
@@ -452,10 +559,10 @@
                                Id = x.Id,
                              })
                            ));
-      
+
       console.log(existingImages);
       existingImages.forEach(function (img, index) {
-        var mockFile = { name: img.FileName, size: img.Size, isMock: true, dbId: img.Id };
+        var mockFile = {name: img.FileName, size: img.Size, isMock: true, dbId: img.Id};
         dz.emit("addedfile", mockFile);
         dz.emit("thumbnail", mockFile, img.Url);
         dz.emit("complete", mockFile);
@@ -464,6 +571,61 @@
         }
         dz.files.push(mockFile);
       });
+    }
+  });
+</script>
+
+<script>
+  let variantIndex = @Model.Variants.Count;
+
+  function reindexVariants() {
+    document.querySelectorAll("#variantContainer .variant-block").forEach((block, i) => {
+      block.dataset.index = i;
+
+      block.querySelector(".variant-sku").name = `Variants[${i}].SkuNumber`;
+      block.querySelector(".variant-price").name = `Variants[${i}].Price`;
+      block.querySelector(".variant-stock").name = `Variants[${i}].Stock`;
+
+      block.querySelectorAll(".option-block select").forEach((select, j) => {
+        select.name = `Variants[${i}].OptionValueIds[${j}]`;
+      });
+    });
+
+    variantIndex = document.querySelectorAll("#variantContainer .variant-block").length;
+  }
+
+  document.getElementById("addVariantBtn").addEventListener("click", () => {
+    const template = document.getElementById("variantTemplate").content.cloneNode(true);
+    const variantBlock = template.querySelector(".variant-block");
+    variantBlock.dataset.index = variantIndex;
+
+    variantBlock.querySelector(".variant-sku").name = `Variants[${variantIndex}].SkuNumber`;
+    variantBlock.querySelector(".variant-price").name = `Variants[${variantIndex}].Price`;
+    variantBlock.querySelector(".variant-stock").name = `Variants[${variantIndex}].Stock`;
+
+    document.getElementById("variantContainer").appendChild(template);
+    variantIndex++;
+  });
+
+  document.getElementById("variantContainer").addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-variant")) {
+      e.target.closest(".variant-block").remove();
+      reindexVariants();
+    }
+
+    if (e.target.classList.contains("add-option")) {
+      const variantBlock = e.target.closest(".variant-block");
+      const optionIndex = variantBlock.querySelectorAll(".option-block").length;
+      const optionTemplate = document.getElementById("optionTemplate").content.cloneNode(true);
+      const select = optionTemplate.querySelector("select");
+      const vIndex = variantBlock.dataset.index;
+      select.name = `Variants[${vIndex}].OptionValueIds[${optionIndex}]`;
+      variantBlock.querySelector(".options-container").appendChild(optionTemplate);
+    }
+
+    if (e.target.classList.contains("remove-option")) {
+      e.target.closest(".option-block").remove();
+      reindexVariants();
     }
   });
 </script>

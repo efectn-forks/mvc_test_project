@@ -203,7 +203,7 @@
                     </div>
 
                     <div class="product-price">
-                        $@Model.Product.Price
+                        $@Model.Product.GetGenericVariant().Price
                     </div>
 
                     <p class="product-description">
@@ -228,7 +228,7 @@
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">SKU:</span>
-                            <span>@Model.Product.SkuNumber</span>
+                            <span>@Model.Product.GetGenericVariant().SkuNumber</span>
                         </div>
                     </div>
 
@@ -381,7 +381,7 @@
                             </div>
                             <div class="text-center p-4">
                                 <a class="d-block h5 mb-2" href="">@product.Name</a>
-                                <span class="text-primary me-1">$@product.Price</span>
+                                <span class="text-primary me-1">$@product.GetGenericVariant().Price</span>
                             </div>
                             <div class="d-flex border-top">
                                 <small class="w-50 text-center border-end py-2">

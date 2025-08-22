@@ -13,10 +13,12 @@ public class ProductController : Controller
     private readonly CategoryService _categoryService;
     private readonly ProductReviewService _productReviewService;
     private readonly StockTransactionService _stockTransactionService;
+    private readonly ProductOptionService _productOptionService;
 
     public ProductController(ProductService productService, CategoryService categoryService,
-        ProductReviewService productReviewService, StockTransactionService stockTransactionService)
+        ProductReviewService productReviewService, StockTransactionService stockTransactionService, ProductOptionService productOptionService)
     {
+        _productOptionService = productOptionService;
         _stockTransactionService = stockTransactionService;
         _productService = productService;
         _categoryService = categoryService;
@@ -47,6 +49,7 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürün Oluştur";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
+        ViewData["ProductOptions"] = await _productOptionService.GetAllAsync();
 
         return View("Admin/Product/Create");
     }
@@ -64,8 +67,8 @@ public class ProductController : Controller
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError("", $"Ürün oluşturulurken bir hata oluştu: {ex.Message}");
-            return View("Admin/Product/Create", model);
+            TempData["ErrorMessage"] = $"Ürün oluşturulurken bir hata oluştu: {ex.Message}";
+            return RedirectToAction("Create");
         }
 
         TempData["SuccessMessage"] = "Ürün başarıyla oluşturuldu.";
@@ -78,6 +81,7 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürün Düzenle";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
+        ViewData["ProductOptions"] = await _productOptionService.GetAllAsync();
 
         try
         {
@@ -106,7 +110,8 @@ public class ProductController : Controller
     {
         ViewData["Title"] = "Ürün Güncelle";
         ViewData["Categories"] = await _categoryService.GetAllAsync();
-
+        ViewData["ProductOptions"] = await _productOptionService.GetAllAsync();
+        
         try
         {
             await _productService.UpdateAsync(model);

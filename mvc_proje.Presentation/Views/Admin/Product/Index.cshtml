@@ -19,7 +19,7 @@
               <thead>
               <tr>
                 <th style="width: 10px">#</th>
-                <th>SKU</th>
+                <th>Vayantlı</th>
                 <th>İsim</th>
                 <th>Fiyat</th>
                 <th>Stok</th>
@@ -33,9 +33,18 @@
               {
                 <tr class="align-middle">
                   <td>@product.Id</td>
-                  <td>@product.SkuNumber</td>
+                  <td>
+                    @if (product.IsVarianted)
+                    {
+                      <span class="badge bg-success">Evet</span>
+                    }
+                    else
+                    {
+                      <span class="badge bg-danger">Hayır</span>
+                    }
+                  </td>
                   <td>@product.Name</td>
-                  <td>@product.Price</td>
+                  <td>@product.GetGenericVariant().Price</td>
                   <td>@product.Stock()</td>
                   <td>@product.Category.Name</td>
                   <td>
